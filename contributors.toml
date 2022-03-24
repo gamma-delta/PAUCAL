@@ -1,0 +1,21 @@
+# https://gameplay.tools/minecraft/uuid
+# sadly has people's deadnames on it :(
+
+# == Devs ==
+
+# petra_the_kat
+["a2ce9382-2518-4752-87b2-c6a5c97f173e"]
+"paucal:contributorLevel" = 7604
+"paucal:isDev" = true
+"paucal:isCool" = true
+# colorizer = [0xebad1c, 0xc7c7bd, 0x7c2e94, 0x2e060f]
+"hexcasting:colorizer" = [15445276, 13092797, 8138388, 3016207]
+
+# Dev (the forge dummy player)
+["380df991-f603-344c-a090-369bad2a924a"]
+"paucal:contributorLevel" = 7604
+"paucal:isDev" = true
+"paucal:isCool" = false
+# 0xff0000 0x00ff00 0x0000ff
+# For testing purposes
+"hexcasting:colorizer" = [16711680, 65280, 255]
