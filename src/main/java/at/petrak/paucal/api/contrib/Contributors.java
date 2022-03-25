@@ -1,8 +1,8 @@
-package at.petrak.paucal.contrib;
+package at.petrak.paucal.api.contrib;
 
 import at.petrak.paucal.PaucalMod;
+import at.petrak.paucal.common.PaucalConfig;
 import com.electronwill.nightconfig.core.AbstractConfig;
-import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import net.minecraft.DefaultUncaughtExceptionHandler;
@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ContributorsLoader {
+public class Contributors {
     private static final ConcurrentHashMap<UUID, Contributor> CONTRIBUTORS = new ConcurrentHashMap<>();
     private static boolean startedLoading = false;
 
@@ -26,7 +26,12 @@ public class ContributorsLoader {
         if (!startedLoading) {
             startedLoading = true;
 
-            var thread = new Thread(ContributorsLoader::fetch);
+            if (!PaucalConfig.loadContributors.get()) {
+                PaucalMod.LOGGER.info("Contributors disabled in the config!");
+                return;
+            }
+
+            var thread = new Thread(Contributors::fetch);
             thread.setName("PAUCAL Contributors Loading Thread");
             thread.setDaemon(true);
             thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalMod.LOGGER));
@@ -37,10 +42,11 @@ public class ContributorsLoader {
     private static void fetch() {
         UnmodifiableCommentedConfig config;
         try {
-            var url = new URL("https://raw.githubusercontent.com/gamma-delta/PAUCAL/main/contributors.toml");
+            var url = new URL(PaucalMod.CONTRIBUTOR_URL);
             config = new TomlParser().parse(url).unmodifiable();
         } catch (IOException exn) {
-            PaucalMod.LOGGER.warn("Couldn't load contributors from Github... oh well :(");
+            PaucalMod.LOGGER.warn("Couldn't load contributors from Github: {}", exn.getMessage());
+            PaucalMod.LOGGER.warn("Oh well :(");
             return;
         }
 
@@ -52,7 +58,7 @@ public class ContributorsLoader {
                 var contributor = new Contributor(uuid, rawEntry);
                 CONTRIBUTORS.put(uuid, contributor);
             } catch (Exception exn) {
-                PaucalMod.LOGGER.warn("Exception when loading contributor {}: {}", key, exn.getMessage());
+                PaucalMod.LOGGER.warn("Exception when loading contributor '{}': {}", key, exn.getMessage());
             }
         }
     }
