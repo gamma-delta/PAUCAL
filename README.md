@@ -15,16 +15,18 @@ This mod is hosted on Cursemaven, cause I can't be bothered to figure out how to
 [As per the instructions:](https://www.cursemaven.com/)
 
 ```groovy
-// After the `sourceSets.main.resources` block...
-maven {
-    url "https://cursemaven.com"
-    content {
-        includeGroup "curse.maven"
+repositories {
+    // ... other repos ...
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
 }
 
 dependencies {
-    // ...
+    // ... other dependencies ...
     api "curse.maven:paucal-597824:<MOST RECENT FILE ID>"
 }
 ```

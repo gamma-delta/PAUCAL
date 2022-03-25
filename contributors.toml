@@ -171,3 +171,6 @@
 "paucal:isDev" = false
 "paucal:isCool" = false
 
+# just trans colors for now till she decides
+"hexcasting:colorizer" = [15438570, 16777215, 6996708]
+

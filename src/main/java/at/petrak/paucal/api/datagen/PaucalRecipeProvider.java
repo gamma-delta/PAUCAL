@@ -27,11 +27,11 @@ public abstract class PaucalRecipeProvider extends RecipeProvider {
     }
 
     protected ShapedRecipeBuilder ring(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
-        return ring(out, count, Ingredient.of(outer), Ingredient.of(inner));
+        return ring(out, count, Ingredient.of(outer), ingredientOf(inner));
     }
 
     protected ShapedRecipeBuilder ring(ItemLike out, int count, TagKey<Item> outer, @Nullable TagKey<Item> inner) {
-        return ring(out, count, Ingredient.of(outer), inner == null ? null : Ingredient.of(inner));
+        return ring(out, count, Ingredient.of(outer), ingredientOf(inner));
     }
 
     protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, Ingredient outer,
@@ -40,12 +40,24 @@ public abstract class PaucalRecipeProvider extends RecipeProvider {
     }
 
     protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
-        return ringCornerless(out, count, Ingredient.of(outer), Ingredient.of(inner));
+        return ringCornerless(out, count, Ingredient.of(outer), ingredientOf(inner));
     }
 
     protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, TagKey<Item> outer,
         @Nullable TagKey<Item> inner) {
-        return ringCornerless(out, count, Ingredient.of(outer), inner == null ? null : Ingredient.of(inner));
+        return ringCornerless(out, count, Ingredient.of(outer), ingredientOf(inner));
+    }
+
+    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, Ingredient outer, @Nullable Ingredient inner) {
+        return ringCornered(out, count, outer, outer, inner);
+    }
+
+    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
+        return ringAll(out, count, Ingredient.of(outer), ingredientOf(inner));
+    }
+
+    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, TagKey<Item> outer, @Nullable TagKey<Item> inner) {
+        return ringAll(out, count, Ingredient.of(outer), ingredientOf(inner));
     }
 
     protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable Ingredient cardinal,
@@ -108,10 +120,23 @@ public abstract class PaucalRecipeProvider extends RecipeProvider {
         return stack(out, count, Ingredient.of(top), Ingredient.of(bottom));
     }
 
+
+    protected ShapedRecipeBuilder stick(ItemLike out, int count, Ingredient input) {
+        return stack(out, count, input, input);
+    }
+
+    protected ShapedRecipeBuilder stick(ItemLike out, int count, ItemLike input) {
+        return stick(out, count, Ingredient.of(input));
+    }
+
+    protected ShapedRecipeBuilder stick(ItemLike out, int count, TagKey<Item> input) {
+        return stick(out, count, Ingredient.of(input));
+    }
+
     /**
      * @param largeSize True for a 3x3, false for a 2x2
      */
-    protected void packing(Item free, Item compressed, String freeName, boolean largeSize,
+    protected void packing(ItemLike free, ItemLike compressed, String freeName, boolean largeSize,
         Consumer<FinishedRecipe> recipes) {
         var pack = ShapedRecipeBuilder.shaped(compressed)
             .define('X', free);

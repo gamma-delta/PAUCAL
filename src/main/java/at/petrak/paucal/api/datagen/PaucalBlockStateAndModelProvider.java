@@ -12,12 +12,12 @@ public abstract class PaucalBlockStateAndModelProvider extends BlockStateProvide
         super(gen, modid, exFileHelper);
     }
 
-    private void blockAndItem(Block block, BlockModelBuilder model) {
+    protected void blockAndItem(Block block, BlockModelBuilder model) {
         simpleBlock(block, model);
         simpleBlockItem(block, model);
     }
 
-    private void cubeBlockAndItem(Block block, String name) {
+    protected void cubeBlockAndItem(Block block, String name) {
         blockAndItem(block, models().cubeAll(name, modLoc("block/" + name)));
     }
 }

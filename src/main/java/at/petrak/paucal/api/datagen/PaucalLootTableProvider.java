@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 // https://github.com/XuulMedia/Flint-Age/blob/4638289130ef80dafe9b6a3fdcb461a72688100f/src/main/java/xuul/flint/datagen/BaseLootTableProvider.java
 // yoink
@@ -33,6 +34,13 @@ public abstract class PaucalLootTableProvider extends LootTableProvider {
     }
 
     protected abstract void makeLootTables(Map<Block, LootTable.Builder> lootTables);
+
+    protected void dropSelfTable(Map<Block, LootTable.Builder> lootTables, Supplier<Block>... blocks) {
+        for (var blockSupp : blocks) {
+            var block = blockSupp.get();
+            dropSelfTable(block.getRegistryName().getPath(), block, lootTables);
+        }
+    }
 
     protected void dropSelfTable(Map<Block, LootTable.Builder> lootTables, Block... blocks) {
         for (var block : blocks) {
@@ -49,7 +57,7 @@ public abstract class PaucalLootTableProvider extends LootTableProvider {
 
         lootTables.put(block, loot);
     }
-    
+
     @Override
     public void run(HashCache cache) {
         var lootTables = new HashMap<Block, LootTable.Builder>();
