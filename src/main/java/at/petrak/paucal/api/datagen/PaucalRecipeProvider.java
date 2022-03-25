@@ -143,7 +143,7 @@ public abstract class PaucalRecipeProvider extends RecipeProvider {
         if (largeSize) {
             pack.pattern("XXX").pattern("XXX").pattern("XXX");
         } else {
-            pack.pattern("XX").pattern("XX").pattern("XX");
+            pack.pattern("XX").pattern("XX");
         }
         pack.unlockedBy("has_item", has(free)).save(recipes, modLoc(freeName + "_packing"));
 
