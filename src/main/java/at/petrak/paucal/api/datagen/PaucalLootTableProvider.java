@@ -35,7 +35,8 @@ public abstract class PaucalLootTableProvider extends LootTableProvider {
 
     protected abstract void makeLootTables(Map<Block, LootTable.Builder> lootTables);
 
-    protected void dropSelfTable(Map<Block, LootTable.Builder> lootTables, Supplier<Block>... blocks) {
+    @SafeVarargs
+    protected final void dropSelfTable(Map<Block, LootTable.Builder> lootTables, Supplier<? extends Block>... blocks) {
         for (var blockSupp : blocks) {
             var block = blockSupp.get();
             dropSelfTable(block.getRegistryName().getPath(), block, lootTables);
