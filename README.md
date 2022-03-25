@@ -27,6 +27,7 @@ repositories {
 
 dependencies {
     // ... other dependencies ...
-    api "curse.maven:paucal-597824:<MOST RECENT FILE ID>"
+    compileOnly fg.deobf("curse.maven:paucal-597824:<MOST RECENT FILE ID>")
+    runtimeOnly fg.deobf("curse.maven:paucal-597824:<MOST RECENT FILE ID>")
 }
 ```
