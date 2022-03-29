@@ -61,7 +61,14 @@
 
 # == People who Pay Me Money In Real Life, For Some Reason ==
 
-# ... no one yet :(
+# artemisSystem
+["e96fa4b4-ece6-4a00-b144-1946ba9e31ec"]
+"paucal:contributorLevel" = 2
+"paucal:isDev" = false
+"paucal:isCool" = false
+
+# just trans colors for now till she decides
+"hexcasting:colorizer" = [15438570, 16777215, 6996708]
 
 
 # == Cool People ==
@@ -164,13 +171,3 @@
 "paucal:isCool" = false
 # 0x800300, 0x5f5f5f
 "hexcasting:colorizer" = [8389376, 6250335]
-
-# artemisSystem
-["e96fa4b4-ece6-4a00-b144-1946ba9e31ec"]
-"paucal:contributorLevel" = 0
-"paucal:isDev" = false
-"paucal:isCool" = false
-
-# just trans colors for now till she decides
-"hexcasting:colorizer" = [15438570, 16777215, 6996708]
-
