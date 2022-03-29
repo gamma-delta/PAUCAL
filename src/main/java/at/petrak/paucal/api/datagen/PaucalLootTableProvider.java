@@ -7,6 +7,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,28 +37,49 @@ public abstract class PaucalLootTableProvider extends LootTableProvider {
 
     protected abstract void makeLootTables(Map<Block, LootTable.Builder> lootTables);
 
+    protected LootPool.Builder dropThisPool(ItemLike item, int count) {
+        return dropThisPool(item, ConstantValue.exactly(count));
+    }
+
+    protected LootPool.Builder dropThisPool(ItemLike item, NumberProvider count) {
+        return dropThisPool(item, count, item.asItem().getRegistryName().getPath());
+    }
+
+    protected LootPool.Builder dropThisPool(ItemLike item, NumberProvider count, String name) {
+        return LootPool.lootPool()
+            .name(name)
+            .setRolls(count)
+            .add(LootItem.lootTableItem(item));
+    }
+
     @SafeVarargs
-    protected final void dropSelfTable(Map<Block, LootTable.Builder> lootTables, Supplier<? extends Block>... blocks) {
+    protected final void dropSelf(Map<Block, LootTable.Builder> lootTables, Supplier<? extends Block>... blocks) {
         for (var blockSupp : blocks) {
             var block = blockSupp.get();
-            dropSelfTable(block.getRegistryName().getPath(), block, lootTables);
+            dropSelf(block, lootTables);
         }
     }
 
-    protected void dropSelfTable(Map<Block, LootTable.Builder> lootTables, Block... blocks) {
+    protected void dropSelf(Map<Block, LootTable.Builder> lootTables, Block... blocks) {
         for (var block : blocks) {
-            dropSelfTable(block.getRegistryName().getPath(), block, lootTables);
+            dropSelf(block, lootTables);
         }
     }
 
-    protected void dropSelfTable(String name, Block block, Map<Block, LootTable.Builder> lootTables) {
-        var pool = LootPool.lootPool()
-            .name(name)
-            .setRolls(ConstantValue.exactly(1))
-            .add(LootItem.lootTableItem(block));
-        var loot = LootTable.lootTable().withPool(pool);
+    protected void dropSelf(Block block, Map<Block, LootTable.Builder> lootTables) {
+        var table = LootTable.lootTable().withPool(dropThisPool(block, 1));
+        lootTables.put(block, table);
+    }
 
-        lootTables.put(block, loot);
+    protected void dropThis(Block block, ItemLike drop, Map<Block, LootTable.Builder> lootTables) {
+        var table = LootTable.lootTable().withPool(dropThisPool(drop, 1));
+        lootTables.put(block, table);
+    }
+
+    protected void dropThis(Block block, ItemLike drop, NumberProvider count,
+        Map<Block, LootTable.Builder> lootTables) {
+        var table = LootTable.lootTable().withPool(dropThisPool(drop, count));
+        lootTables.put(block, table);
     }
 
     @Override
