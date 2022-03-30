@@ -51,7 +51,7 @@
 
 # Dev (the forge dummy player)
 ["380df991-f603-344c-a090-369bad2a924a"]
-"paucal:contributorLevel" = 0
+"paucal:contributorLevel" = 4 # for testing purposes
 "paucal:isDev" = true
 "paucal:isCool" = false
 # 0xff0000 0x00ff00 0x0000ff
@@ -70,6 +70,16 @@
 # just trans colors for now till she decides
 "hexcasting:colorizer" = [15438570, 16777215, 6996708]
 
+# TaterBlight
+["83d0744b-6769-4cb9-9b27-d4dea603dd28"]
+"paucal:contributorLevel" = 4
+"paucal:isDev" = false
+"paucal:isCool" = false
+
+"paucal:patSound" = "paucal:splat"
+
+# 4c345c
+"hexcasting:colorizer" = [4994140]
 
 # == Cool People ==
 
