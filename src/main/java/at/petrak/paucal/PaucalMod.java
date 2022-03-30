@@ -2,6 +2,7 @@ package at.petrak.paucal;
 
 import at.petrak.paucal.api.contrib.Contributors;
 import at.petrak.paucal.api.lootmod.PaucalLootMods;
+import at.petrak.paucal.common.ModSounds;
 import at.petrak.paucal.common.PaucalConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -31,6 +32,7 @@ public class PaucalMod {
         var modbus = FMLJavaModLoadingContext.get().getModEventBus();
 
         PaucalLootMods.LOOT_MODS.register(modbus);
+        ModSounds.SOUNDS.register(modbus);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CONFIG_SPEC);
     }
