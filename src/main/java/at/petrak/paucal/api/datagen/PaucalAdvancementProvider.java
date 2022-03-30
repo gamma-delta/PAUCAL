@@ -4,6 +4,7 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -34,5 +35,18 @@ public abstract class PaucalAdvancementProvider extends AdvancementProvider {
             new TranslatableComponent(expandedName),
             new TranslatableComponent(expandedName + ".desc"),
             background, frameType, showToast, announceChat, hidden);
+    }
+
+    protected DisplayInfo invisible() {
+        return new DisplayInfo(ItemStack.EMPTY, new TextComponent(""), new TextComponent(""), null, FrameType.TASK,
+            false, false, true);
+    }
+
+    protected String prefix(String name) {
+        return this.modid + ":" + name;
+    }
+
+    protected ResourceLocation modLoc(String name) {
+        return new ResourceLocation(modid, name);
     }
 }

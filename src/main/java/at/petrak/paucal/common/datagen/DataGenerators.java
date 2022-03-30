@@ -22,5 +22,9 @@ public class DataGenerators {
                 gen.addProvider(new ModTestLootModProvider(gen));
             }
         }
+
+        if (evt.includeServer()) {
+            gen.addProvider(new ModAdvancementProvider(gen, efh));
+        }
     }
 }

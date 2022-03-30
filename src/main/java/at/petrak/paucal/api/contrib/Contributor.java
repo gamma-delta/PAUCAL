@@ -5,6 +5,7 @@ import com.electronwill.nightconfig.core.AbstractConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class Contributor {
@@ -21,7 +22,7 @@ public class Contributor {
         var isCool = (boolean) this.otherVals.get("paucal:isCool");
         this.contributorType = new ContributorType(level, isDev, isCool);
     }
-    
+
     public ContributorType getContributorType() {
         return contributorType;
     }
@@ -71,5 +72,13 @@ public class Contributor {
     @Nullable
     public Object getRaw(String key) {
         return this.otherVals.get(key);
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public Set<String> allKeys() {
+        return this.otherVals.keySet();
     }
 }

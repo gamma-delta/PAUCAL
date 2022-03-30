@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:air"
+    },
+    "title": {
+      "text": ""
+    },
+    "description": {
+      "text": ""
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "rewards": {
+    "function": "paucal:welcome"
+  },
+  "criteria": {
+    "on_login": {
+      "trigger": "paucal:login_as_patron",
+      "conditions": {
+        "patron_level": {
+          "min": 1
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "on_login"
+    ]
+  ]
+}
