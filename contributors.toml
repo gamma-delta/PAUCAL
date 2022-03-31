@@ -63,9 +63,12 @@
 
 # artemisSystem
 ["e96fa4b4-ece6-4a00-b144-1946ba9e31ec"]
-"paucal:contributorLevel" = 2
+"paucal:contributorLevel" = 3
 "paucal:isDev" = false
 "paucal:isCool" = false
+
+"paucal:patSound" = "block.note_block.bit"
+"paucal:patPitchCenter" = 1.5
 
 # just trans colors for now till she decides
 "hexcasting:colorizer" = [15438570, 16777215, 6996708]
@@ -80,6 +83,23 @@
 
 # 4c345c
 "hexcasting:colorizer" = [4994140]
+
+# SpottyTheTurtle
+["c5e9fe6f-93aa-4b64-83b7-5a617e359757"]
+"paucal:contributorLevel" = 4
+"paucal:isDev" = false
+"paucal:isCool" = false
+
+# chose no headpat sound
+
+# fd8fe8
+"hexcasting:colorizer" = [16617448]
+
+# techtime4/Ceql
+["43b4ed05-42a8-420b-8e9c-5e374267e9e9"]
+"paucal:contributorLevel" = 1
+"paucal:isDev" = false
+"paucal:isCool" = false
 
 # == Cool People ==
 
