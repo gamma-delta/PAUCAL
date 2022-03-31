@@ -42,6 +42,7 @@ public abstract class PaucalBlockEntity extends BlockEntity {
     }
 
     public void sync() {
+        this.setChanged();
         level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
     }
 }
