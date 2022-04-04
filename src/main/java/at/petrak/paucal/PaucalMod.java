@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 @Mod(PaucalMod.MOD_ID)
 public class PaucalMod {
     public static final String MOD_ID = "paucal";
-    public static final String CONTRIBUTOR_URL = "https://raw.githubusercontent.com/gamma-delta/PAUCAL/main/contributors.toml";
+    public static final String CONTRIBUTOR_URL = "https://raw.githubusercontent.com/gamma-delta/contributors/main/paucal.toml";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(PaucalMod.class);
 
