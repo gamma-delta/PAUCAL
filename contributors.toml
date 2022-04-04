@@ -96,10 +96,18 @@
 "hexcasting:colorizer" = [16617448]
 
 # techtime4/Ceql
-["43b4ed05-42a8-420b-8e9c-5e374267e9e9"]
-"paucal:contributorLevel" = 1
+# ["43b4ed05-42a8-420b-8e9c-5e374267e9e9"]
+# "paucal:contributorLevel" = 1
+# "paucal:isDev" = false
+# "paucal:isCool" = false
+
+# WildOats (stevebutnottoomanypeoplehaveit)
+["968e572c-a6c1-4963-8399-0c64abd3820e"]
+"paucal:contributorLevel" = 2
 "paucal:isDev" = false
 "paucal:isCool" = false
+# 5f118a 411db8
+"hexcasting:colorizer" = [6230410, 4267448]
 
 # == Cool People ==
 
@@ -185,14 +193,6 @@
 "paucal:isCool" = false
 # ff3939 ffd543 fffc43 ffffe3
 "hexcasting:colorizer" = [16726329, 16766275, 16776259, 16777187]
-
-# WildOats (stevebutnottoomanypeoplehaveit)
-["968e572c-a6c1-4963-8399-0c64abd3820e"]
-"paucal:contributorLevel" = 0
-"paucal:isDev" = false
-"paucal:isCool" = false
-# 5f118a 411db8
-"hexcasting:colorizer" = [6230410, 4267448]
 
 # taswin
 ["816bedca-0bfa-4239-8b36-d234463b9c33"]
