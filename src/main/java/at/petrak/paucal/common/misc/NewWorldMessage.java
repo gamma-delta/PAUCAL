@@ -1,7 +1,7 @@
 package at.petrak.paucal.common.misc;
 
 import at.petrak.paucal.PaucalMod;
-import at.petrak.paucal.common.advancement.ModAdvancements;
+import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,7 +12,7 @@ public class NewWorldMessage {
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent evt) {
         if (evt.getPlayer() instanceof ServerPlayer splayer) {
-            ModAdvancements.BE_CONTRIBUTOR_TRIGGER.trigger(splayer);
+            ModAdvancementTriggers.BE_CONTRIBUTOR_TRIGGER.trigger(splayer);
         }
     }
 }

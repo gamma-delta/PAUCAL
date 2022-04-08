@@ -20,7 +20,6 @@ public class ModAdvancementProvider extends PaucalAdvancementProvider {
     @Override
     protected void registerAdvancements(Consumer<Advancement> consumer, ExistingFileHelper fileHelper) {
         Advancement.Builder.advancement()
-            .display(invisible())
             .addCriterion("on_login", new BeContributorTrigger.Instance(EntityPredicate.Composite.ANY,
                 MinMaxBounds.Ints.atLeast(1), null, null))
             .rewards(AdvancementRewards.Builder.function(modLoc("welcome")))

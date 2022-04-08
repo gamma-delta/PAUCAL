@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class PaucalAdvancementProvider extends AdvancementProvider {
     protected final String modid;
@@ -24,7 +25,7 @@ public abstract class PaucalAdvancementProvider extends AdvancementProvider {
     }
 
     protected DisplayInfo simpleDisplayWithBackground(ItemLike icon, String name, FrameType frameType,
-        ResourceLocation background) {
+        @Nullable ResourceLocation background) {
         return display(new ItemStack(icon), name, frameType, background, true, true, false);
     }
 
@@ -35,11 +36,6 @@ public abstract class PaucalAdvancementProvider extends AdvancementProvider {
             new TranslatableComponent(expandedName),
             new TranslatableComponent(expandedName + ".desc"),
             background, frameType, showToast, announceChat, hidden);
-    }
-
-    protected DisplayInfo invisible() {
-        return new DisplayInfo(ItemStack.EMPTY, new TextComponent(""), new TextComponent(""), null, FrameType.TASK,
-            false, false, true);
     }
 
     protected String prefix(String name) {

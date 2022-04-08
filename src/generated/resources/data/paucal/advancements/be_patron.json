@@ -1,19 +1,4 @@
 {
-  "display": {
-    "icon": {
-      "item": "minecraft:air"
-    },
-    "title": {
-      "text": ""
-    },
-    "description": {
-      "text": ""
-    },
-    "frame": "task",
-    "show_toast": false,
-    "announce_to_chat": false,
-    "hidden": true
-  },
   "rewards": {
     "function": "paucal:welcome"
   },
