@@ -1,7 +1,8 @@
 package at.petrak.paucal.api.contrib;
 
+import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.PaucalMod;
-import at.petrak.paucal.common.PaucalConfig;
+import at.petrak.paucal.api.PaucalAPI;
 import com.electronwill.nightconfig.core.AbstractConfig;
 import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
@@ -26,15 +27,15 @@ public class Contributors {
         if (!startedLoading) {
             startedLoading = true;
 
-            if (!PaucalConfig.loadContributors.get()) {
-                PaucalMod.LOGGER.info("Contributors disabled in the config!");
+            if (!PaucalConfig.common().loadContributors()) {
+                PaucalAPI.LOGGER.info("Contributors disabled in the config!");
                 return;
             }
 
             var thread = new Thread(Contributors::fetch);
             thread.setName("PAUCAL Contributors Loading Thread");
             thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalMod.LOGGER));
+            thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalAPI.LOGGER));
             thread.start();
         }
     }
@@ -42,7 +43,7 @@ public class Contributors {
     private static void fetch() {
         UnmodifiableCommentedConfig config;
         try {
-            var url = new URL(PaucalMod.CONTRIBUTOR_URL);
+            var url = new URL(PaucalAPI.CONTRIBUTOR_URL);
             config = new TomlParser().parse(url).unmodifiable();
         } catch (IOException exn) {
             PaucalMod.LOGGER.warn("Couldn't load contributors from Github: {}", exn.getMessage());

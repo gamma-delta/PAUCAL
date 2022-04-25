@@ -1,39 +1,36 @@
 package at.petrak.paucal.common.misc;
 
-import at.petrak.paucal.PaucalMod;
+import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.api.contrib.Contributors;
-import at.petrak.paucal.common.PaucalConfig;
+import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-@Mod.EventBusSubscriber(modid = PaucalMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PatPat {
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void onPat(PlayerInteractEvent.EntityInteract evt) {
-        if (!PaucalConfig.allowPats.get()) {
+    public static InteractionResult onPat(Player player, Level world, InteractionHand hand, Entity entity,
+        @Nullable EntityHitResult hitResult) {
+        if (!PaucalConfig.common().allowPats()) {
             // you philistine
-            return;
+            return InteractionResult.PASS;
         }
 
-        var player = evt.getPlayer();
-        var hand = evt.getHand();
         if (player.getItemInHand(hand).isEmpty()
             && player.isDiscrete() && hand == InteractionHand.MAIN_HAND
-            && evt.getTarget() instanceof Player target) {
-            if (player.getLevel() instanceof ServerLevel world) {
+            && entity instanceof Player target) {
+            if (player.getLevel() instanceof ServerLevel sworld) {
                 var pos = target.getEyePosition();
-                world.sendParticles(ParticleTypes.HEART, pos.x, pos.y + 0.5, pos.z, 1, 0, 0, 0, 0.1);
+                sworld.sendParticles(ParticleTypes.HEART, pos.x, pos.y + 0.5, pos.z, 1, 0, 0, 0, 0.1);
             } else {
                 player.swing(hand);
             }
@@ -43,7 +40,7 @@ public class PatPat {
                 var soundKeyStr = contributor.getString("paucal:patSound");
                 if (soundKeyStr != null) {
                     var soundKey = new ResourceLocation(soundKeyStr);
-                    var sound = ForgeRegistries.SOUND_EVENTS.getValue(soundKey);
+                    var sound = IXplatAbstractions.INSTANCE.getSoundByID(soundKey);
                     if (sound != null) {
                         var pitchCenter = Objects.requireNonNullElse(contributor.getFloat("paucal:patPitchCenter"), 1f);
                         target.getLevel()
@@ -53,7 +50,9 @@ public class PatPat {
                     }
                 }
             }
-            evt.setCanceled(true);
+            return InteractionResult.SUCCESS;
         }
+
+        return InteractionResult.PASS;
     }
 }

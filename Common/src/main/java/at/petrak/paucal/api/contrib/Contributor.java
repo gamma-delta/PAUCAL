@@ -1,7 +1,6 @@
 package at.petrak.paucal.api.contrib;
 
-import at.petrak.paucal.PaucalMod;
-import com.electronwill.nightconfig.core.AbstractConfig;
+import at.petrak.paucal.api.PaucalAPI;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -13,9 +12,9 @@ public class Contributor {
     private final ContributorType contributorType;
     private final Map<String, Object> otherVals;
 
-    public Contributor(UUID uuid, AbstractConfig cfg) {
+    public Contributor(UUID uuid, Map<String, Object> cfg) {
         this.uuid = uuid;
-        this.otherVals = cfg.valueMap();
+        this.otherVals = cfg;
 
         var level = (int) this.otherVals.get("paucal:contributorLevel");
         var isDev = (boolean) this.otherVals.get("paucal:isDev");
@@ -36,7 +35,7 @@ public class Contributor {
         if (value instanceof String x) {
             return x;
         } else {
-            PaucalMod.LOGGER.warn("Tried to get non-string value of key '{}' (contributor {})", key, this.uuid);
+            PaucalAPI.LOGGER.warn("Tried to get non-string value of key '{}' (contributor {})", key, this.uuid);
             return null;
         }
     }
@@ -50,7 +49,7 @@ public class Contributor {
         if (value instanceof Integer x) {
             return x;
         } else {
-            PaucalMod.LOGGER.warn("Tried to get non-int value of key '{}' (contributor {})", key, this.uuid);
+            PaucalAPI.LOGGER.warn("Tried to get non-int value of key '{}' (contributor {})", key, this.uuid);
             return null;
         }
     }
@@ -64,7 +63,7 @@ public class Contributor {
         if (value instanceof Float x) {
             return x;
         } else {
-            PaucalMod.LOGGER.warn("Tried to get non-float value of key '{}' (contributor {})", key, this.uuid);
+            PaucalAPI.LOGGER.warn("Tried to get non-float value of key '{}' (contributor {})", key, this.uuid);
             return null;
         }
     }
