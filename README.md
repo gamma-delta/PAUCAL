@@ -31,3 +31,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:paucal-597824:<MOST RECENT FILE ID>")
 }
 ```
+
+---
+
+This project uses [toml4j](https://github.com/mwanji/toml4j), included with the PAUCAL jar
+using [black, shadow magic](https://github.com/johnrengelman/shadow).

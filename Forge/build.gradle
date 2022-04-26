@@ -7,12 +7,23 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
-apply plugin: 'java'
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 archivesBaseName = "${modID}-forge-${minecraftVersion}"
+
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
 
 minecraft {
     mappings channel: 'official', version: minecraftVersion
@@ -101,6 +112,12 @@ processResources {
     from project(":Common").sourceSets.main.resources
 }
 
+shadowJar {
+    relocate "com.moandjiezana.toml", "at.petrak.paucal.shadowed.com.moandjiezana.toml"
+
+    configurations = [project.configurations.shadowCommon]
+    classifier "shadow"
+}
 
 jar.finalizedBy('reobfJar')
 

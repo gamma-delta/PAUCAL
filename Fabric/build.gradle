@@ -2,13 +2,17 @@ plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 archivesBaseName = "${modName}-fabric-${minecraftVersion}"
 
-repositories {
-    mavenCentral()
-    maven { url "https://maven.shedaniel.me/" }
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
 }
 
 dependencies {
@@ -22,6 +26,11 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     implementation "me.zeroeightsix:fiber:$fiberVersion"
+
+    implementation("com.moandjiezana.toml:toml4j:$toml4jVersion")
+    shadowCommon("com.moandjiezana.toml:toml4j:$toml4jVersion") {
+        exclude(module: "gson")
+    }
 }
 
 loom {
@@ -41,6 +50,12 @@ loom {
     }
 }
 
+shadowJar {
+    relocate "com.moandjiezana.toml", "at.petrak.paucal.shadowed.com.moandjiezana.toml"
+
+    configurations = [project.configurations.shadowCommon]
+    classifier "shadow"
+}
 
 processResources {
     from project(":Common").sourceSets.main.resources
@@ -55,10 +70,13 @@ tasks.withType(JavaCompile) {
     source(project(":Common").sourceSets.main.allSource)
 }
 
-jar {
-    from("LICENSE") {
-        rename { "${it}_${modID}" }
-    }
+
+remapJar {
+    dependsOn(shadowJar)
+    input.set(shadowJar.archiveFile)
+    archiveClassifier = "fabric"
+
+    from rootProject.file("LICENSE.txt")
 }
 
 publishing {
