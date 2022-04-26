@@ -2,6 +2,7 @@ package at.petrak.paucal;
 
 import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.common.ModSounds;
+import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import at.petrak.paucal.common.misc.PatPat;
 import at.petrak.paucal.forge.ForgePaucalConfig;
 import at.petrak.paucal.xplat.IXplatAbstractions;
@@ -31,6 +32,8 @@ public class PaucalMod {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, specPair.getRight());
         PaucalConfig.setCommon(specPair.getLeft());
 
+        ModAdvancementTriggers.registerTriggers();
+
         bind(ForgeRegistries.SOUND_EVENTS, ModSounds::init);
 
         var evBus = MinecraftForge.EVENT_BUS;
@@ -43,7 +46,8 @@ public class PaucalMod {
         });
     }
 
-    private static <T extends IForgeRegistryEntry<T>> void bind(IForgeRegistry<T> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {
+    private static <T extends IForgeRegistryEntry<T>> void bind(IForgeRegistry<T> registry,
+        Consumer<BiConsumer<T, ResourceLocation>> source) {
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(registry.getRegistrySuperType(),
             (RegistryEvent.Register<T> event) -> {
                 IForgeRegistry<T> forgeRegistry = event.getRegistry();

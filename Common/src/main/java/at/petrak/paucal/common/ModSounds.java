@@ -1,6 +1,6 @@
 package at.petrak.paucal.common;
 
-import at.petrak.paucal.PaucalMod;
+import at.petrak.paucal.api.PaucalAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
@@ -14,7 +14,7 @@ public class ModSounds {
     public static SoundEvent SPLAT = sound("splat");
 
     private static SoundEvent sound(String name) {
-        var sound = new SoundEvent(new ResourceLocation(PaucalMod.MOD_ID, name));
+        var sound = new SoundEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
         SOUNDS.add(sound);
         return sound;
     }

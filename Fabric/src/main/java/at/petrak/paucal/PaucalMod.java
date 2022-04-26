@@ -1,6 +1,7 @@
 package at.petrak.paucal;
 
 import at.petrak.paucal.common.ModSounds;
+import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import at.petrak.paucal.common.misc.PatPat;
 import at.petrak.paucal.fabric.FabricPaucalConfig;
 import at.petrak.paucal.xplat.IXplatAbstractions;
@@ -17,6 +18,8 @@ public class PaucalMod implements ModInitializer {
         IXplatAbstractions.INSTANCE.init();
 
         FabricPaucalConfig.setup();
+        
+        ModAdvancementTriggers.registerTriggers();
 
         ModSounds.init(bind(Registry.SOUND_EVENT));
 

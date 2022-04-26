@@ -23,6 +23,7 @@
         ]
     },
     "mixins": [
+        "paucal_xplat.mixins.json"
     ],
 
     "depends": {

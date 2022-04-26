@@ -4,19 +4,17 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class PaucalAdvancementProvider extends AdvancementProvider {
     protected final String modid;
 
-    public PaucalAdvancementProvider(DataGenerator generatorIn, ExistingFileHelper fileHelperIn, String modid) {
-        super(generatorIn, fileHelperIn);
+    public PaucalAdvancementProvider(DataGenerator generatorIn, String modid) {
+        super(generatorIn);
         this.modid = modid;
     }
 

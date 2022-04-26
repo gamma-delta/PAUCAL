@@ -1,4 +1,4 @@
-package at.petrak.paucal.api.lootmod;
+package at.petrak.paucal.api.datagen;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

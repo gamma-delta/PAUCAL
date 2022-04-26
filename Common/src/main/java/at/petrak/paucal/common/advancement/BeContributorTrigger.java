@@ -1,6 +1,6 @@
 package at.petrak.paucal.common.advancement;
 
-import at.petrak.paucal.PaucalMod;
+import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.api.contrib.Contributors;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.*;
@@ -10,7 +10,7 @@ import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class BeContributorTrigger extends SimpleCriterionTrigger<BeContributorTrigger.Instance> {
-    private static final ResourceLocation ID = new ResourceLocation(PaucalMod.MOD_ID, "login_as_patron");
+    private static final ResourceLocation ID = new ResourceLocation(PaucalAPI.MOD_ID, "login_as_patron");
 
     private static final String TAG_PATRON_LEVEL = "patron_level",
         TAG_IS_DEV = "is_dev",

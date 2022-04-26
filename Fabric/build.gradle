@@ -19,9 +19,19 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabricLoaderVersion}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
+
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
+    // Make a collection of all api modules we wish to use
+    Set<String> apiModules = [
+            "fabric-api-base",
+            "fabric-data-generation-api-v1"
+    ]
+    // Add each module as a dependency
+    apiModules.forEach {
+        include(modImplementation(fabricApi.module(it, fabricVersion)))
+    }
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 

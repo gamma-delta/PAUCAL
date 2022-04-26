@@ -1,9 +1,12 @@
 package at.petrak.paucal;
 
 
+import at.petrak.paucal.api.PaucalAPI;
+
 public class PaucalConfig {
     public interface ConfigAccess {
         boolean allowPats();
+
         boolean loadContributors();
     }
 
@@ -15,8 +18,8 @@ public class PaucalConfig {
 
     public static void setCommon(ConfigAccess access) {
         if (common != null) {
-            PaucalMod.LOGGER.warn("CommonConfigAccess was replaced! Old {} New {}",
-                common.getClass().getName(), access.getClass().getName());
+            PaucalAPI.LOGGER.warn("CommonConfigAccess was replaced! Old {} New {}", common.getClass().getName(),
+                access.getClass().getName());
         }
         common = access;
     }

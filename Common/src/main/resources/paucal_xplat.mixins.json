@@ -1,0 +1,10 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "compatibilityLevel": "JAVA_17",
+    "package": "at.petrak.paucal.mixin",
+    "mixins": [
+        "AccessorCriteriaTriggers"
+    ],
+    "refmap": "paucal_xplat.refmap.json"
+}
