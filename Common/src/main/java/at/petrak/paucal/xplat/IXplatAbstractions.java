@@ -1,10 +1,6 @@
 package at.petrak.paucal.xplat;
 
-import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.api.PaucalAPI;
-import at.petrak.paucal.api.contrib.Contributors;
-import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.Nullable;
@@ -19,8 +15,6 @@ public interface IXplatAbstractions {
 
     default void init() {
         PaucalAPI.LOGGER.info("Hello PAUCAL! This is {}!", this.platform());
-
-        Contributors.loadContributors();
     }
 
     IXplatAbstractions INSTANCE = find();

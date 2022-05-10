@@ -1,8 +1,11 @@
-package at.petrak.paucal.api.contrib;
+package at.petrak.paucal.common;
 
 import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.api.PaucalAPI;
-import com.moandjiezana.toml.Toml;
+import at.petrak.paucal.api.contrib.Contributor;
+import com.electronwill.nightconfig.core.AbstractConfig;
+import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
+import com.electronwill.nightconfig.toml.TomlParser;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.DefaultUncaughtExceptionHandler;
 import org.jetbrains.annotations.Nullable;
@@ -44,10 +47,10 @@ public class Contributors {
     }
 
     public static Map<UUID, Contributor> fetch() {
-        Toml config;
+        UnmodifiableCommentedConfig config;
         try {
             var url = new URL(PaucalAPI.CONTRIBUTOR_URL);
-            config = new Toml().read(url.openStream());
+            config = new TomlParser().parse(url).unmodifiable();
         } catch (IOException exn) {
             PaucalAPI.LOGGER.warn("Couldn't load contributors from Github: {}", exn.getMessage());
             PaucalAPI.LOGGER.warn("Oh well :(");
@@ -58,13 +61,13 @@ public class Contributors {
 
         for (var entry : config.entrySet()) {
             try {
-                var subtable = (Toml) entry.getValue();
+                AbstractConfig rawEntry = entry.getValue();
                 UUID uuid = UUID.fromString(entry.getKey());
-                var contributor = new Contributor(uuid, subtable.toMap());
+                var contributor = new Contributor(uuid, rawEntry);
                 out.put(uuid, contributor);
             } catch (Exception exn) {
                 PaucalAPI.LOGGER.warn("Exception when loading contributor '{}': {}", entry.getKey(), exn.getMessage());
-                // adn try again with the next one
+                // and try again with the next one
             }
         }
 

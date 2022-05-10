@@ -1,4 +1,4 @@
-package at.petrak.paucal.api.datagen;
+package at.petrak.paucal.api.forge.datagen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

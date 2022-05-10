@@ -1,4 +1,4 @@
-package at.petrak.paucal.api.datagen;
+package at.petrak.paucal.api.forge.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;

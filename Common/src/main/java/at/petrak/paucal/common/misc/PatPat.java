@@ -1,7 +1,7 @@
 package at.petrak.paucal.common.misc;
 
 import at.petrak.paucal.PaucalConfig;
-import at.petrak.paucal.api.contrib.Contributors;
+import at.petrak.paucal.common.Contributors;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;

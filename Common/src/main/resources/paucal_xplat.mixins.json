@@ -2,7 +2,7 @@
     "required": true,
     "minVersion": "0.8",
     "compatibilityLevel": "JAVA_17",
-    "package": "at.petrak.paucal.mixin",
+    "package": "at.petrak.paucal.api.mixin",
     "mixins": [
         "AccessorCriteriaTriggers"
     ],

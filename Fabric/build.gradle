@@ -2,7 +2,6 @@ plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
-    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 archivesBaseName = "${modName}-fabric-${minecraftVersion}"
@@ -23,6 +22,7 @@ dependencies {
     implementation project(":Common")
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
+    /*
     // Make a collection of all api modules we wish to use
     Set<String> apiModules = [
             "fabric-api-base",
@@ -32,18 +32,16 @@ dependencies {
     apiModules.forEach {
         include(modImplementation(fabricApi.module(it, fabricVersion)))
     }
+     */
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     implementation "me.zeroeightsix:fiber:$fiberVersion"
-
-    implementation("com.moandjiezana.toml:toml4j:$toml4jVersion")
-    shadowCommon("com.moandjiezana.toml:toml4j:$toml4jVersion") {
-        exclude(module: "gson")
-    }
 }
 
 loom {
+    mixin.defaultRefmapName = "paucal.refmap.json"
+
     runs {
         client {
             client()
@@ -58,13 +56,6 @@ loom {
             runDir("run")
         }
     }
-}
-
-shadowJar {
-    relocate "com.moandjiezana.toml", "at.petrak.paucal.shadowed.com.moandjiezana.toml"
-
-    configurations = [project.configurations.shadowCommon]
-    classifier "shadow"
 }
 
 processResources {
@@ -82,8 +73,6 @@ tasks.withType(JavaCompile) {
 
 
 remapJar {
-    dependsOn(shadowJar)
-    input.set(shadowJar.archiveFile)
     archiveClassifier = "fabric"
 
     from rootProject.file("LICENSE.txt")

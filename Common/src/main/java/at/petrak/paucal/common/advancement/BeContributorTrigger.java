@@ -1,7 +1,7 @@
 package at.petrak.paucal.common.advancement;
 
 import at.petrak.paucal.api.PaucalAPI;
-import at.petrak.paucal.api.contrib.Contributors;
+import at.petrak.paucal.common.Contributors;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;

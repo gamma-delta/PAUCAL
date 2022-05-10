@@ -1,7 +1,7 @@
-package at.petrak.paucal.common.datagen;
+package at.petrak.paucal.datagen;
 
-import at.petrak.paucal.PaucalMod;
-import at.petrak.paucal.api.datagen.PaucalAdvancementProvider;
+import at.petrak.paucal.api.PaucalAPI;
+import at.petrak.paucal.api.forge.datagen.PaucalAdvancementProvider;
 import at.petrak.paucal.common.advancement.BeContributorTrigger;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class ModAdvancementProvider extends PaucalAdvancementProvider {
     public ModAdvancementProvider(DataGenerator generatorIn, ExistingFileHelper fileHelperIn) {
-        super(generatorIn, fileHelperIn, PaucalMod.MOD_ID);
+        super(generatorIn, fileHelperIn, PaucalAPI.MOD_ID);
     }
 
     @Override

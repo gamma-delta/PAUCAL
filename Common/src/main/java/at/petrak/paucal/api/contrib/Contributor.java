@@ -1,18 +1,17 @@
 package at.petrak.paucal.api.contrib;
 
-import at.petrak.paucal.api.PaucalAPI;
+import com.electronwill.nightconfig.core.AbstractConfig;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 public class Contributor {
     private final UUID uuid;
     private final ContributorType contributorType;
-    private final Map<String, Object> otherVals;
+    private final AbstractConfig otherVals;
 
-    public Contributor(UUID uuid, Map<String, Object> cfg) {
+    public Contributor(UUID uuid, AbstractConfig cfg) {
         this.uuid = uuid;
         this.otherVals = cfg;
 
@@ -28,56 +27,36 @@ public class Contributor {
 
     @Nullable
     public String getString(String key) {
-        Object value = this.otherVals.get(key);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof String x) {
-            return x;
-        } else {
-            PaucalAPI.LOGGER.warn("Tried to get non-string value of key '{}' (contributor {})", key, this.uuid);
-            return null;
-        }
+        return otherVals.get(key);
     }
 
     @Nullable
     public Integer getInt(String key) {
-        Object value = this.otherVals.get(key);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Integer x) {
-            return x;
-        } else {
-            PaucalAPI.LOGGER.warn("Tried to get non-int value of key '{}' (contributor {})", key, this.uuid);
-            return null;
-        }
+        Number n = otherVals.get(key);
+        return n == null ? null : n.intValue();
     }
 
     @Nullable
     public Float getFloat(String key) {
-        Object value = this.otherVals.get(key);
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Float x) {
-            return x;
-        } else {
-            PaucalAPI.LOGGER.warn("Tried to get non-float value of key '{}' (contributor {})", key, this.uuid);
-            return null;
-        }
+        Number n = otherVals.get(key);
+        return n == null ? null : n.floatValue();
     }
 
     @Nullable
-    public Object getRaw(String key) {
+    public <T> T get(String key) {
         return this.otherVals.get(key);
+    }
+
+
+    public Set<String> allKeys() {
+        return this.otherVals.valueMap().keySet();
     }
 
     public UUID getUuid() {
         return uuid;
     }
 
-    public Set<String> allKeys() {
-        return this.otherVals.keySet();
+    public AbstractConfig otherVals() {
+        return this.otherVals;
     }
 }

@@ -36,14 +36,10 @@ repositories {
 
 dependencies {
     implementation 'org.testng:testng:7.1.0'
-    
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
-    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
 
-    compileOnly("com.moandjiezana.toml:toml4j:$toml4jVersion")
-    shadowCommon("com.moandjiezana.toml:toml4j:$toml4jVersion") {
-        exclude(module: "gson")
-    }
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+
+    implementation 'com.electronwill.night-config:toml:3.6.5'
 }
 
 processResources {

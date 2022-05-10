@@ -19,7 +19,7 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "at.petrak.paucal.PaucalMod"
+            "at.petrak.paucal.FabricPaucalInit"
         ]
     },
     "mixins": [

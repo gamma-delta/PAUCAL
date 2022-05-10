@@ -1,4 +1,4 @@
-package at.petrak.paucal.mixin;
+package at.petrak.paucal.api.mixin;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;

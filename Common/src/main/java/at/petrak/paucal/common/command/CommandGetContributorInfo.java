@@ -1,6 +1,6 @@
 package at.petrak.paucal.common.command;
 
-import at.petrak.paucal.api.contrib.Contributors;
+import at.petrak.paucal.common.Contributors;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
@@ -40,7 +40,8 @@ public class CommandGetContributorInfo {
                 out.append("\n");
                 out.append(new TextComponent(key).withStyle(ChatFormatting.GOLD));
                 out.append(new TextComponent(": "));
-                out.append(new TextComponent(contrib.getRaw(key).toString()).withStyle(ChatFormatting.LIGHT_PURPLE));
+                out.append(new TextComponent(
+                    String.valueOf(contrib.<Object>get(key))).withStyle(ChatFormatting.LIGHT_PURPLE));
             }
         }
         ctx.getSource().sendSuccess(out, true);
