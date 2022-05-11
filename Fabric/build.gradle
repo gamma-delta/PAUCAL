@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 
-archivesBaseName = "${modName}-fabric-${minecraftVersion}"
+version = "${minecraftVersion}-${modVersion}-fabric"
 
 configurations {
     common

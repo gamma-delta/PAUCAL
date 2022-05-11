@@ -1,12 +1,62 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'com.diluv.schoomp', name: 'Schoomp', version: '1.1.0'
+    }
+}
+
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+import com.diluv.schoomp.Webhook
+import com.diluv.schoomp.message.Message
+
+def isRelease = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        def gitHash = System.getenv('GIT_COMMIT')
+        def gitPrevHash = System.getenv('GIT_PREVIOUS_COMMIT')
+        def travisRange = System.getenv('TRAVIS_COMMIT_RANGE')
+        if (gitHash && gitPrevHash) {
+            exec {
+                commandLine 'git', 'log', '--pretty=tformat:- %s', '' + gitPrevHash + '...' + gitHash
+                standardOutput = stdout
+            }
+            return stdout.toString().toLowerCase().contains("[release")
+        } else if (travisRange) {
+            exec {
+                commandLine 'git', 'log', '--pretty=tformat:- %s', '' + travisRange
+                standardOutput = stdout
+            }
+            return stdout.toString().toLowerCase().contains("[release")
+        } else {
+            return false
+        }
+    } catch (ignored) {
+        return false
+    }
 }
 
 // The closure is run against each project
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+
+    // Version is set in each gradle
+    group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+    archivesBaseName = "${modID}"
+
+    if (!isRelease() && System.getenv('BUILD_NUMBER') != null) {
+        version += "-prerelease-" + System.getenv('BUILD_NUMBER')
+    } else if (System.getenv('TAG_NAME') != null) {
+        version = System.getenv('TAG_NAME').substring(1)
+        println 'Version overridden to tag version ' + version
+    }
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
@@ -28,6 +78,7 @@ subprojects {
 
     dependencies {
         implementation 'com.electronwill.night-config:toml:3.6.5'
+        implementation 'org.jetbrains:annotations:16.0.2'
     }
 
 
@@ -65,6 +116,52 @@ subprojects {
             exclude(dependency {
                 it.moduleGroup != "com.electronwill.night-config"
             })
+        }
+    }
+}
+
+def getGitChangelog = { ->
+    try {
+        def stdout = new ByteArrayOutputStream()
+        def gitHash = System.getenv('GIT_COMMIT')
+        def gitPrevHash = System.getenv('GIT_PREVIOUS_COMMIT')
+        def travisRange = System.getenv('TRAVIS_COMMIT_RANGE')
+        if (gitHash && gitPrevHash) {
+            exec {
+                commandLine 'git', 'log', '--pretty=tformat:> - %s', '' + gitPrevHash + '...' + gitHash
+                standardOutput = stdout
+            }
+            return stdout.toString().trim()
+        } else if (travisRange) {
+            exec {
+                commandLine 'git', 'log', '--pretty=tformat:> - %s', '' + travisRange
+                standardOutput = stdout
+            }
+            return stdout.toString().trim()
+        } else {
+            return ""
+        }
+    } catch (ignored) {
+        return ""
+    }
+}
+
+task sendWebhook {
+    doLast {
+        try {
+            if (System.getenv('discordWebhook') == null || System.getenv("BUILD_URL") == null) {
+                println "Cannot send the webhook without the webhook url or the build url"
+                return
+            }
+            def webhook = new Webhook(System.getenv('discordWebhook'), 'Petrak@ Patreon Gradle')
+
+            def message = new Message()
+            message.setUsername("Patreon Early Access")
+            message.setContent("New **$modName** release! Download it here: ${System.getenv("BUILD_URL")}\nChangelog:\n${getGitChangelog()}")
+
+            webhook.sendMessage(message)
+        } catch (ignored) {
+            project.logger.error("Failed to push Discord webhook.")
         }
     }
 }

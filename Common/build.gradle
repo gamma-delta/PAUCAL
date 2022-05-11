@@ -9,7 +9,7 @@ configurations {
     shadowCommon
 }
 
-archivesBaseName = "${modID}-common-${minecraftVersion}"
+version = "${minecraftVersion}-${modVersion}-common"
 
 minecraft {
     version(minecraftVersion)
