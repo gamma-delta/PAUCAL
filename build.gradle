@@ -53,10 +53,10 @@ subprojects {
 
     if (!isRelease() && System.getenv('BUILD_NUMBER') != null) {
         version += "-prerelease-" + System.getenv('BUILD_NUMBER')
-    } else if (System.getenv('TAG_NAME') != null) {
+    } /* else if (System.getenv('TAG_NAME') != null) {
         version = System.getenv('TAG_NAME').substring(1)
         println 'Version overridden to tag version ' + version
-    }
+    } */
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()

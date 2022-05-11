@@ -1,6 +1,9 @@
 #!/usr/bin/env groovy
 
 pipeline {
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
     agent any
     tools {
         jdk "jdk-17.0.1"
@@ -32,7 +35,9 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts 'build/libs/**.jar'
+            archiveArtifacts 'Common/build/libs/**.jar'
+            archiveArtifacts 'Forge/build/libs/**.jar'
+            archiveArtifacts 'Fabric/build/libs/**.jar'
         }
     }
 }
