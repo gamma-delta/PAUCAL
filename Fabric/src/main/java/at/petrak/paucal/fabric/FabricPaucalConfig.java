@@ -14,7 +14,7 @@ import java.io.*;
 import java.nio.file.*;
 
 public class FabricPaucalConfig {
-    private static Common COMMON;
+    private static Common COMMON = new Common();
 
     private static void writeDefaultConfig(ConfigTree config, Path path, JanksonValueSerializer serializer) {
         try (OutputStream s = new BufferedOutputStream(

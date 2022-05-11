@@ -34,12 +34,16 @@ public class Contributors {
                 return;
             }
 
-            var thread = new Thread(Contributors::fetchAndPopulate);
-            thread.setName("PAUCAL Contributors Loading Thread");
-            thread.setDaemon(true);
-            thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalAPI.LOGGER));
-            thread.start();
+            forceLoadContributors();
         }
+    }
+
+    public static void forceLoadContributors() {
+        var thread = new Thread(Contributors::fetchAndPopulate);
+        thread.setName("PAUCAL Contributors Loading Thread");
+        thread.setDaemon(true);
+        thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalAPI.LOGGER));
+        thread.start();
     }
 
     private static void fetchAndPopulate() {

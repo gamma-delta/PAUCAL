@@ -65,7 +65,11 @@ minecraft {
             }
         }
 
+        data {}
+
         xplatDatagen {
+            parent minecraft.runs.data
+
             workingDirectory project.file('run')
             ideaModule "${rootProject.name}.${project.name}.main"
             args '--mod', modID, '--all', '--output', file('../Common/src/generated/resources/'), '--existing', file('../Common/src/main/resources/')
@@ -73,7 +77,7 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'paucal.xplat_datagen', 'true'
             mods {
-                modDataRun {
+                create(modID) {
                     source sourceSets.main
                     source project(":Common").sourceSets.main
                 }
@@ -81,13 +85,15 @@ minecraft {
         }
 
         forgeDatagen {
+            parent minecraft.runs.data
+
             workingDirectory project.file('run')
             ideaModule "${rootProject.name}.${project.name}.main"
             args '--mod', modID, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
-                modDataRun {
+                create(modID) {
                     source sourceSets.main
                     source project(":Common").sourceSets.main
                 }
@@ -95,8 +101,6 @@ minecraft {
         }
     }
 }
-
-sourceSets.main.resources.srcDir 'src/generated/resources'
 
 repositories {
     mavenCentral()
@@ -128,8 +132,21 @@ tasks.withType(JavaCompile) {
     source(project(":Common").sourceSets.main.allSource)
 }
 
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    srcDir '../Common/src/generated/resources'
+}
+
 processResources {
     from project(":Common").sourceSets.main.resources
+    inputs.property "version", project.version
+
+    filesMatching("mods.toml") {
+        expand "version": project.version
+    }
+
+    // Exclude datagenerator .cache directory
+    exclude '.cache'
 }
 
 jar.finalizedBy('reobfJar')

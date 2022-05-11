@@ -18,7 +18,6 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabricLoaderVersion}"
-    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
     implementation project(":Common")
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
@@ -47,15 +46,20 @@ loom {
             client()
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
-            runDir("run")
+            runDir("Fabric/run")
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir("run")
+            runDir("Fabric/run")
         }
     }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+    srcDir '../Common/src/generated/resources'
 }
 
 processResources {

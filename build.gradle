@@ -5,6 +5,9 @@ plugins {
 
 // The closure is run against each project
 subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
     java.withJavadocJar()
@@ -21,6 +24,10 @@ subprojects {
             name = 'BlameJared Maven (CrT / Bookshelf)'
             url = 'https://maven.blamejared.com'
         }
+    }
+
+    dependencies {
+        implementation 'com.electronwill.night-config:toml:3.6.5'
     }
 
 
