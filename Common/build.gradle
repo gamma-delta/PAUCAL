@@ -9,7 +9,7 @@ configurations {
     shadowCommon
 }
 
-version = "${minecraftVersion}-${modVersion}-common"
+version = "${modVersion}-common"
 
 minecraft {
     version(minecraftVersion)

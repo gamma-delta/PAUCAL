@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 
-version = "${minecraftVersion}-${modVersion}-fabric"
+version = "${modVersion}-fabric"
 
 configurations {
     common
