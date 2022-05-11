@@ -6,8 +6,8 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-public abstract class PaucalForgeItemModelProvider extends ItemModelProvider {
-    public PaucalForgeItemModelProvider(DataGenerator generator, String modid,
+public abstract class PaucalItemModelProvider extends ItemModelProvider {
+    public PaucalItemModelProvider(DataGenerator generator, String modid,
         ExistingFileHelper existingFileHelper) {
         super(generator, modid, existingFileHelper);
     }

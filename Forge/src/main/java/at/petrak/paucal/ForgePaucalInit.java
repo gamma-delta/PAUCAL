@@ -1,6 +1,7 @@
 package at.petrak.paucal;
 
 import at.petrak.paucal.api.PaucalAPI;
+import at.petrak.paucal.api.forge.datagen.lootmod.PaucalLootMods;
 import at.petrak.paucal.common.Contributors;
 import at.petrak.paucal.common.ModSounds;
 import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
@@ -41,7 +42,9 @@ public class ForgePaucalInit {
 
         bind(ForgeRegistries.SOUND_EVENTS, ModSounds::init);
 
+        var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         var evBus = MinecraftForge.EVENT_BUS;
+
         evBus.addListener((PlayerInteractEvent.EntityInteract evt) -> {
             var result = PatPat.onPat(evt.getPlayer(), evt.getWorld(), evt.getHand(), evt.getTarget(), null);
             if (result == InteractionResult.SUCCESS) {
@@ -55,7 +58,9 @@ public class ForgePaucalInit {
         evBus.addListener((PlayerEvent.PlayerLoggedInEvent evt) -> {
             NewWorldMessage.onLogin(evt.getPlayer());
         });
-        
+
+        PaucalLootMods.LOOT_MODS.register(modBus);
+
         Contributors.loadContributors();
     }
 

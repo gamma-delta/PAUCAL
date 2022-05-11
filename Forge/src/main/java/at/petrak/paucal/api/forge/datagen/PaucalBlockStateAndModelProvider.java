@@ -6,8 +6,8 @@ import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-public abstract class PaucalForgeBlockStateAndModelProvider extends BlockStateProvider {
-    public PaucalForgeBlockStateAndModelProvider(DataGenerator gen, String modid,
+public abstract class PaucalBlockStateAndModelProvider extends BlockStateProvider {
+    public PaucalBlockStateAndModelProvider(DataGenerator gen, String modid,
         ExistingFileHelper exFileHelper) {
         super(gen, modid, exFileHelper);
     }

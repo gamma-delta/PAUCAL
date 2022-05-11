@@ -1,4 +1,4 @@
-package at.petrak.paucal.api.forge.datagen;
+package at.petrak.paucal.api.forge.datagen.lootmod;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
