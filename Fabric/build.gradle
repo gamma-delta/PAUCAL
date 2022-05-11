@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 
-version = transformVersion("${modVersion}-fabric")
+version = getVersion("fabric")
 
 configurations {
     common

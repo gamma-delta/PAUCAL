@@ -18,7 +18,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 
-version = transformVersion("${modVersion}-forge")
+version = getVersion("forge")
 
 configurations {
     common

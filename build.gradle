@@ -42,13 +42,15 @@ def isRelease() {
     }
 }
 
-def transformVersion(String v) {
+String getVersion(String platform) {
+    def v = "${modVersion}"
     if (!isRelease() && System.getenv('BUILD_NUMBER') != null) {
         v += "-prerelease-" + System.getenv('BUILD_NUMBER')
     } else if (System.getenv('TAG_NAME') != null) {
         v = System.getenv('TAG_NAME').substring(1)
         println 'Version overridden to tag version ' + version
     }
+    v += "-" + platform
     return v
 }
 
