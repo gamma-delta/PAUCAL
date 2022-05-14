@@ -57,6 +57,10 @@ dependencies {
     implementation "me.zeroeightsix:fiber:$fiberVersion"
 }
 
+tasks.withType(JavaCompile) {
+    source(project(":Common").sourceSets.main.allSource)
+}
+
 compileJava {
     source(project(":Common").sourceSets.main.allSource)
 }
