@@ -14,6 +14,25 @@ configurations {
     developmentFabric.extendsFrom common
 }
 
+loom {
+    mixin.defaultRefmapName = "paucal.refmap.json"
+
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("Fabric/run")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("Fabric/run")
+        }
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings loom.officialMojangMappings()
@@ -38,23 +57,12 @@ dependencies {
     implementation "me.zeroeightsix:fiber:$fiberVersion"
 }
 
-loom {
-    mixin.defaultRefmapName = "paucal.refmap.json"
+compileJava {
+    source(project(":Common").sourceSets.main.allSource)
+}
 
-    runs {
-        client {
-            client()
-            setConfigName("Fabric Client")
-            ideConfigGenerated(true)
-            runDir("Fabric/run")
-        }
-        server {
-            server()
-            setConfigName("Fabric Server")
-            ideConfigGenerated(true)
-            runDir("Fabric/run")
-        }
-    }
+sourcesJar {
+    from project(":Common").sourceSets.main.allJava
 }
 
 sourceSets.main.resources {
@@ -70,11 +78,6 @@ processResources {
         expand "version": project.version
     }
 }
-
-tasks.withType(JavaCompile) {
-    source(project(":Common").sourceSets.main.allSource)
-}
-
 
 remapJar {
     archiveClassifier = "fabric"
