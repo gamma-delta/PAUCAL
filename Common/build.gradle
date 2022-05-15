@@ -9,7 +9,7 @@ configurations {
     shadowCommon
 }
 
-version = getVersion("common")
+archivesBaseName = getArtifactID("common")
 
 minecraft {
     version(minecraftVersion)

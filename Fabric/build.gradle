@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 
-version = getVersion("fabric")
+archivesBaseName = getArtifactID("fabric")
 
 configurations {
     common
