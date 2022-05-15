@@ -1,7 +1,5 @@
 plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
-    id 'maven-publish'
-    id 'idea'
 }
 
 archivesBaseName = getArtifactID("fabric")
@@ -37,31 +35,14 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${fabricLoaderVersion}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
     compileOnly project(":Common")
 
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
-    /*
-    // Make a collection of all api modules we wish to use
-    Set<String> apiModules = [
-            "fabric-api-base",
-            "fabric-data-generation-api-v1"
-    ]
-    // Add each module as a dependency
-    apiModules.forEach {
-        include(modImplementation(fabricApi.module(it, fabricVersion)))
-    }
-     */
-
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
-    implementation "me.zeroeightsix:fiber:$fiberVersion"
+    modImplementation "me.zeroeightsix:fiber:$fiberVersion"
+    include "me.zeroeightsix:fiber:$fiberVersion"
 }
 
 tasks.withType(JavaCompile) {
-    source(project(":Common").sourceSets.main.allSource)
-}
-
-compileJava {
     source(project(":Common").sourceSets.main.allSource)
 }
 
@@ -89,7 +70,7 @@ publishing {
             groupId project.group
             artifactId project.archivesBaseName
             version project.version
-            artifact jar
+            from components.java
         }
     }
 
