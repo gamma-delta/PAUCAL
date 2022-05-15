@@ -54,9 +54,9 @@ subprojects {
     group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     version = "${modVersion}"
     if (!isRelease() && System.getenv('BUILD_NUMBER') != null) {
-        v += "-prerelease-" + System.getenv('BUILD_NUMBER')
+        version += "-prerelease-" + System.getenv('BUILD_NUMBER')
     } else if (System.getenv('TAG_NAME') != null) {
-        v = System.getenv('TAG_NAME').substring(1)
+        version = System.getenv('TAG_NAME').substring(1)
         println 'Version overridden to tag version ' + version
     }
     // archivesBaseName set in each gradle
