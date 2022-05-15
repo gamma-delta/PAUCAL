@@ -83,19 +83,13 @@ processResources {
     }
 }
 
-remapJar {
-    archiveClassifier = "fabric"
-
-    from rootProject.file("LICENSE.txt")
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
             artifactId project.archivesBaseName
             version project.version
-            from components.java
+            artifact jar
         }
     }
 
