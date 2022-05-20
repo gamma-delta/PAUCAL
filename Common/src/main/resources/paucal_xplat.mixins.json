@@ -6,5 +6,5 @@
     "mixins": [
         "AccessorCriteriaTriggers"
     ],
-    "refmap": "paucal_xplat.refmap.json"
+    "refmap": "paucal.mixins.refmap.json"
 }

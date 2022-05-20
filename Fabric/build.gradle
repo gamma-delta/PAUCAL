@@ -13,7 +13,7 @@ configurations {
 }
 
 loom {
-    mixin.defaultRefmapName = "paucal.refmap.json"
+    mixin.defaultRefmapName = "paucal.mixins.refmap.json"
 
     runs {
         client {

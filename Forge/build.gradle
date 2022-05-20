@@ -110,7 +110,7 @@ dependencies {
 }
 
 mixin {
-    add sourceSets.main, "paucal.refmap.json"
+    add sourceSets.main, "paucal.mixins.refmap.json"
     config "paucal_xplat.mixins.json"
 }
 
