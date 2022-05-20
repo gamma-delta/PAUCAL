@@ -1,8 +1,56 @@
 {
-    "splat": {
-        "subtitle": "paucal.subtitles.splat",
+    "pet.device": {
+        "subtitle": "paucal.subtitles.pet.device",
+        "sounds": [
+            {
+                "name": "minecraft:note/bit",
+                "pitch": 1.5
+            }
+        ]
+    },
+    "pet.splat": {
+        "subtitle": "paucal.subtitles.pet.splat",
         "sounds": [
             "paucal:splat"
+        ]
+    },
+    "pet.neko": {
+        "subtitle": "paucal.subtitles.pet.neko",
+        "sounds": [
+            {
+                "name": "minecraft:mob/cat/purr1",
+                "pitch": 1.4,
+                "volume": 0.7
+            },
+            {
+                "name": "minecraft:mob/cat/purr2",
+                "pitch": 1.4,
+                "volume": 0.7
+            },
+            {
+                "name": "minecraft:mob/cat/purr3",
+                "pitch": 1.4,
+                "volume": 0.7
+            }
+        ]
+    },
+    "pet.slime": {
+        "subtitle": "paucal.subtitles.pet.slime",
+        "sounds": [
+            "mob/slime/small1",
+            "mob/slime/small2",
+            "mob/slime/small3",
+            "mob/slime/small4",
+            "mob/slime/small5"
+        ]
+    },
+    "pet.wire": {
+        "subtitle": "paucal.subtitles.pet.wire",
+        "sounds": [
+            {
+                "name": "minecraft:mob/villager/idle2",
+                "pitch": 1.5
+            }
         ]
     }
 }
