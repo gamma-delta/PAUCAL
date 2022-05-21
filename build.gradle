@@ -66,6 +66,11 @@ subprojects {
     java.withSourcesJar()
     java.withJavadocJar()
 
+    configurations {
+        shade
+        implementation.extendsFrom shade
+    }
+
     repositories {
         mavenCentral()
 
@@ -81,8 +86,8 @@ subprojects {
     }
 
     dependencies {
-        implementation 'com.electronwill.night-config:toml:3.6.5'
         implementation 'org.jetbrains:annotations:16.0.2'
+        shade 'com.electronwill.night-config:toml:3.6.5'
     }
 
 
@@ -98,7 +103,9 @@ subprojects {
         enabled = false
     }
 
+    // https://gist.github.com/SizableShrimp/949e7c219bfc94487a45226b64ac7749
     jar {
+        archiveClassifier = 'slim'
         manifest {
             attributes([
                     'Specification-Title'     : modID,
@@ -116,22 +123,21 @@ subprojects {
     }
 
     shadowJar {
-        dependencies {
-            exclude(dependency {
-                // println(it.moduleGroup)
-                it.moduleGroup != "com.electronwill.night-config"
-            })
-        }
+        archiveClassifier = ''
+        configurations = [project.configurations.shade]
+        relocate 'com.electronwill.night-config', "${project.group}.relocated.night-config"
+        finalizedBy 'reobfShadowJar'
     }
+
+    assemble.dependsOn shadowJar
 
     publishing {
         publications {
-            shadow(MavenPublication) { publication ->
-                project.shadow.component(publication)
+            mavenJava(MavenPublication) {
                 groupId project.group
                 artifactId project.archivesBaseName
                 version project.version
-                from components.java
+                artifact jar
             }
         }
 

@@ -48,6 +48,7 @@ public class Contributors {
 
     private static void fetchAndPopulate() {
         CONTRIBUTORS = fetch();
+        PaucalAPI.LOGGER.info("Successfully loaded {} contributors", CONTRIBUTORS.size());
     }
 
     public static Map<UUID, Contributor> fetch() {
