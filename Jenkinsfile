@@ -22,7 +22,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building'
-                sh './gradlew build'
+                sh './gradlew :Forge:build :Fabric:build'
             }
         }
         stage('Publish') {
