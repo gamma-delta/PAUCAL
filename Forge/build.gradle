@@ -139,7 +139,7 @@ processResources {
 }
 
 jar.finalizedBy('reobfJar')
-
+shadowJar.finalizedBy('reobfShadowJar')
 
 reobf {
     shadowJar {}

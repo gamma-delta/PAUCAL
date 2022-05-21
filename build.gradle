@@ -126,7 +126,6 @@ subprojects {
         archiveClassifier = ''
         configurations = [project.configurations.shade]
         relocate 'com.electronwill.night-config', "${project.group}.relocated.night-config"
-        finalizedBy 'reobfShadowJar'
     }
 
     assemble.dependsOn shadowJar
