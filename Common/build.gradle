@@ -19,6 +19,7 @@ dependencies {
     implementation 'org.testng:testng:7.1.0'
 
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    implementation 'com.electronwill.night-config:toml:3.6.5'
 }
 
 processResources {

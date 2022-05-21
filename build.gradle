@@ -50,7 +50,6 @@ String getArtifactID(String platform) {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
-    apply plugin: 'com.github.johnrengelman.shadow'
 
     group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     version = "${modVersion}"
@@ -65,11 +64,6 @@ subprojects {
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
     java.withJavadocJar()
-
-    configurations {
-        shade
-        implementation.extendsFrom shade
-    }
 
     repositories {
         mavenCentral()
@@ -87,7 +81,6 @@ subprojects {
 
     dependencies {
         implementation 'org.jetbrains:annotations:16.0.2'
-        shade 'com.electronwill.night-config:toml:3.6.5'
     }
 
 
@@ -105,7 +98,6 @@ subprojects {
 
     // https://gist.github.com/SizableShrimp/949e7c219bfc94487a45226b64ac7749
     jar {
-        archiveClassifier = 'slim'
         manifest {
             attributes([
                     'Specification-Title'     : modID,
@@ -121,14 +113,6 @@ subprojects {
             ])
         }
     }
-
-    shadowJar {
-        archiveClassifier = ''
-        configurations = [project.configurations.shade]
-        relocate 'com.electronwill.night-config', "${project.group}.relocated.night-config"
-    }
-
-    assemble.dependsOn shadowJar
 
     publishing {
         publications {

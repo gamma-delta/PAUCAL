@@ -40,6 +40,9 @@ dependencies {
 
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
+
+    implementation 'com.electronwill.night-config:toml:3.6.5'
+    include 'com.electronwill.night-config:toml:3.6.5'
 }
 
 tasks.withType(JavaCompile) {
