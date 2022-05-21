@@ -50,6 +50,7 @@ String getArtifactID(String platform) {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
     group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     version = "${modVersion}"
@@ -117,7 +118,7 @@ subprojects {
     shadowJar {
         dependencies {
             exclude(dependency {
-                println(it.moduleGroup)
+                // println(it.moduleGroup)
                 it.moduleGroup != "com.electronwill.night-config"
             })
         }
