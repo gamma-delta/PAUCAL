@@ -117,8 +117,27 @@ subprojects {
     shadowJar {
         dependencies {
             exclude(dependency {
+                println(it.moduleGroup)
                 it.moduleGroup != "com.electronwill.night-config"
             })
+        }
+    }
+
+    publishing {
+        publications {
+            shadow(MavenPublication) { publication ->
+                project.shadow.component(publication)
+                groupId project.group
+                artifactId project.archivesBaseName
+                version project.version
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                url "file://" + System.getenv("local_maven")
+            }
         }
     }
 }
