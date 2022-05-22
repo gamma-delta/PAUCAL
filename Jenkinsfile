@@ -22,7 +22,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building'
-                sh './gradlew :Forge:build :Fabric:build'
+                sh './gradlew build'
             }
         }
         stage('Publish') {
@@ -35,6 +35,7 @@ pipeline {
     }
     post {
         always {
+            archiveArtifacts 'Common/build/libs/**.jar'
             archiveArtifacts 'Forge/build/libs/**.jar'
             archiveArtifacts 'Fabric/build/libs/**.jar'
         }
