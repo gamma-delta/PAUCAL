@@ -151,7 +151,7 @@ shadowJar.finalizedBy('reobfShadowJar')
 shadowJar {
     archiveClassifier = ''
     configurations = [project.configurations.shade]
-    relocate 'com.electronwill.night-config', "${project.group}.relocated.night-config"
+    relocate 'com.electronwill.nightconfig', "${project.group}.relocated.nightconfig"
 }
 
 assemble.dependsOn shadowJar
