@@ -46,8 +46,6 @@ String getArtifactID(String platform) {
     return "${modID}-${platform}-${minecraftVersion}"
 }
 
-
-// https://gist.github.com/SizableShrimp/949e7c219bfc94487a45226b64ac7749
 void setupJar(Object project) {
     project.jar {
         manifest {
@@ -73,6 +71,12 @@ void setupJar(Object project) {
                 artifactId project.archivesBaseName
                 version project.version
                 from project.components.java
+
+                pom.withXml {
+                    asNode().dependencies.dependency.each { dep ->
+                        assert dep.parent().remove(dep)
+                    }
+                }
             }
         }
 

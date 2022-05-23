@@ -143,6 +143,7 @@ processResources {
     exclude '.cache'
 }
 
+setupJar(this)
 jar.finalizedBy('reobfJar')
 jar.archiveClassifier = 'slim'
 shadowJar.finalizedBy('reobfShadowJar')
@@ -158,6 +159,4 @@ assemble.dependsOn shadowJar
 reobf {
     shadowJar {}
 }
-
-setupJar(this)
 
