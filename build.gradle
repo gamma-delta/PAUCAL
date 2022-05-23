@@ -72,7 +72,7 @@ void setupJar(Object project) {
                 groupId project.group
                 artifactId project.archivesBaseName
                 version project.version
-                from components.java
+                from project.components.java
             }
         }
 
