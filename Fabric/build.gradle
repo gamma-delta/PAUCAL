@@ -2,11 +2,14 @@ plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
+
 archivesBaseName = getArtifactID("fabric")
 
 configurations {
     common
-    shadowCommon
+    shade
+    implementation.extendsFrom shade
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
@@ -67,3 +70,12 @@ processResources {
 }
 
 setupJar(this)
+jar.archiveClassifier = 'slim'
+
+shadowJar {
+    archiveClassifier = ''
+    configurations = [project.configurations.shade]
+    relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
+}
+
+assemble.dependsOn shadowJar
