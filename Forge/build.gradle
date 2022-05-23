@@ -158,3 +158,6 @@ assemble.dependsOn shadowJar
 reobf {
     shadowJar {}
 }
+
+setupJar(this)
+

@@ -46,6 +46,44 @@ String getArtifactID(String platform) {
     return "${modID}-${platform}-${minecraftVersion}"
 }
 
+
+// https://gist.github.com/SizableShrimp/949e7c219bfc94487a45226b64ac7749
+void setupJar(Object project) {
+    project.jar {
+        manifest {
+            attributes([
+                    'Specification-Title'     : modID,
+                    'Specification-Vendor'    : "petra-kat",
+                    'Specification-Version'   : project.jar.archiveVersion,
+                    'Implementation-Title'    : project.name,
+                    'Implementation-Version'  : project.jar.archiveVersion,
+                    'Implementation-Vendor'   : "petra-kat",
+                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    'Timestampe'              : System.currentTimeMillis(),
+                    'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+                    'Build-On-Minecraft'      : minecraftVersion
+            ])
+        }
+    }
+
+    project.publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId project.group
+                artifactId project.archivesBaseName
+                version project.version
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                url "file://" + System.getenv("local_maven")
+            }
+        }
+    }
+}
+
 // The closure is run against each project
 subprojects {
     apply plugin: 'java'
@@ -94,41 +132,6 @@ subprojects {
     // other mod developers.
     tasks.withType(GenerateModuleMetadata) {
         enabled = false
-    }
-
-    // https://gist.github.com/SizableShrimp/949e7c219bfc94487a45226b64ac7749
-    jar {
-        manifest {
-            attributes([
-                    'Specification-Title'     : modID,
-                    'Specification-Vendor'    : "petra-kat",
-                    'Specification-Version'   : project.jar.archiveVersion,
-                    'Implementation-Title'    : project.name,
-                    'Implementation-Version'  : project.jar.archiveVersion,
-                    'Implementation-Vendor'   : "petra-kat",
-                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    'Timestampe'              : System.currentTimeMillis(),
-                    'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-                    'Build-On-Minecraft'      : minecraftVersion
-            ])
-        }
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                groupId project.group
-                artifactId project.archivesBaseName
-                version project.version
-                from components.java
-            }
-        }
-
-        repositories {
-            maven {
-                url "file://" + System.getenv("local_maven")
-            }
-        }
     }
 }
 
