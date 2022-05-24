@@ -10,29 +10,11 @@ Also adds a little bit of content: shift-rightclicking a player with an empty ha
 
 ## API
 
-This mod is hosted on Cursemaven, cause I can't be bothered to figure out how to properly set up Maven :)
-
-[As per the instructions:](https://www.cursemaven.com/)
-
-```groovy
-repositories {
-    // ... other repos ...
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-}
-
-dependencies {
-    // ... other dependencies ...
-    compileOnly fg.deobf("curse.maven:paucal-597824:<MOST RECENT FILE ID>")
-    runtimeOnly fg.deobf("curse.maven:paucal-597824:<MOST RECENT FILE ID>")
-}
-```
+This mod is hosted at [BlameJared Maven](https://maven.blamejared.com/at/petra-k/paucal/). The most recent versions go
+in the `paucal-{platform}-{minecraft version}` folders. (Sorry about all the messy folders everywhere; I am not the best
+at Maven.)
 
 ---
 
-This project uses [toml4j](https://github.com/mwanji/toml4j), included with the PAUCAL jar
+This project uses [NightConfig](https://github.com/TheElectronWill/Night-Config), included with the PAUCAL jar
 using [black, shadow magic](https://github.com/johnrengelman/shadow).
