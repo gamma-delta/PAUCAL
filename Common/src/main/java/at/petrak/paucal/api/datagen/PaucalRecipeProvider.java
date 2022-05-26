@@ -1,6 +1,15 @@
-package at.petrak.paucal.api.forge.datagen;
+package at.petrak.paucal.api.datagen;
 
+import at.petrak.paucal.api.mixin.AccessorRecipeProvider;
+import at.petrak.paucal.xplat.IXplatAbstractions;
+import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -12,15 +21,50 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
+import java.util.Set;
 import java.util.function.Consumer;
 
-public abstract class PaucalRecipeProvider extends RecipeProvider {
+abstract public class PaucalRecipeProvider extends RecipeProvider {
+    public final DataGenerator generator;
     protected final String modid;
 
-    public PaucalRecipeProvider(DataGenerator pGenerator, String modid) {
-        super(pGenerator);
+
+    public PaucalRecipeProvider(DataGenerator gen, String modid) {
+        super(gen);
+        this.generator = gen;
         this.modid = modid;
     }
+
+    /**
+     * [VanillaCopy] RecipeProvider, but changed to use our custom protected method and not the
+     * stupid private static one.
+     */
+    @Override
+    public void run(HashCache cache) {
+        Path path = this.generator.getOutputFolder();
+        Set<ResourceLocation> set = Sets.newHashSet();
+        makeRecipes((recipeJsonProvider) -> {
+            if (!set.add(recipeJsonProvider.getId())) {
+                throw new IllegalStateException("Duplicate recipe " + recipeJsonProvider.getId());
+            } else {
+                AccessorRecipeProvider.paucal$SaveRecipe(cache, recipeJsonProvider.serializeRecipe(), path.resolve(
+                    "data/" + recipeJsonProvider.getId().getNamespace() + "/recipes/" + recipeJsonProvider.getId()
+                        .getPath() + ".json"));
+                JsonObject jsonObject = recipeJsonProvider.serializeAdvancement();
+                if (jsonObject != null) {
+                    IXplatAbstractions.INSTANCE.saveRecipeAdvancement(this.generator, cache, jsonObject, path.resolve(
+                        "data/"
+                            + recipeJsonProvider.getId().getNamespace()
+                            + "/advancements/" +
+                            recipeJsonProvider.getAdvancementId().getPath()
+                            + ".json"));
+                }
+            }
+        });
+    }
+
+    protected abstract void makeRecipes(Consumer<FinishedRecipe> recipes);
 
     protected ShapedRecipeBuilder ring(ItemLike out, int count, Ingredient outer, @Nullable Ingredient inner) {
         return ringCornered(out, count, outer, outer, inner);
@@ -145,11 +189,11 @@ public abstract class PaucalRecipeProvider extends RecipeProvider {
         } else {
             pack.pattern("XX").pattern("XX");
         }
-        pack.unlockedBy("has_item", has(free)).save(recipes, modLoc(freeName + "_packing"));
+        pack.unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_packing"));
 
         ShapelessRecipeBuilder.shapeless(free, largeSize ? 9 : 4)
             .requires(compressed)
-            .unlockedBy("has_item", has(free)).save(recipes, modLoc(freeName + "_unpacking"));
+            .unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_unpacking"));
     }
 
     protected ResourceLocation modLoc(String path) {
@@ -164,5 +208,26 @@ public abstract class PaucalRecipeProvider extends RecipeProvider {
     @Nullable
     protected Ingredient ingredientOf(@Nullable TagKey<Item> item) {
         return item == null ? null : Ingredient.of(item);
+    }
+
+
+    protected static InventoryChangeTrigger.TriggerInstance hasItem(MinMaxBounds.Ints p_176521_, ItemLike p_176522_) {
+        return paucalInventoryTrigger(ItemPredicate.Builder.item().of(p_176522_).withCount(p_176521_).build());
+    }
+
+    protected static InventoryChangeTrigger.TriggerInstance hasItem(ItemLike p_125978_) {
+        return paucalInventoryTrigger(ItemPredicate.Builder.item().of(p_125978_).build());
+    }
+
+    protected static InventoryChangeTrigger.TriggerInstance hasItem(TagKey<Item> p_206407_) {
+        return paucalInventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
+    }
+
+    /**
+     * Prefixed with {@code paucal} to avoid collisions when Forge ATs {@link RecipeProvider#inventoryTrigger}.
+     */
+    protected static InventoryChangeTrigger.TriggerInstance paucalInventoryTrigger(ItemPredicate... $$0) {
+        return new InventoryChangeTrigger.TriggerInstance(EntityPredicate.Composite.ANY, MinMaxBounds.Ints.ANY,
+            MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, $$0);
     }
 }

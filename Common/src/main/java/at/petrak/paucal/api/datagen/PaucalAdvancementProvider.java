@@ -1,4 +1,4 @@
-package at.petrak.paucal.api.forge.datagen;
+package at.petrak.paucal.api.datagen;
 
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
@@ -8,14 +8,15 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class PaucalAdvancementProvider extends AdvancementProvider {
     protected final String modid;
+    public final DataGenerator generator;
 
-    public PaucalAdvancementProvider(DataGenerator generatorIn, ExistingFileHelper efh, String modid) {
-        super(generatorIn, efh);
+    public PaucalAdvancementProvider(DataGenerator generatorIn, String modid) {
+        super(generatorIn);
+        this.generator = generatorIn;
         this.modid = modid;
     }
 

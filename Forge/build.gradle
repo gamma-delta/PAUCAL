@@ -116,6 +116,7 @@ dependencies {
 mixin {
     add sourceSets.main, "paucal.mixins.refmap.json"
     config "paucal_xplat.mixins.json"
+    config "paucal_forge.mixins.json"
 }
 
 sourcesJar {
@@ -159,4 +160,3 @@ assemble.dependsOn shadowJar
 reobf {
     shadowJar {}
 }
-

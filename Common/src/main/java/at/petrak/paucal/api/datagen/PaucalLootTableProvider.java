@@ -1,5 +1,6 @@
-package at.petrak.paucal.api.forge.datagen;
+package at.petrak.paucal.api.datagen;
 
+import at.petrak.paucal.api.PaucalAPI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.data.DataGenerator;
@@ -35,19 +36,15 @@ public abstract class PaucalLootTableProvider extends LootTableProvider {
         this.generator = pGenerator;
     }
 
-    protected abstract void makeLootTables(Map<Block, LootTable.Builder> lootTables);
+    protected abstract void makeLootTables(Map<Block, LootTable.Builder> blockTables,
+        Map<ResourceLocation, LootTable.Builder> lootTables);
 
     protected LootPool.Builder dropThisPool(ItemLike item, int count) {
         return dropThisPool(item, ConstantValue.exactly(count));
     }
 
     protected LootPool.Builder dropThisPool(ItemLike item, NumberProvider count) {
-        return dropThisPool(item, count, item.asItem().getRegistryName().getPath());
-    }
-
-    protected LootPool.Builder dropThisPool(ItemLike item, NumberProvider count, String name) {
         return LootPool.lootPool()
-            .name(name)
             .setRolls(count)
             .add(LootItem.lootTableItem(item));
     }
@@ -84,19 +81,24 @@ public abstract class PaucalLootTableProvider extends LootTableProvider {
 
     @Override
     public void run(HashCache cache) {
-        var lootTables = new HashMap<Block, LootTable.Builder>();
-        this.makeLootTables(lootTables);
+        var blockTables = new HashMap<Block, LootTable.Builder>();
+        var lootTables = new HashMap<ResourceLocation, LootTable.Builder>();
+        this.makeLootTables(blockTables, lootTables);
 
-        var tables = new HashMap<ResourceLocation, LootTable>();
-        for (var entry : lootTables.entrySet()) {
-            tables.put(entry.getKey().getLootTable(), entry.getValue().setParamSet(LootContextParamSets.BLOCK).build());
+        for (var entry : blockTables.entrySet()) {
+            var old = lootTables.put(entry.getKey().getLootTable(),
+                entry.getValue().setParamSet(LootContextParamSets.BLOCK));
+            if (old != null) {
+                PaucalAPI.LOGGER.warn("Whoopsy, {} clobbered a loot table '{}': {}",
+                    this.getClass().getSimpleName(), entry.getKey(), old);
+            }
         }
 
         var outputFolder = this.generator.getOutputFolder();
-        tables.forEach((key, lootTable) -> {
+        lootTables.forEach((key, lootTable) -> {
             Path path = outputFolder.resolve("data/" + key.getNamespace() + "/loot_tables/" + key.getPath() + ".json");
             try {
-                DataProvider.save(GSON, cache, LootTables.serialize(lootTable), path);
+                DataProvider.save(GSON, cache, LootTables.serialize(lootTable.build()), path);
             } catch (IOException e) {
                 e.printStackTrace();
             }

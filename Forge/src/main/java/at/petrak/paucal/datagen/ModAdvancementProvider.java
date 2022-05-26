@@ -1,7 +1,7 @@
 package at.petrak.paucal.datagen;
 
 import at.petrak.paucal.api.PaucalAPI;
-import at.petrak.paucal.api.forge.datagen.PaucalAdvancementProvider;
+import at.petrak.paucal.api.datagen.PaucalAdvancementProvider;
 import at.petrak.paucal.common.advancement.BeContributorTrigger;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;

@@ -88,6 +88,18 @@ void setupJar(Object project) {
     }
 }
 
+void setupModPublishing(Project project) {
+    if (isRelease()) {
+        project.publishing {
+            publications {
+                // create<>("curseForge") {
+//
+                // }
+            }
+        }
+    }
+}
+
 // The closure is run against each project
 subprojects {
     apply plugin: 'java'
