@@ -13,12 +13,12 @@ public final class PaucalForgeDatagenWrappers {
     private PaucalForgeDatagenWrappers() {
     }
 
-    public static AdvancementProvider addEFHToAdvancements(AdvancementProvider advs, ExistingFileHelper efh) {
+    public static <P extends AdvancementProvider> P addEFHToAdvancements(P advs, ExistingFileHelper efh) {
         ((ForgeAccessorAdvancementProvider) advs).paucal$setFileHelper(efh);
         return advs;
     }
 
-    public static <T> TagsProvider<T> addEFHToTagProvider(TagsProvider<T> tags, ExistingFileHelper efh) {
+    public static <T, P extends TagsProvider<T>> P addEFHToTagProvider(P tags, ExistingFileHelper efh) {
         ((ForgeAccessorTagsProvider) tags).paucal$setExistingFileHelper(efh);
         return tags;
     }
