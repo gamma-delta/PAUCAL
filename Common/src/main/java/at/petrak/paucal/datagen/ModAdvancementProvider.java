@@ -8,17 +8,16 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.Consumer;
 
 public class ModAdvancementProvider extends PaucalAdvancementProvider {
-    public ModAdvancementProvider(DataGenerator generatorIn, ExistingFileHelper fileHelperIn) {
-        super(generatorIn, fileHelperIn, PaucalAPI.MOD_ID);
+    public ModAdvancementProvider(DataGenerator generatorIn) {
+        super(generatorIn, PaucalAPI.MOD_ID);
     }
 
     @Override
-    protected void registerAdvancements(Consumer<Advancement> consumer, ExistingFileHelper fileHelper) {
+    protected void makeAdvancements(Consumer<Advancement> consumer) {
         Advancement.Builder.advancement()
             .addCriterion("on_login", new BeContributorTrigger.Instance(EntityPredicate.Composite.ANY,
                 MinMaxBounds.Ints.atLeast(1), null, null))
