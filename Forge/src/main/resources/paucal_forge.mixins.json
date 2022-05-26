@@ -6,6 +6,7 @@
     "package": "at.petrak.paucal.forge.mixin",
     "mixins": [
         "ForgeAccessorAdvancementProvider",
-        "ForgeAccessorRecipeProvider"
+        "ForgeAccessorRecipeProvider",
+        "ForgeAccessorTagsProvider"
     ]
 }
