@@ -79,3 +79,4 @@ shadowJar {
 }
 
 assemble.dependsOn shadowJar
+remapJar.dependsOn shadowJar
