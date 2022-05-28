@@ -2,10 +2,14 @@ plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
+
 archivesBaseName = getArtifactID("fabric")
 
 configurations {
     common
+    shade
+    implementation.extendsFrom shade
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
@@ -40,7 +44,7 @@ dependencies {
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
 
-    implementation(include('com.electronwill.night-config:toml:3.6.5'))
+    implementation(shade('com.electronwill.night-config:toml:3.6.5'))
 
     testCompileOnly 'com.electronwill.night-config:toml:3.6.5'
 }
@@ -68,7 +72,6 @@ processResources {
 }
 
 setupJar(this)
-/*
 jar.archiveClassifier = 'slim'
 
 shadowJar {
@@ -80,4 +83,3 @@ shadowJar {
 
 assemble.dependsOn shadowJar
 remapJar.dependsOn shadowJar
- */
