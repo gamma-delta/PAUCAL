@@ -44,7 +44,10 @@ dependencies {
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
 
-    shade 'com.electronwill.night-config:toml:3.6.5'
+    compileOnly 'com.electronwill.night-config:toml:3.6.5'
+    include 'com.electronwill.night-config:toml:3.6.5'
+
+    testCompileOnly 'com.electronwill.night-config:toml:3.6.5'
 }
 
 tasks.withType(JavaCompile) {
@@ -70,13 +73,16 @@ processResources {
 }
 
 setupJar(this)
+/*
 jar.archiveClassifier = 'slim'
 
 shadowJar {
     archiveClassifier = ''
     configurations = [project.configurations.shade]
     relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
+    finalizedBy assemble
 }
 
 assemble.dependsOn shadowJar
 remapJar.dependsOn shadowJar
+ */

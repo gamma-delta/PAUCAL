@@ -147,12 +147,12 @@ processResources {
 setupJar(this)
 jar.finalizedBy('reobfJar')
 jar.archiveClassifier = 'slim'
-shadowJar.finalizedBy('reobfShadowJar')
 
 shadowJar {
     archiveClassifier = ''
     configurations = [project.configurations.shade]
     relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
+    finalizedBy 'reobfShadowJar'
 }
 
 assemble.dependsOn shadowJar
