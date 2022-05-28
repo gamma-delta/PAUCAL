@@ -1,18 +1,13 @@
 plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
 }
-
 apply plugin: 'com.github.johnrengelman.shadow'
 
 archivesBaseName = getArtifactID("fabric")
 
+// https://github.com/shedaniel/cloth-config/blob/v6/common/build.gradle
 configurations {
-    common
-    shade
-    implementation.extendsFrom shade
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+    shadowCommon
 }
 
 loom {
@@ -44,7 +39,7 @@ dependencies {
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
 
-    implementation(shade('com.electronwill.night-config:toml:3.6.5'))
+    compileOnly(shadowCommon('com.electronwill.night-config:toml:3.6.5'))
 
     testCompileOnly 'com.electronwill.night-config:toml:3.6.5'
 }
@@ -75,11 +70,16 @@ setupJar(this)
 jar.archiveClassifier = 'slim'
 
 shadowJar {
-    archiveClassifier = ''
-    configurations = [project.configurations.shade]
     relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
-    finalizedBy assemble
+
+    archiveClassifier = 'shadow'
+    configurations = [project.configurations.shadowCommon]
 }
 
-assemble.dependsOn shadowJar
-remapJar.dependsOn shadowJar
+remapJar {
+    dependsOn(shadowJar)
+    inputFile.set(shadowJar.archiveFile)
+    archiveClassifier = ''
+
+    from rootProject.file("LICENSE.md")
+}
