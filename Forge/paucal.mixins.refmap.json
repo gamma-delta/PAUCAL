@@ -1,0 +1,32 @@
+{
+  "mappings": {
+    "at/petrak/paucal/forge/mixin/ForgeAccessorRecipeProvider": {
+      "saveAdvancement": "m_126013_(Lnet/minecraft/data/HashCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V"
+    },
+    "at/petrak/paucal/api/mixin/AccessorCriteriaTriggers": {
+      "register": "m_10595_(Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;"
+    },
+    "at/petrak/paucal/api/mixin/AccessorTagsProvider": {
+      "getOrCreateRawBuilder": "m_206426_(Lnet/minecraft/tags/TagKey;)Lnet/minecraft/tags/Tag$Builder;"
+    },
+    "at/petrak/paucal/api/mixin/AccessorRecipeProvider": {
+      "saveRecipe": "m_125983_(Lnet/minecraft/data/HashCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V"
+    }
+  },
+  "data": {
+    "searge": {
+      "at/petrak/paucal/forge/mixin/ForgeAccessorRecipeProvider": {
+        "saveAdvancement": "m_126013_(Lnet/minecraft/data/HashCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V"
+      },
+      "at/petrak/paucal/api/mixin/AccessorCriteriaTriggers": {
+        "register": "m_10595_(Lnet/minecraft/advancements/CriterionTrigger;)Lnet/minecraft/advancements/CriterionTrigger;"
+      },
+      "at/petrak/paucal/api/mixin/AccessorTagsProvider": {
+        "getOrCreateRawBuilder": "m_206426_(Lnet/minecraft/tags/TagKey;)Lnet/minecraft/tags/Tag$Builder;"
+      },
+      "at/petrak/paucal/api/mixin/AccessorRecipeProvider": {
+        "saveRecipe": "m_125983_(Lnet/minecraft/data/HashCache;Lcom/google/gson/JsonObject;Ljava/nio/file/Path;)V"
+      }
+    }
+  }
+}
