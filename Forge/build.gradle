@@ -21,12 +21,8 @@ apply plugin: 'org.spongepowered.mixin'
 archivesBaseName = getArtifactID("forge")
 
 configurations {
-    common
     shade
     implementation.extendsFrom shade
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
 }
 
 minecraft {
@@ -145,7 +141,6 @@ processResources {
 }
 
 setupJar(this)
-jar.finalizedBy('reobfJar')
 jar.archiveClassifier = 'slim'
 
 shadowJar {
