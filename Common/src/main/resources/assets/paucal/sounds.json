@@ -52,5 +52,14 @@
                 "pitch": 1.5
             }
         ]
+    },
+    "pet.tick": {
+        "subtitle": "paucal.subtitles.pet.tick",
+        "sounds": [
+            {
+                "name": "minecraft:random/click",
+                "pitch": 1.5
+            }
+        ]
     }
 }

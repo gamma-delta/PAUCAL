@@ -9,6 +9,7 @@ public class ModCommands {
         var builder = Commands.literal("paucal");
         CommandGetContributorInfo.add(builder);
         CommandReloadContributors.add(builder);
+        CommandPatSelf.add(builder);
 
         dp.register(builder);
     }

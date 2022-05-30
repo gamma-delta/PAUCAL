@@ -43,10 +43,13 @@ public class PatPat {
                     var sound = IXplatAbstractions.INSTANCE.getSoundByID(soundKey);
                     if (sound != null) {
                         var pitchCenter = Objects.requireNonNullElse(contributor.getFloat("paucal:patPitchCenter"), 1f);
+                        var pitchVariance = Objects.requireNonNullElse(contributor.getFloat("paucal:patPitchVariance"),
+                            0.5f);
                         target.getLevel()
-                            .playSound(player,
+                            .playSound(null,
                                 target.getX(), target.getEyeY(), target.getZ(),
-                                sound, SoundSource.PLAYERS, 1f, pitchCenter + (float) (Math.random() - 0.5) * 0.5f);
+                                sound, SoundSource.PLAYERS, 1f,
+                                pitchCenter + (float) (Math.random() - 0.5) * pitchVariance);
                     }
                 }
             }
