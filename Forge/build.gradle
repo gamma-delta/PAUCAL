@@ -140,6 +140,13 @@ processResources {
     exclude '.cache'
 }
 
+build {
+    println "Forcing re-compile of Java to include refmap"
+    tasks.withType(JavaCompile) {
+        outputs.upToDateWhen { false }
+    }
+}
+
 setupJar(this)
 jar.archiveClassifier = 'slim'
 
