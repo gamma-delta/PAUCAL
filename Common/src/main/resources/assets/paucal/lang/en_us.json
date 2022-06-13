@@ -7,6 +7,8 @@
     "paucal.subtitles.pet.slime": "Slime goes squosh",
     "paucal.subtitles.pet.wire": "Wire goes mmm",
     "paucal.subtitles.pet.tick": "Device ticks",
+    "paucal.subtitles.pet.bwop": "Robot bwops",
+    "paucal.subtitles.pet.ultrainstinct": "Maddy is a Memelord",
 
     "command.paucal.contributor.not_contributor": "%s is not a contributor",
     "command.paucal.contributor": "%s is a contributor! Patron level: %s. Is dev: %s. Is cool: %s. %s entries total.",
@@ -14,6 +16,8 @@
     "command.paucal.reload.disabled": "Contributors are disabled in the config.",
     "command.paucal.reload": "Reloading contributors...",
 
-    "command.paucal.patSelf.disabled": "Headpats are disabled in the config."
+    "command.paucal.patSelf.disabled": "Headpats are disabled in the config.",
+    "command.paucal.patSelf.bad_count": "Should have matched exactly 1 player but instead got %s",
 
+    "stat.paucal.players_patted": "Headpats Given"
 }

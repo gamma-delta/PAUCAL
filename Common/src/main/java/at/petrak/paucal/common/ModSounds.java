@@ -17,6 +17,8 @@ public class ModSounds {
     public static SoundEvent SLIME = sound("pet.slime");
     public static SoundEvent WIRE = sound("pet.wire");
     public static SoundEvent TICK = sound("pet.tick");
+    public static SoundEvent BWOP = sound("pet.bwop");
+    public static SoundEvent ULTRAINSTINCT = sound("pet.ultrainstinct");
 
     private static SoundEvent sound(String name) {
         var sound = new SoundEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));

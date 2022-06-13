@@ -61,5 +61,17 @@
                 "pitch": 1.5
             }
         ]
+    },
+    "pet.bwop": {
+        "subtitle": "paucal.subtitles.pet.bwop",
+        "sounds": [
+            "paucal:bwop"
+        ]
+    },
+    "pet.ultrainstinct": {
+        "subtitle": "paucal.subtitles.pet.ultrainstinct",
+        "sounds": [
+            "paucal:ultrainstinct"
+        ]
     }
 }

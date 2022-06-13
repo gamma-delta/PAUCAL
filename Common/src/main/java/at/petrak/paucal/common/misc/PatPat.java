@@ -2,6 +2,7 @@ package at.petrak.paucal.common.misc;
 
 import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.common.Contributors;
+import at.petrak.paucal.common.ModStats;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -13,9 +14,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class PatPat {
     public static InteractionResult onPat(Player player, Level world, InteractionHand hand, Entity entity,
@@ -35,27 +38,38 @@ public class PatPat {
                 player.swing(hand);
             }
 
-            var contributor = Contributors.getContributor(target.getUUID());
-            if (contributor != null) {
-                var soundKeyStr = contributor.getString("paucal:patSound");
-                if (soundKeyStr != null) {
-                    var soundKey = new ResourceLocation(soundKeyStr);
-                    var sound = IXplatAbstractions.INSTANCE.getSoundByID(soundKey);
-                    if (sound != null) {
-                        var pitchCenter = Objects.requireNonNullElse(contributor.getFloat("paucal:patPitchCenter"), 1f);
-                        var pitchVariance = Objects.requireNonNullElse(contributor.getFloat("paucal:patPitchVariance"),
-                            0.5f);
-                        target.getLevel()
-                            .playSound(null,
-                                target.getX(), target.getEyeY(), target.getZ(),
-                                sound, SoundSource.PLAYERS, 1f,
-                                pitchCenter + (float) (Math.random() - 0.5) * pitchVariance);
-                    }
-                }
-            }
+            tryPlayPatSound(target.getUUID(), target.getEyePosition(), player, world);
+
+            player.awardStat(ModStats.PLAYERS_PATTED);
+
             return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
+    }
+
+    /**
+     * @return True if the pat happened successfully, false otherwise
+     */
+    public static boolean tryPlayPatSound(UUID pattee, Vec3 patteePos, @Nullable Player patter, Level world) {
+        var contributor = Contributors.getContributor(pattee);
+        if (contributor != null) {
+            var soundKeyStr = contributor.getString("paucal:patSound");
+            if (soundKeyStr != null) {
+                var soundKey = new ResourceLocation(soundKeyStr);
+                var sound = IXplatAbstractions.INSTANCE.getSoundByID(soundKey);
+                if (sound != null) {
+                    var pitchCenter = Objects.requireNonNullElse(contributor.getFloat("paucal:patPitchCenter"), 1f);
+                    var pitchVariance = Objects.requireNonNullElse(contributor.getFloat("paucal:patPitchVariance"),
+                        0.5f);
+                    world.playSound(patter,
+                        patteePos.x, patteePos.y, patteePos.z,
+                        sound, SoundSource.PLAYERS,
+                        1f, pitchCenter + (float) (Math.random() - 0.5) * pitchVariance);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
