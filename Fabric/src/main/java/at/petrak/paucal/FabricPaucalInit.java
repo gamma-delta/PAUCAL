@@ -2,6 +2,7 @@ package at.petrak.paucal;
 
 import at.petrak.paucal.common.Contributors;
 import at.petrak.paucal.common.ModSounds;
+import at.petrak.paucal.common.ModStats;
 import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import at.petrak.paucal.common.command.ModCommands;
 import at.petrak.paucal.common.misc.NewWorldMessage;
@@ -38,6 +39,7 @@ public class FabricPaucalInit implements ModInitializer {
         });
 
         Contributors.loadContributors();
+        ModStats.register();
     }
 
     private static <T> BiConsumer<T, ResourceLocation> bind(Registry<? super T> registry) {

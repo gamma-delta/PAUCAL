@@ -4,6 +4,7 @@ import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.api.forge.datagen.lootmod.PaucalLootMods;
 import at.petrak.paucal.common.Contributors;
 import at.petrak.paucal.common.ModSounds;
+import at.petrak.paucal.common.ModStats;
 import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import at.petrak.paucal.common.command.ModCommands;
 import at.petrak.paucal.common.misc.NewWorldMessage;
@@ -12,6 +13,7 @@ import at.petrak.paucal.forge.ForgePaucalConfig;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -44,6 +46,11 @@ public class ForgePaucalInit {
 
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         var evBus = MinecraftForge.EVENT_BUS;
+
+        // We have to do these at some point when the registries are still open
+        modBus.addGenericListener(Item.class, (RegistryEvent<Item> evt) -> {
+            ModStats.register();
+        });
 
         evBus.addListener((PlayerInteractEvent.EntityInteract evt) -> {
             var result = PatPat.onPat(evt.getPlayer(), evt.getWorld(), evt.getHand(), evt.getTarget(), null);

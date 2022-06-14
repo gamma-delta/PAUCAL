@@ -8,9 +8,11 @@ import net.minecraft.stats.Stats;
 
 public class ModStats {
     public static ResourceLocation PLAYERS_PATTED;
+    public static ResourceLocation HEADPATS_GOTTEN;
 
     public static void register() {
         PLAYERS_PATTED = makeCustomStat("players_patted", StatFormatter.DEFAULT);
+        HEADPATS_GOTTEN = makeCustomStat("headpats_gotten", StatFormatter.DEFAULT);
     }
 
     private static ResourceLocation makeCustomStat(String pKey, StatFormatter pFormatter) {

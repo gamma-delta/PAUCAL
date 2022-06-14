@@ -41,6 +41,7 @@ public class PatPat {
             tryPlayPatSound(target.getUUID(), target.getEyePosition(), player, world);
 
             player.awardStat(ModStats.PLAYERS_PATTED);
+            target.awardStat(ModStats.HEADPATS_GOTTEN);
 
             return InteractionResult.SUCCESS;
         }

@@ -19,5 +19,6 @@
     "command.paucal.patSelf.disabled": "Headpats are disabled in the config.",
     "command.paucal.patSelf.bad_count": "Should have matched exactly 1 player but instead got %s",
 
-    "stat.paucal.players_patted": "Headpats Given"
+    "stat.paucal.players_patted": "Headpats Given",
+    "stat.paucal.headpats_gotten": "Headpats Received"
 }
