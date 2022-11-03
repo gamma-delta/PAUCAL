@@ -7,7 +7,8 @@ archivesBaseName = getArtifactID("fabric")
 
 // https://github.com/shedaniel/cloth-config/blob/v6/common/build.gradle
 configurations {
-    shadowCommon
+    shade
+    implementation.extendsFrom shade
 }
 
 loom {
@@ -39,7 +40,7 @@ dependencies {
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
 
-    compileOnly(shadowCommon('com.electronwill.night-config:toml:3.6.5'))
+    shade 'com.electronwill.night-config:toml:3.6.5'
 
     testCompileOnly 'com.electronwill.night-config:toml:3.6.5'
 }
@@ -70,10 +71,9 @@ setupJar(this)
 jar.archiveClassifier = 'slim'
 
 shadowJar {
-    relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
-
     archiveClassifier = 'shadow'
-    configurations = [project.configurations.shadowCommon]
+    configurations = [project.configurations.shade]
+    relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
 }
 
 remapJar {
