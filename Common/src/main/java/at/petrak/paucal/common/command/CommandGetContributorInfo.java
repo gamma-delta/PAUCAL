@@ -7,8 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class CommandGetContributorInfo {
@@ -27,21 +26,21 @@ public class CommandGetContributorInfo {
         if (contrib == null) {
             ctx.getSource()
                 .sendFailure(
-                    new TranslatableComponent("command.paucal.contributor.not_contributor", target.getDisplayName()));
+                    Component.translatable("command.paucal.contributor.not_contributor", target.getDisplayName()));
             return 0;
         }
         var type = contrib.getContributorType();
         var keySet = contrib.allKeys();
 
-        var out = new TranslatableComponent("command.paucal.contributor",
+        var out = Component.translatable("command.paucal.contributor",
             target.getDisplayName(), type.level(), type.isDev(), type.isCool(), keySet.size());
         if (allKVs) {
             var keys = keySet.stream().sorted().toList();
             for (var key : keys) {
                 out.append("\n- ");
-                out.append(new TextComponent(key).withStyle(ChatFormatting.GOLD));
-                out.append(new TextComponent(": "));
-                out.append(new TextComponent(
+                out.append(Component.literal(key).withStyle(ChatFormatting.GOLD));
+                out.append(Component.literal(": "));
+                out.append(Component.literal(
                     String.valueOf(contrib.<Object>get(key))).withStyle(ChatFormatting.LIGHT_PURPLE));
             }
         }

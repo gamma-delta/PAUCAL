@@ -2,8 +2,9 @@ package at.petrak.paucal.xplat;
 
 import at.petrak.paucal.api.PaucalAPI;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Registry;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
@@ -19,11 +20,16 @@ public interface IXplatAbstractions {
 
     @Nullable SoundEvent getSoundByID(ResourceLocation id);
 
-    ResourceLocation getID(Block block);
+    // This is technically not needed over xplat but so I have to rewrite less ... i'll implement it here
+    default ResourceLocation getID(Block block) {
+        return Registry.BLOCK.getKey(block);
+    }
 
-    ResourceLocation getID(Item item);
+    default ResourceLocation getID(Item item) {
+        return Registry.ITEM.getKey(item);
+    }
 
-    void saveRecipeAdvancement(DataGenerator generator, HashCache cache, JsonObject json, Path path);
+    void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path);
 
     default void init() {
         PaucalAPI.LOGGER.info("Hello PAUCAL! This is {}!", this.platform());

@@ -7,11 +7,11 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -36,7 +36,7 @@ public abstract class PaucalAdvancementProvider extends AdvancementProvider {
 
     // [VanillaCopy] mostly again
     @Override
-    public void run(HashCache cache) {
+    public void run(CachedOutput cache) {
         Path outputFolder = this.generator.getOutputFolder();
         Set<ResourceLocation> $$2 = Sets.newHashSet();
         Consumer<Advancement> consumer = ($$3x) -> {
@@ -46,7 +46,7 @@ public abstract class PaucalAdvancementProvider extends AdvancementProvider {
                 Path path = paucalCreatePath(outputFolder, $$3x);
 
                 try {
-                    DataProvider.save(PAUCAL_GSON, cache, $$3x.deconstruct().serializeToJson(), path);
+                    DataProvider.saveStable(cache, $$3x.deconstruct().serializeToJson(), path);
                 } catch (IOException exn) {
                     PaucalAPI.LOGGER.error("{} couldn't save advancement {}", this.getClass().getSimpleName(), path,
                         exn);
@@ -73,8 +73,8 @@ public abstract class PaucalAdvancementProvider extends AdvancementProvider {
         boolean showToast, boolean announceChat, boolean hidden) {
         String expandedName = "advancement." + this.modid + ":" + name;
         return new DisplayInfo(icon,
-            new TranslatableComponent(expandedName),
-            new TranslatableComponent(expandedName + ".desc"),
+            Component.translatable(expandedName),
+            Component.translatable(expandedName + ".desc"),
             background, frameType, showToast, announceChat, hidden);
     }
 

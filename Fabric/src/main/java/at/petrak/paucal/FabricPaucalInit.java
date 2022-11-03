@@ -10,7 +10,7 @@ import at.petrak.paucal.common.misc.PatPat;
 import at.petrak.paucal.fabric.FabricPaucalConfig;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.core.Registry;
@@ -31,7 +31,7 @@ public class FabricPaucalInit implements ModInitializer {
         ModSounds.init(bind(Registry.SOUND_EVENT));
 
         UseEntityCallback.EVENT.register(PatPat::onPat);
-        CommandRegistrationCallback.EVENT.register((dp, _dedicated) -> ModCommands.register(dp));
+        CommandRegistrationCallback.EVENT.register((dp, _registry, _env) -> ModCommands.register(dp));
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
             if (entity instanceof Player player) {
                 NewWorldMessage.onLogin(player);

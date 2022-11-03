@@ -1,5 +1,6 @@
 package at.petrak.paucal.api.forge.datagen;
 
+import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -13,7 +14,7 @@ public abstract class PaucalItemModelProvider extends ItemModelProvider {
     }
 
     protected void simpleItem(Item item) {
-        simpleItem(item.getRegistryName());
+        simpleItem(IXplatAbstractions.INSTANCE.getID(item));
     }
 
     protected void simpleItem(ResourceLocation path) {
@@ -22,7 +23,7 @@ public abstract class PaucalItemModelProvider extends ItemModelProvider {
     }
 
     protected void brandishedItem(Item item) {
-        brandishedItem(item.getRegistryName());
+        brandishedItem(IXplatAbstractions.INSTANCE.getID(item));
     }
 
     protected void brandishedItem(ResourceLocation path) {

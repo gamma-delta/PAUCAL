@@ -4,8 +4,8 @@ import at.petrak.paucal.xplat.IXplatAbstractions;
 import at.petrak.paucal.xplat.Platform;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -37,7 +37,7 @@ public class FabricXplatImpl implements IXplatAbstractions {
     }
 
     @Override
-    public void saveRecipeAdvancement(DataGenerator generator, HashCache cache, JsonObject json, Path path) {
+    public void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path) {
         RecipeProvider.saveAdvancement(cache, json, path);
     }
 }

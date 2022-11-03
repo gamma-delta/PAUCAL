@@ -7,7 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ public class CommandPatSelf {
                 var pattees = GameProfileArgument.getGameProfiles(ctx, "pattee");
                 if (pattees.size() != 1) {
                     ctx.getSource().sendFailure(
-                        new TranslatableComponent("command.paucal.patSelf.bad_count", pattees.size()));
+                        Component.translatable("command.paucal.patSelf.bad_count", pattees.size()));
                     return 0;
                 }
                 return execute(pattees.iterator().next().getId(), ctx);
@@ -29,7 +29,7 @@ public class CommandPatSelf {
     private static int execute(UUID target, CommandContext<CommandSourceStack> ctx) {
         var enabled = PaucalConfig.common().allowPats();
         if (!enabled) {
-            ctx.getSource().sendFailure(new TranslatableComponent("command.paucal.patSelf.disabled"));
+            ctx.getSource().sendFailure(Component.translatable("command.paucal.patSelf.disabled"));
             return 0;
         }
 
