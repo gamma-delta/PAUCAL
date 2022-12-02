@@ -7,6 +7,7 @@ import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -42,6 +43,16 @@ public class PatPat {
 
             player.awardStat(ModStats.PLAYERS_PATTED);
             target.awardStat(ModStats.HEADPATS_GOTTEN);
+
+            if (target.isOnFire()) {
+                target.clearFire();
+                if (player.getLevel() instanceof ServerLevel sworld) {
+                    var pos = target.getEyePosition();
+                    sworld.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y + 0.5, pos.z, 10, 0, 0, 0, 0.1);
+                }
+                player.getLevel().playSound(player, target.getX(), target.getY(), target.getZ(),
+                    SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1f, 1f);
+            }
 
             return InteractionResult.SUCCESS;
         }
