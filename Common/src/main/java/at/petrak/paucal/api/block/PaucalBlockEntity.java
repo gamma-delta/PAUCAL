@@ -1,4 +1,4 @@
-package at.petrak.paucal.api;
+package at.petrak.paucal.api.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +41,9 @@ public abstract class PaucalBlockEntity extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
+    /**
+     * Manually sync the data to the client.
+     */
     public void sync() {
         this.setChanged();
         level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
