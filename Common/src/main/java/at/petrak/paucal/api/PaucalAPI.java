@@ -3,6 +3,7 @@ package at.petrak.paucal.api;
 import at.petrak.paucal.api.contrib.Contributor;
 import at.petrak.paucal.common.Contributors;
 import com.google.common.base.Suppliers;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,10 @@ import java.util.function.Supplier;
 
 public interface PaucalAPI {
     String MOD_ID = "paucal";
-    String CONTRIBUTOR_URL = "https://raw.githubusercontent.com/gamma-delta/contributors/main/paucal.toml";
+    String CONTRIBUTOR_URL =
+        "https://raw.githubusercontent.com/gamma-delta/contributors/main/paucal/contributors-v1.toml";
+    String HEADPAT_AUDIO_URL_STUB =
+        "https://raw.githubusercontent.com/gamma-delta/contributors/main/paucal/headpat-sounds/";
 
     Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -34,5 +38,9 @@ public interface PaucalAPI {
 
     static PaucalAPI instance() {
         return INSTANCE.get();
+    }
+
+    static ResourceLocation modLoc(String s) {
+        return new ResourceLocation(MOD_ID, s);
     }
 }

@@ -8,21 +8,17 @@ import java.util.UUID;
 
 public class Contributor {
     private final UUID uuid;
-    private final ContributorType contributorType;
+    private final int level;
+    private final boolean isDev;
+
     private final AbstractConfig otherVals;
 
     public Contributor(UUID uuid, AbstractConfig cfg) {
         this.uuid = uuid;
         this.otherVals = cfg;
 
-        var level = (int) this.otherVals.get("paucal:contributorLevel");
-        var isDev = (boolean) this.otherVals.get("paucal:isDev");
-        var isCool = (boolean) this.otherVals.get("paucal:isCool");
-        this.contributorType = new ContributorType(level, isDev, isCool);
-    }
-
-    public ContributorType getContributorType() {
-        return contributorType;
+        this.level = (int) this.otherVals.get("paucal:contributor_level");
+        this.isDev = (boolean) this.otherVals.get("paucal:is_dev");
     }
 
     @Nullable
@@ -50,6 +46,14 @@ public class Contributor {
 
     public Set<String> allKeys() {
         return this.otherVals.valueMap().keySet();
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public boolean isDev() {
+        return isDev;
     }
 
     public UUID getUuid() {
