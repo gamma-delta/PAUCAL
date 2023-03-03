@@ -1,6 +1,7 @@
 package at.petrak.paucal;
 
-import at.petrak.paucal.common.Contributors;
+import at.petrak.paucal.common.ContributorsManifest;
+import at.petrak.paucal.common.FabricNetworkHandler;
 import at.petrak.paucal.common.ModSounds;
 import at.petrak.paucal.common.ModStats;
 import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
@@ -24,6 +25,7 @@ public class FabricPaucalInit implements ModInitializer {
     public void onInitialize() {
         IXplatAbstractions.INSTANCE.init();
 
+        FabricNetworkHandler.init();
         FabricPaucalConfig.setup();
 
         ModAdvancementTriggers.registerTriggers();
@@ -38,7 +40,7 @@ public class FabricPaucalInit implements ModInitializer {
             }
         });
 
-        Contributors.loadContributors();
+        ContributorsManifest.loadContributors();
         ModStats.register();
     }
 

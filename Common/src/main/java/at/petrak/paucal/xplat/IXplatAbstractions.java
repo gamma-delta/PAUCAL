@@ -1,14 +1,15 @@
 package at.petrak.paucal.xplat;
 
 import at.petrak.paucal.api.PaucalAPI;
+import at.petrak.paucal.api.msg.PaucalMessage;
 import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -20,16 +21,11 @@ public interface IXplatAbstractions {
 
     @Nullable SoundEvent getSoundByID(ResourceLocation id);
 
-    // This is technically not needed over xplat but so I have to rewrite less ... i'll implement it here
-    default ResourceLocation getID(Block block) {
-        return Registry.BLOCK.getKey(block);
-    }
-
-    default ResourceLocation getID(Item item) {
-        return Registry.ITEM.getKey(item);
-    }
-
     void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path);
+
+    void sendPacketToPlayerS2C(ServerPlayer target, PaucalMessage packet);
+
+    void sendPacketNearS2C(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet);
 
     default void init() {
         PaucalAPI.LOGGER.info("Hello PAUCAL! This is {}!", this.platform());

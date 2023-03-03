@@ -1,7 +1,7 @@
 package at.petrak.paucal.common.command;
 
 import at.petrak.paucal.PaucalConfig;
-import at.petrak.paucal.common.Contributors;
+import at.petrak.paucal.common.ContributorsManifest;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -17,7 +17,7 @@ public class CommandReloadContributors {
                     return 0;
                 }
 
-                Contributors.forceLoadContributors();
+                ContributorsManifest.forceLoadContributors();
 
                 ctx.getSource().sendSuccess(Component.translatable("command.paucal.reload"), true);
                 return 1;

@@ -1,35 +1,38 @@
 {
-    "schemaVersion": 1,
-    "id": "paucal",
-    "version": "${version}",
+  "schemaVersion": 1,
+  "id": "paucal",
+  "version": "${version}",
 
-    "name": "PAUCAL",
-    "description": "Petrak@'s Assorted, Useful Collection of Assistance Library.",
-    "authors": [
-        "petrak@ (aka gamma-delta)"
+  "name": "PAUCAL",
+  "description": "Petrak@'s Assorted, Useful Collection of Assistance Library.",
+  "authors": [
+    "petrak@ (aka gamma-delta)"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/paucal",
+    "sources": "https://github.com/gamma-delta/PAUCAL"
+  },
+
+  "license": "MIT",
+  "icon": "logo.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "at.petrak.paucal.FabricPaucalInit"
     ],
-    "contact": {
-        "homepage": "https://www.curseforge.com/minecraft/mc-mods/paucal",
-        "sources": "https://github.com/gamma-delta/PAUCAL"
-    },
+    "client": [
+      "at.petrak.paucal.FabricPaucalClientInit"
+    ]
+  },
+  "mixins": [
+    "paucal_xplat.mixins.json"
+  ],
 
-    "license": "MIT",
-    "icon": "logo.png",
-
-    "environment": "*",
-    "entrypoints": {
-        "main": [
-            "at.petrak.paucal.FabricPaucalInit"
-        ]
-    },
-    "mixins": [
-        "paucal_xplat.mixins.json"
-    ],
-
-    "depends": {
-        "fabricloader": ">=0.14",
-        "fabric": "*",
-        "minecraft": "1.19.2",
-        "java": ">=17"
-    }
+  "depends": {
+    "fabricloader": ">=0.14",
+    "fabric": "*",
+    "minecraft": "1.19.2",
+    "java": ">=17"
+  }
 }

@@ -1,7 +1,7 @@
 package at.petrak.paucal;
 
 import at.petrak.paucal.api.PaucalAPI;
-import at.petrak.paucal.common.Contributors;
+import at.petrak.paucal.common.ContributorsManifest;
 import at.petrak.paucal.common.ModSounds;
 import at.petrak.paucal.common.ModStats;
 import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
@@ -53,7 +53,7 @@ public class ForgePaucalInit {
         });
         modBus.addListener((FMLLoadCompleteEvent evt) -> {
             // Config is loaded later in 1.19 forg, hopefully the loadcomplete is late enough
-            Contributors.loadContributors();
+            ContributorsManifest.loadContributors();
         });
 
         evBus.addListener((PlayerInteractEvent.EntityInteract evt) -> {

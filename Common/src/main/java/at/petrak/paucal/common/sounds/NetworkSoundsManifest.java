@@ -5,17 +5,16 @@ import com.mojang.blaze3d.audio.OggAudioStream;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class NetworkSoundsManifest {
     private static final ConcurrentMap<String, OggAudioStream> NETWORK_SOUNDS = new ConcurrentHashMap<>();
 
-    public static void loadSounds(List<String> name) {
+    public static void loadSounds(Iterable<String> names) {
         NETWORK_SOUNDS.clear();
 
-        for (var s : name) {
+        for (var s : names) {
             try {
                 var unstub = PaucalAPI.HEADPAT_AUDIO_URL_STUB + s;
                 var url = new URL(unstub);
@@ -34,6 +33,10 @@ public class NetworkSoundsManifest {
 
     @Nullable
     public static OggAudioStream getSound(String name) {
-        return NETWORK_SOUNDS.getOrDefault(name, null);
+        var out = NETWORK_SOUNDS.getOrDefault(name, null);
+        if (out == null) {
+            PaucalAPI.LOGGER.warn("Tried to load a network sound {} that wasn't found", name);
+        }
+        return out;
     }
 }

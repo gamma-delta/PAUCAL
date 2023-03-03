@@ -20,7 +20,7 @@ public class ModAdvancementProvider extends PaucalAdvancementProvider {
     protected void makeAdvancements(Consumer<Advancement> consumer) {
         Advancement.Builder.advancement()
             .addCriterion("on_login", new BeContributorTrigger.Instance(EntityPredicate.Composite.ANY,
-                MinMaxBounds.Ints.atLeast(1), null, null))
+                MinMaxBounds.Ints.atLeast(1), null))
             .rewards(AdvancementRewards.Builder.function(modLoc("welcome")))
             .save(consumer, prefix("be_patron"));
     }

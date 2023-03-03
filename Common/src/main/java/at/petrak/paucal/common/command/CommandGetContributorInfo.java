@@ -1,6 +1,6 @@
 package at.petrak.paucal.common.command;
 
-import at.petrak.paucal.common.Contributors;
+import at.petrak.paucal.common.ContributorsManifest;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
@@ -22,18 +22,17 @@ public class CommandGetContributorInfo {
 
     private static int info(CommandContext<CommandSourceStack> ctx, ServerPlayer target,
         boolean allKVs) {
-        var contrib = Contributors.getContributor(target.getUUID());
+        var contrib = ContributorsManifest.getContributor(target.getUUID());
         if (contrib == null) {
             ctx.getSource()
                 .sendFailure(
                     Component.translatable("command.paucal.contributor.not_contributor", target.getDisplayName()));
             return 0;
         }
-        var type = contrib.getContributorType();
         var keySet = contrib.allKeys();
 
         var out = Component.translatable("command.paucal.contributor",
-            target.getDisplayName(), type.level(), type.isDev(), type.isCool(), keySet.size());
+            target.getDisplayName(), contrib.getLevel(), contrib.getLevel(), keySet.size());
         if (allKVs) {
             var keys = keySet.stream().sorted().toList();
             for (var key : keys) {

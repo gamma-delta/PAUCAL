@@ -1,9 +1,13 @@
 package at.petrak.paucal.api;
 
 import at.petrak.paucal.api.contrib.Contributor;
-import at.petrak.paucal.common.Contributors;
+import at.petrak.paucal.api.msg.PaucalMessage;
+import at.petrak.paucal.common.ContributorsManifest;
 import com.google.common.base.Suppliers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +26,15 @@ public interface PaucalAPI {
 
     @Nullable
     default Contributor getContributor(UUID uuid) {
-        return Contributors.getContributor(uuid);
+        return ContributorsManifest.getContributor(uuid);
     }
+
+    default void sendPacketToPlayerC2S(ServerPlayer target, PaucalMessage packet) {
+    }
+
+    default void sendPacketNearC2S(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet) {
+    }
+
 
     Supplier<PaucalAPI> INSTANCE = Suppliers.memoize(() -> {
         try {

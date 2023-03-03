@@ -3,6 +3,7 @@ package at.petrak.paucal.common;
 import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.api.contrib.Contributor;
+import at.petrak.paucal.common.sounds.NetworkSoundsManifest;
 import com.electronwill.nightconfig.core.AbstractConfig;
 import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
@@ -13,10 +14,11 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
-public class Contributors {
+public class ContributorsManifest {
     private static Map<UUID, Contributor> CONTRIBUTORS = Object2ObjectMaps.emptyMap();
     private static boolean startedLoading = false;
 
@@ -39,7 +41,7 @@ public class Contributors {
     }
 
     public static void forceLoadContributors() {
-        var thread = new Thread(Contributors::fetchAndPopulate);
+        var thread = new Thread(ContributorsManifest::fetchAndPopulate);
         thread.setName("PAUCAL Contributors Loading Thread");
         thread.setDaemon(true);
         thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalAPI.LOGGER));
@@ -63,6 +65,7 @@ public class Contributors {
         }
 
         var out = new HashMap<UUID, Contributor>();
+        var networkSounds = new HashSet<String>();
 
         for (var entry : config.entrySet()) {
             try {
@@ -70,12 +73,18 @@ public class Contributors {
                 UUID uuid = UUID.fromString(entry.getKey());
                 var contributor = new Contributor(uuid, rawEntry);
                 out.put(uuid, contributor);
+
+                var networkPat = contributor.getNetworkHeadpatLoc();
+                if (networkPat != null) {
+                    networkSounds.add(networkPat);
+                }
             } catch (Exception exn) {
                 PaucalAPI.LOGGER.warn("Exception when loading contributor '{}': {}", entry.getKey(), exn.getMessage());
                 // and try again with the next one
             }
         }
 
+        NetworkSoundsManifest.loadSounds(networkSounds);
         return out;
     }
 }
