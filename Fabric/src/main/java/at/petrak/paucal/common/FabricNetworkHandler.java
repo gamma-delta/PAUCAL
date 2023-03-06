@@ -1,6 +1,6 @@
 package at.petrak.paucal.common;
 
-import at.petrak.paucal.common.network.MsgHeadpatSoundS2C;
+import at.petrak.paucal.common.msg.MsgHeadpatSoundS2C;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;

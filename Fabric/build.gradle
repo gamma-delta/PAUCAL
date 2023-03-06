@@ -30,6 +30,15 @@ loom {
     }
 }
 
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings loom.officialMojangMappings()
@@ -43,6 +52,8 @@ dependencies {
     shade 'com.electronwill.night-config:toml:3.6.5'
 
     testCompileOnly 'com.electronwill.night-config:toml:3.6.5'
+
+    runtimeOnly "curse.maven:authme-356643:4021907"
 }
 
 tasks.withType(JavaCompile) {

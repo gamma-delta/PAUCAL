@@ -1,6 +1,6 @@
 package at.petrak.paucal.api.contrib;
 
-import at.petrak.paucal.common.network.MsgHeadpatSoundS2C;
+import at.petrak.paucal.common.msg.MsgHeadpatSoundS2C;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import com.electronwill.nightconfig.core.AbstractConfig;
 import net.minecraft.resources.ResourceLocation;
@@ -32,8 +32,8 @@ public class Contributor {
         this.uuid = uuid;
         this.otherVals = cfg;
 
-        this.level = (int) this.otherVals.get("paucal:contributor_level");
-        this.isDev = (boolean) this.otherVals.get("paucal:is_dev");
+        this.level = this.getInt("paucal:contributor_level", 0);
+        this.isDev = this.getBool("paucal:is_dev", false);
         this.pitchCenter = this.getFloat("paucal:pat_pitch", 1f);
         this.pitchVariance = this.getFloat("paucal:pat_variance", 0.5f);
 
@@ -41,7 +41,7 @@ public class Contributor {
         if (headpat == null) {
             this.headpatType = HeadpatType.NONE;
             this.headpatLoc = null;
-        } else if (ResourceLocation.isValidResourceLocation(headpat)) {
+        } else if (headpat.contains(":") && ResourceLocation.isValidResourceLocation(headpat)) {
             this.headpatType = HeadpatType.VANILLA;
             this.headpatLoc = headpat;
         } else {
@@ -70,20 +70,21 @@ public class Contributor {
     public boolean doHeadpatSound(Vec3 patteePos, @Nullable Player patter, Level level) {
         if (this.headpatLoc == null) return false;
 
-        var pitch = this.pitchCenter + (float) (Math.random() - 0.5) * this.pitchVariance;
-        boolean networked = false;
-        switch (this.headpatType) {
-            case NONE -> {
-                return false;
-            }
-            case VANILLA -> {
-                networked = false;
-            }
-            case NETWORK -> {
-                networked = true;
-            }
-        }
         if (level instanceof ServerLevel slevel) {
+            var pitch = this.pitchCenter + (float) (Math.random() - 0.5) * this.pitchVariance;
+            boolean networked = false;
+            switch (this.headpatType) {
+                case NONE -> {
+                    return false;
+                }
+                case VANILLA -> {
+                    networked = false;
+                }
+                case NETWORK -> {
+                    networked = true;
+                }
+            }
+
             IXplatAbstractions.INSTANCE.sendPacketNearS2C(patteePos, 64.0, slevel,
                 new MsgHeadpatSoundS2C(this.headpatLoc, networked,
                     patteePos.x, patteePos.y, patteePos.z, pitch,
@@ -132,6 +133,15 @@ public class Contributor {
     public float getFloat(String key, float fallback) {
         Number n = otherVals.get(key);
         return n == null ? fallback : n.floatValue();
+    }
+
+    @Nullable
+    public Boolean getBool(String key) {
+        return otherVals.get(key);
+    }
+
+    public boolean getBool(String key, boolean fallback) {
+        return Objects.requireNonNullElse(this.otherVals.get(key), fallback);
     }
 
     @Nullable

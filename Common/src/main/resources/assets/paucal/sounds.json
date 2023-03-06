@@ -2,7 +2,10 @@
   "dummy_headpat": {
     "subtitle": "paucal.subtitles.pet",
     "sounds": [
-      "paucal:silence"
+      {
+        "name": "paucal:silence",
+        "stream": true
+      }
     ]
   }
 }

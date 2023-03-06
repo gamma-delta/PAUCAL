@@ -1,8 +1,9 @@
-package at.petrak.paucal.common.network;
+package at.petrak.paucal.common.msg;
 
 import at.petrak.paucal.api.msg.PaucalMessage;
 import at.petrak.paucal.common.sounds.HeadpatSoundInstance;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +53,7 @@ public record MsgHeadpatSoundS2C(String soundName, boolean isNetwork, double x, 
             @Override
             public void run() {
                 var sound = new HeadpatSoundInstance(self.soundName, self.isNetwork, self.x, self.y, self.z,
-                    self.pitch);
+                    self.pitch, SoundInstance.createUnseededRandom());
 
                 var minecraft = Minecraft.getInstance();
                 var player = minecraft.player;

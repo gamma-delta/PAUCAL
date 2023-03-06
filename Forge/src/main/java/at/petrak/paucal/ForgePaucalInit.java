@@ -8,6 +8,7 @@ import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import at.petrak.paucal.common.command.ModCommands;
 import at.petrak.paucal.common.misc.NewWorldMessage;
 import at.petrak.paucal.common.misc.PatPat;
+import at.petrak.paucal.common.msg.ForgePacketHandler;
 import at.petrak.paucal.forge.ForgePaucalConfig;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.core.Registry;
@@ -22,6 +23,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
@@ -44,6 +46,11 @@ public class ForgePaucalInit {
 
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         var evBus = MinecraftForge.EVENT_BUS;
+
+        modBus.addListener((FMLCommonSetupEvent evt) ->
+            evt.enqueueWork(() -> {
+                ForgePacketHandler.init();
+            }));
 
         // We have to do these at some point when the registries are still open
         modBus.addListener((RegisterEvent event) -> {

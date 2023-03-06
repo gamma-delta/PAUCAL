@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public interface PaucalAPI {
     String MOD_ID = "paucal";
     String CONTRIBUTOR_URL =
-        "https://raw.githubusercontent.com/gamma-delta/contributors/main/paucal/contributors-v1.toml";
+        "https://raw.githubusercontent.com/gamma-delta/contributors/main/paucal/contributors-v01.toml";
     String HEADPAT_AUDIO_URL_STUB =
         "https://raw.githubusercontent.com/gamma-delta/contributors/main/paucal/headpat-sounds/";
 

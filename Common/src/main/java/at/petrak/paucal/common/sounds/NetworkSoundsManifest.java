@@ -16,7 +16,7 @@ public class NetworkSoundsManifest {
 
         for (var s : names) {
             try {
-                var unstub = PaucalAPI.HEADPAT_AUDIO_URL_STUB + s;
+                var unstub = PaucalAPI.HEADPAT_AUDIO_URL_STUB + s + ".ogg";
                 var url = new URL(unstub);
                 var connection = url.openConnection();
                 var is = connection.getInputStream();
