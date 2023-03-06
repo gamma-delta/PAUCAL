@@ -3,7 +3,6 @@ package at.petrak.paucal.common.sounds;
 import com.mojang.blaze3d.audio.OggAudioStream;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
 import net.minecraft.client.sounds.SoundManager;
@@ -17,16 +16,16 @@ import java.util.concurrent.CompletableFuture;
 
 import static at.petrak.paucal.api.PaucalAPI.modLoc;
 
-public class HeadpatSoundInstance implements SoundInstance, TickableSoundInstance {
+public class HeadpatSoundInstance implements SoundInstance {
 
     // We need a dummy sound instance to get Minecraft with the program; duck-impling the CompletableFuture
     // below should prevent MC from playing the sound but just in case the supplied ogg is silent
     public static final String DUMMY_LOCATION = "dummy_headpat";
 
-    protected final boolean isNetwork;
+    protected final boolean isGithub;
     protected final String soundName;
     @Nullable
-    protected final OggAudioStream stream;
+    protected OggAudioStream stream;
 
     protected final double x, y, z;
     protected final float pitch;
@@ -35,14 +34,12 @@ public class HeadpatSoundInstance implements SoundInstance, TickableSoundInstanc
 
     protected final RandomSource random;
 
-    protected int ticks;
-
-    public HeadpatSoundInstance(String name, boolean isNetwork, double x, double y, double z, float pitch,
+    public HeadpatSoundInstance(String name, boolean isGithub, double x, double y, double z, float pitch,
         RandomSource random) {
         this.soundName = name;
-        this.isNetwork = isNetwork;
-        if (this.isNetwork) {
-            this.stream = NetworkSoundsManifest.getSound(this.soundName);
+        this.isGithub = isGithub;
+        if (this.isGithub) {
+            this.stream = GithubSoundsManifest.getSound(this.soundName);
         } else {
             this.stream = null;
         }
@@ -52,8 +49,6 @@ public class HeadpatSoundInstance implements SoundInstance, TickableSoundInstanc
         this.z = z;
         this.pitch = pitch;
         this.random = random;
-
-        this.ticks = 0;
     }
 
     @Override
@@ -112,24 +107,19 @@ public class HeadpatSoundInstance implements SoundInstance, TickableSoundInstanc
 
     protected CompletableFuture<AudioStream> getXplatAudioStreamCommon(SoundBufferLibrary soundBuffers,
         boolean looping) {
-        if (this.isNetwork) {
-            return this.stream == null
-                ? soundBuffers.getStream(modLoc(DUMMY_LOCATION), looping)
-                : CompletableFuture.completedFuture(this.stream);
+        if (this.isGithub) {
+            if (this.stream == null) {
+                return soundBuffers.getStream(modLoc(DUMMY_LOCATION), looping);
+            }
+
+            var loadTheWholeStreamNow = new ImmediateAudioStream(this.stream);
+            return CompletableFuture.completedFuture(loadTheWholeStreamNow);
         } else {
-            var loc = new ResourceLocation(this.soundName);
-            return soundBuffers.getStream(loc, looping);
+            var decompose = new ResourceLocation(this.soundName);
+            var actualSoundPath = new ResourceLocation(decompose.getNamespace(),
+                "sounds/" + decompose.getPath() + ".ogg");
+            return soundBuffers.getStream(actualSoundPath, looping);
         }
-    }
-
-    @Override
-    public boolean isStopped() {
-        this.stream
-    }
-
-    @Override
-    public void tick() {
-        this.ticks++;
     }
 
     //

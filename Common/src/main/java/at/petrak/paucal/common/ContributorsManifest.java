@@ -3,7 +3,7 @@ package at.petrak.paucal.common;
 import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.api.contrib.Contributor;
-import at.petrak.paucal.common.sounds.NetworkSoundsManifest;
+import at.petrak.paucal.common.sounds.GithubSoundsManifest;
 import com.electronwill.nightconfig.core.AbstractConfig;
 import com.electronwill.nightconfig.core.UnmodifiableCommentedConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
@@ -28,7 +28,9 @@ public class ContributorsManifest {
     }
 
     public static void loadContributors() {
-        if (!startedLoading) {
+        if (startedLoading) {
+            PaucalAPI.LOGGER.warn("Tried to reload the contributors in the middle of reloading the contributors");
+        } else {
             startedLoading = true;
 
             if (!PaucalConfig.common().loadContributors()) {
@@ -36,20 +38,17 @@ public class ContributorsManifest {
                 return;
             }
 
-            forceLoadContributors();
+            var thread = new Thread(ContributorsManifest::fetchAndPopulate);
+            thread.setName("PAUCAL Contributors Loading Thread");
+            thread.setDaemon(true);
+            thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalAPI.LOGGER));
+            thread.start();
         }
-    }
-
-    public static void forceLoadContributors() {
-        var thread = new Thread(ContributorsManifest::fetchAndPopulate);
-        thread.setName("PAUCAL Contributors Loading Thread");
-        thread.setDaemon(true);
-        thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalAPI.LOGGER));
-        thread.start();
     }
 
     private static void fetchAndPopulate() {
         CONTRIBUTORS = fetch();
+        startedLoading = false;
         PaucalAPI.LOGGER.info("Successfully loaded {} contributors", CONTRIBUTORS.size());
     }
 
@@ -84,7 +83,7 @@ public class ContributorsManifest {
             }
         }
 
-        NetworkSoundsManifest.loadSounds(networkSounds);
+        GithubSoundsManifest.loadSounds(networkSounds);
         return out;
     }
 }

@@ -1,6 +1,5 @@
-package at.petrak.paucal.common;
+package at.petrak.paucal.common.msg;
 
-import at.petrak.paucal.common.msg.MsgHeadpatSoundS2C;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,6 +22,8 @@ public class FabricNetworkHandler {
     public static void initClient() {
         ClientPlayNetworking.registerGlobalReceiver(MsgHeadpatSoundS2C.ID,
             makeClientBoundHandler(MsgHeadpatSoundS2C::deserialize, MsgHeadpatSoundS2C::handle));
+        ClientPlayNetworking.registerGlobalReceiver(MsgReloadContributorsS2C.ID,
+            makeClientBoundHandler(MsgReloadContributorsS2C::deserialize, MsgReloadContributorsS2C::handle));
     }
 
     private static <T> ClientPlayNetworking.PlayChannelHandler makeClientBoundHandler(

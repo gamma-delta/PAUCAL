@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static at.petrak.paucal.api.PaucalAPI.modLoc;
 
-public record MsgHeadpatSoundS2C(String soundName, boolean isNetwork, double x, double y, double z,
+public record MsgHeadpatSoundS2C(String soundName, boolean isGithub, double x, double y, double z,
                                  float pitch, @Nullable UUID patter) implements PaucalMessage {
     public static final ResourceLocation ID = modLoc("pat");
 
@@ -24,7 +24,7 @@ public record MsgHeadpatSoundS2C(String soundName, boolean isNetwork, double x, 
     @Override
     public void serialize(FriendlyByteBuf buf) {
         buf.writeUtf(this.soundName);
-        buf.writeBoolean(this.isNetwork);
+        buf.writeBoolean(this.isGithub);
         buf.writeDouble(this.x);
         buf.writeDouble(this.y);
         buf.writeDouble(this.z);
@@ -52,7 +52,7 @@ public record MsgHeadpatSoundS2C(String soundName, boolean isNetwork, double x, 
         Minecraft.getInstance().execute(new Runnable() {
             @Override
             public void run() {
-                var sound = new HeadpatSoundInstance(self.soundName, self.isNetwork, self.x, self.y, self.z,
+                var sound = new HeadpatSoundInstance(self.soundName, self.isGithub, self.x, self.y, self.z,
                     self.pitch, SoundInstance.createUnseededRandom());
 
                 var minecraft = Minecraft.getInstance();

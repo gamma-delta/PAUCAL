@@ -1,13 +1,13 @@
 package at.petrak.paucal;
 
 import at.petrak.paucal.common.ContributorsManifest;
-import at.petrak.paucal.common.FabricNetworkHandler;
 import at.petrak.paucal.common.ModSounds;
 import at.petrak.paucal.common.ModStats;
 import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import at.petrak.paucal.common.command.ModCommands;
 import at.petrak.paucal.common.misc.NewWorldMessage;
 import at.petrak.paucal.common.misc.PatPat;
+import at.petrak.paucal.common.msg.FabricNetworkHandler;
 import at.petrak.paucal.fabric.FabricPaucalConfig;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.fabricmc.api.ModInitializer;

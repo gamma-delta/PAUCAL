@@ -23,7 +23,8 @@ public class ForgePacketHandler {
         int messageIdx = 0;
 
         NETWORK.registerMessage(messageIdx++, MsgHeadpatSoundS2C.class, MsgHeadpatSoundS2C::serialize,
-            MsgHeadpatSoundS2C::deserialize,
-            makeClientBoundHandler(MsgHeadpatSoundS2C::handle));
+            MsgHeadpatSoundS2C::deserialize, makeClientBoundHandler(MsgHeadpatSoundS2C::handle));
+        NETWORK.registerMessage(messageIdx++, MsgReloadContributorsS2C.class, MsgReloadContributorsS2C::serialize,
+            MsgReloadContributorsS2C::deserialize, makeClientBoundHandler(MsgReloadContributorsS2C::handle));
     }
 }
