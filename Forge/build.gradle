@@ -15,7 +15,6 @@ buildscript {
 
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
 apply plugin: 'org.spongepowered.mixin'
 
 archivesBaseName = getArtifactID("forge")
@@ -95,6 +94,11 @@ minecraft {
 
 repositories {
     mavenCentral()
+
+    maven {
+        name = 'Sponge / Mixin'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
 }
 
 dependencies {
@@ -106,7 +110,10 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    shade 'com.electronwill.night-config:toml:3.6.5'
+    shade "blue.endless:jankson:$janksonVersion"
+    minecraftLibrary "blue.endless:jankson:$janksonVersion" // make it work in the IDE
+
+    implementation 'org.jetbrains:annotations:16.0.2'
 }
 
 mixin {
@@ -153,7 +160,7 @@ jar.archiveClassifier = 'slim'
 shadowJar {
     archiveClassifier = ''
     configurations = [project.configurations.shade]
-    relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
+    relocate 'blue.endless.jankson', "at.petrak.relocated.jankson"
     finalizedBy 'reobfShadowJar'
 }
 

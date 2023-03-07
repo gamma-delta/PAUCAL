@@ -1,19 +1,16 @@
 package at.petrak.paucal.api.contrib;
 
-import at.petrak.paucal.common.msg.MsgHeadpatSoundS2C;
 import at.petrak.paucal.xplat.IXplatAbstractions;
-import com.electronwill.nightconfig.core.AbstractConfig;
-import net.minecraft.resources.ResourceLocation;
+import com.google.gson.JsonObject;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Contributor {
     private final UUID uuid;
@@ -21,14 +18,12 @@ public class Contributor {
     private final boolean isDev;
 
     private final float pitchCenter, pitchVariance;
-    private final HeadpatType headpatType;
-    @Nullable
-    private final String headpatLoc;
+    private final List<HeadpatSpec> headpats;
 
-    private final AbstractConfig otherVals;
+    private final JsonObject otherVals;
 
     @ApiStatus.Internal
-    public Contributor(UUID uuid, AbstractConfig cfg) {
+    public Contributor(UUID uuid, JsonObject cfg) {
         this.uuid = uuid;
         this.otherVals = cfg;
 
@@ -37,17 +32,8 @@ public class Contributor {
         this.pitchCenter = this.getFloat("paucal:pat_pitch", 1f);
         this.pitchVariance = this.getFloat("paucal:pat_variance", 0.5f);
 
-        var headpat = (String) this.otherVals.getOrElse("paucal:pat_sound", null);
-        if (headpat == null) {
-            this.headpatType = HeadpatType.NONE;
-            this.headpatLoc = null;
-        } else if (headpat.contains(":") && ResourceLocation.isValidResourceLocation(headpat)) {
-            this.headpatType = HeadpatType.VANILLA;
-            this.headpatLoc = headpat;
-        } else {
-            this.headpatType = HeadpatType.NETWORK;
-            this.headpatLoc = headpat;
-        }
+        var patsRaw = this.otherVals.get("paucal:pat_sound");
+        this.headpats = HeadpatSpec.loadFromJson(patsRaw);
     }
 
     public int getLevel() {
@@ -62,44 +48,37 @@ public class Contributor {
         return uuid;
     }
 
+    @ApiStatus.Internal
+    public Collection<String> neededGithubSounds() {
+        var out = new ArrayList<String>();
+        for (var hp : this.headpats) {
+            if (hp.type == HeadpatSpec.Type.GITHUB) {
+                out.add(hp.location);
+            }
+        }
+        return out;
+    }
+
     /**
      * Logic happens clientside to the <em>patter</em>, the pattee gets a packet like everyone else
      *
      * @param patter
      */
     public boolean doHeadpatSound(Vec3 patteePos, @Nullable Player patter, Level level) {
-        if (this.headpatLoc == null) return false;
+        if (this.headpats.isEmpty()) {
+            return false;
+        }
 
         if (level instanceof ServerLevel slevel) {
+            var idx = level.random.nextInt(this.headpats.size());
+            var patspec = this.headpats.get(idx);
             var pitch = this.pitchCenter + (float) (Math.random() - 0.5) * this.pitchVariance;
-            boolean networked = false;
-            switch (this.headpatType) {
-                case NONE -> {
-                    return false;
-                }
-                case VANILLA -> {
-                    networked = false;
-                }
-                case NETWORK -> {
-                    networked = true;
-                }
-            }
 
             IXplatAbstractions.INSTANCE.sendPacketNearS2C(patteePos, 64.0, slevel,
-                new MsgHeadpatSoundS2C(this.headpatLoc, networked,
-                    patteePos.x, patteePos.y, patteePos.z, pitch,
-                    patter == null ? null : patter.getUUID()));
+                patspec.makePacket(patteePos, pitch, patter));
         } // Otherwise, they will play the sound once they get the packet
 
         return true;
-    }
-
-    @ApiStatus.Internal
-    @Nullable
-    public String getNetworkHeadpatLoc() {
-        return this.headpatType == HeadpatType.NETWORK
-            ? this.headpatLoc
-            : null;
     }
 
     // =====
@@ -110,57 +89,54 @@ public class Contributor {
     }
 
     public String getString(String key, String fallback) {
-        return Objects.requireNonNullElse(otherVals.get(key), fallback);
+        return GsonHelper.getAsString(otherVals, key, fallback);
     }
 
     @Nullable
     public Integer getInt(String key) {
-        Number n = otherVals.get(key);
-        return n == null ? null : n.intValue();
+        if (otherVals.has(key)) {
+            return GsonHelper.getAsInt(otherVals, key);
+        } else {
+            return null;
+        }
     }
 
     public int getInt(String key, int fallback) {
-        Number n = otherVals.get(key);
-        return n == null ? fallback : n.intValue();
+        return GsonHelper.getAsInt(otherVals, key, fallback);
     }
 
     @Nullable
     public Float getFloat(String key) {
-        Number n = otherVals.get(key);
-        return n == null ? null : n.floatValue();
+        if (otherVals.has(key)) {
+            return GsonHelper.getAsFloat(otherVals, key);
+        } else {
+            return null;
+        }
     }
 
     public float getFloat(String key, float fallback) {
-        Number n = otherVals.get(key);
-        return n == null ? fallback : n.floatValue();
+        return GsonHelper.getAsFloat(otherVals, key, fallback);
     }
 
     @Nullable
     public Boolean getBool(String key) {
-        return otherVals.get(key);
+        if (otherVals.has(key)) {
+            return GsonHelper.getAsBoolean(otherVals, key);
+        } else {
+            return null;
+        }
     }
 
     public boolean getBool(String key, boolean fallback) {
-        return Objects.requireNonNullElse(this.otherVals.get(key), fallback);
-    }
-
-    @Nullable
-    public <T> T get(String key) {
-        return this.otherVals.get(key);
+        return GsonHelper.getAsBoolean(this.otherVals, key, fallback);
     }
 
 
     public Set<String> allKeys() {
-        return this.otherVals.valueMap().keySet();
+        return this.otherVals.keySet();
     }
 
-    public AbstractConfig otherVals() {
+    public JsonObject otherVals() {
         return this.otherVals;
-    }
-
-    private enum HeadpatType {
-        NONE,
-        VANILLA,
-        NETWORK,
     }
 }

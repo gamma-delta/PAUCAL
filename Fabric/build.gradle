@@ -31,6 +31,13 @@ loom {
 }
 
 repositories {
+    mavenCentral()
+
+    maven {
+        name = 'Sponge / Mixin'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+
     maven {
         url "https://cursemaven.com"
         content {
@@ -49,11 +56,11 @@ dependencies {
     modImplementation "me.zeroeightsix:fiber:$fiberVersion"
     include "me.zeroeightsix:fiber:$fiberVersion"
 
-    shade 'com.electronwill.night-config:toml:3.6.5'
-
-    testCompileOnly 'com.electronwill.night-config:toml:3.6.5'
+    shade "blue.endless:jankson:$janksonVersion"
+    testCompileOnly "blue.endless:jankson:$janksonVersion"
 
     runtimeOnly "curse.maven:authme-356643:4021907"
+    implementation 'org.jetbrains:annotations:16.0.2'
 }
 
 tasks.withType(JavaCompile) {
@@ -84,7 +91,7 @@ jar.archiveClassifier = 'slim'
 shadowJar {
     archiveClassifier = 'shadow'
     configurations = [project.configurations.shade]
-    relocate 'com.electronwill.nightconfig', "at.petrak.relocated.nightconfig"
+    relocate 'blue.endless.jankson', "at.petrak.relocated.jankson"
 }
 
 remapJar {

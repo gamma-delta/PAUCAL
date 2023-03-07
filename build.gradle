@@ -1,3 +1,7 @@
+// Forward all shade questions to:
+// - https://gist.github.com/SizableShrimp/949e7c219bfc94487a45226b64ac7749
+// - https://gist.github.com/SizableShrimp/66b22f1b24c255e1491c8d98d3f11f83
+
 buildscript {
     repositories {
         mavenCentral()
@@ -79,7 +83,7 @@ void setupJar(Object project) {
                 pom.withXml {
                     asNode().dependencies.dependency.each { dep ->
                         println(dep)
-                        if (dep.groupId != "com.electronwill.nightconfig") {
+                        if (dep.groupId != "blue.endless.jankson") {
                             assert dep.parent().remove(dep)
                         }
                     }
@@ -113,24 +117,6 @@ subprojects {
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
     java.withJavadocJar()
-
-    repositories {
-        mavenCentral()
-
-        maven {
-            name = 'Sponge / Mixin'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-        }
-
-        maven {
-            name = 'BlameJared Maven (CrT / Bookshelf)'
-            url = 'https://maven.blamejared.com'
-        }
-    }
-
-    dependencies {
-        implementation 'org.jetbrains:annotations:16.0.2'
-    }
 
     tasks.withType(JavaCompile).configureEach {
         it.options.encoding = 'UTF-8'

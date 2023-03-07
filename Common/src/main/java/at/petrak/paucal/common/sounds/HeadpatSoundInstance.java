@@ -1,5 +1,6 @@
 package at.petrak.paucal.common.sounds;
 
+import at.petrak.paucal.common.ContributorsManifest;
 import com.mojang.blaze3d.audio.OggAudioStream;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -39,7 +40,7 @@ public class HeadpatSoundInstance implements SoundInstance {
         this.soundName = name;
         this.isGithub = isGithub;
         if (this.isGithub) {
-            this.stream = GithubSoundsManifest.getSound(this.soundName);
+            this.stream = ContributorsManifest.getSound(this.soundName);
         } else {
             this.stream = null;
         }

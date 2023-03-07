@@ -40,7 +40,7 @@ public class CommandGetContributorInfo {
                 out.append(Component.literal(key).withStyle(ChatFormatting.GOLD));
                 out.append(Component.literal(": "));
                 out.append(Component.literal(
-                    String.valueOf(contrib.<Object>get(key))).withStyle(ChatFormatting.LIGHT_PURPLE));
+                    String.valueOf(contrib.otherVals().get(key))).withStyle(ChatFormatting.LIGHT_PURPLE));
             }
         }
         ctx.getSource().sendSuccess(out, true);
