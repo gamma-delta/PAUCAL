@@ -13,5 +13,7 @@
   "command.paucal.patSelf.bad_count": "Should have matched exactly 1 player but instead got %s",
 
   "stat.paucal.players_patted": "Headpats Given",
-  "stat.paucal.headpats_gotten": "Headpats Received"
+  "stat.paucal.headpats_gotten": "Headpats Received",
+
+  "text.autoconfig.paucal.title": "PAUCAL"
 }

@@ -2,59 +2,29 @@ package at.petrak.paucal.fabric;
 
 import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.api.PaucalAPI;
-import io.github.fablabsmc.fablabs.api.fiber.v1.builder.ConfigTreeBuilder;
-import io.github.fablabsmc.fablabs.api.fiber.v1.exception.ValueDeserializationException;
-import io.github.fablabsmc.fablabs.api.fiber.v1.schema.type.derived.ConfigTypes;
-import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.FiberSerialization;
-import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.JanksonValueSerializer;
-import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigTree;
-import io.github.fablabsmc.fablabs.api.fiber.v1.tree.PropertyMirror;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 
-import java.io.*;
-import java.nio.file.*;
-
-public class FabricPaucalConfig {
-    private static Common COMMON = new Common();
-
-    private static void writeDefaultConfig(ConfigTree config, Path path, JanksonValueSerializer serializer) {
-        try (OutputStream s = new BufferedOutputStream(
-            Files.newOutputStream(path, StandardOpenOption.WRITE, StandardOpenOption.CREATE_NEW))) {
-            FiberSerialization.serialize(config, s, serializer);
-        } catch (FileAlreadyExistsException ignored) {
-        } catch (IOException e) {
-            PaucalAPI.LOGGER.error("Error writing default config", e);
-        }
-    }
-
-    private static void setupConfig(ConfigTree config, Path p, JanksonValueSerializer serializer) {
-        writeDefaultConfig(config, p, serializer);
-
-        try (InputStream s = new BufferedInputStream(
-            Files.newInputStream(p, StandardOpenOption.READ, StandardOpenOption.CREATE))) {
-            FiberSerialization.deserialize(config, s, serializer);
-        } catch (IOException | ValueDeserializationException e) {
-            PaucalAPI.LOGGER.error("Error loading config from {}", p, e);
-        }
-    }
-
+@Config(name = PaucalAPI.MOD_ID)
+public class FabricPaucalConfig implements ConfigData {
     public static void setup() {
-        try {
-            Files.createDirectory(Paths.get("config"));
-        } catch (FileAlreadyExistsException ignored) {
-        } catch (IOException e) {
-            PaucalAPI.LOGGER.warn("Failed to make config dir", e);
-        }
+        AutoConfig.register(FabricPaucalConfig.class, JanksonConfigSerializer::new);
 
-        var serializer = new JanksonValueSerializer(false);
-        var common = COMMON.configure(ConfigTree.builder());
-        setupConfig(common, Paths.get("config", PaucalAPI.MOD_ID + "-common.json5"), serializer);
-        PaucalConfig.setCommon(COMMON);
+        var configs = AutoConfig.getConfigHolder(FabricPaucalConfig.class).getConfig();
+        PaucalConfig.setCommon(configs.commonInstance);
     }
 
-    private static final class Common implements PaucalConfig.ConfigAccess {
-        private final PropertyMirror<Boolean> allowPats = PropertyMirror.create(ConfigTypes.BOOLEAN);
-        private final PropertyMirror<Boolean> loadContributors = PropertyMirror.create(ConfigTypes.BOOLEAN);
+    @ConfigEntry.Gui.CollapsibleObject
+    CommonCfg commonInstance = new CommonCfg();
 
+    private static class CommonCfg implements PaucalConfig.ConfigAccess, ConfigData {
+        boolean allowPats = true;
+        boolean loadContributors = true;
+
+        /*
         public ConfigTree configure(ConfigTreeBuilder bob) {
             bob
                 .beginValue("allowPats", ConfigTypes.BOOLEAN, true)
@@ -68,15 +38,16 @@ public class FabricPaucalConfig {
 
             return bob.build();
         }
+         */
 
         @Override
         public boolean allowPats() {
-            return allowPats.getValue();
+            return allowPats;
         }
 
         @Override
         public boolean loadContributors() {
-            return loadContributors.getValue();
+            return loadContributors;
         }
     }
 }

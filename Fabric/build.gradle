@@ -38,6 +38,11 @@ repositories {
         url = 'https://repo.spongepowered.org/repository/maven-public/'
     }
 
+    // Cloth config
+    maven { url "https://maven.shedaniel.me/" }
+    // Mod menu
+    maven { url "https://maven.terraformersmc.com/releases/" }
+
     maven {
         url "https://cursemaven.com"
         content {
@@ -53,14 +58,13 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
     compileOnly project(":Common")
 
-    modImplementation "me.zeroeightsix:fiber:$fiberVersion"
-    include "me.zeroeightsix:fiber:$fiberVersion"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:${clothConfigVersion}"
+    modApi "com.terraformersmc:modmenu:${modMenuVersion}"
+
+    implementation 'org.jetbrains:annotations:16.0.2'
 
     shade "blue.endless:jankson:$janksonVersion"
-    testCompileOnly "blue.endless:jankson:$janksonVersion"
-
-    runtimeOnly "curse.maven:authme-356643:4021907"
-    implementation 'org.jetbrains:annotations:16.0.2'
+    compileOnly "blue.endless:jankson:$janksonVersion" // equivalent of minecraftLibrary on forge?
 }
 
 tasks.withType(JavaCompile) {

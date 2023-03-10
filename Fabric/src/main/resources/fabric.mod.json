@@ -23,6 +23,9 @@
     ],
     "client": [
       "at.petrak.paucal.FabricPaucalClientInit"
+    ],
+    "modmenu": [
+      "at.petrak.paucal.client.ModMenuInterop"
     ]
   },
   "mixins": [

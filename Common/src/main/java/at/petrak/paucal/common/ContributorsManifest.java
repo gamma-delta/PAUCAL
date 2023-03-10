@@ -69,6 +69,9 @@ public class ContributorsManifest {
             config = GSON.fromJson(unJanksoned, JsonObject.class);
         } catch (Exception exn) {
             PaucalAPI.LOGGER.warn("Couldn't load contributors from Github, oh well :(", exn);
+            if (exn instanceof blue.endless.jankson.api.SyntaxError syn) {
+                PaucalAPI.LOGGER.warn(syn.getCompleteMessage());
+            }
             return Pair.of(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
         }
 
