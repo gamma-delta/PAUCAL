@@ -1,12 +1,21 @@
 # P.A.U.C.A.L.
 
-> Petra's Assorted, Useful Collection of Assistance Library
+[Curseforge](https://www.curseforge.com/minecraft/mc-mods/paucal) | [Modrinth](https://modrinth.com/mod/paucal) | [Source](https://www.curseforge.com/minecraft/mc-mods/paucal)
 
-Library mod for my mods, and a centralized place for tracking contributors and friends.
+Petrak@'s Assorted, Useful Collection of Assistance Library.
 
-Also adds a little bit of content: shift-rightclicking a player with an empty hand will give them headpats!
+This is my library mod. It adds a bunch of useful backend utilities and serves as a central location to store all the
+contributors to my mod (and has an API to query them!)
 
-[Curseforge Link](https://www.curseforge.com/minecraft/mc-mods/paucal)
+Also, adds headpatting! Shift-right-click another player with an empty hand to pat them. (You can disable this in the
+config if you like.)
+
+On Forge, PAUCAL has no dependencies. On Fabric, it requires the Fabric API and Cloth Config.
+
+Like my mods? [Join the Discord server!](https://discord.gg/4xxHGYteWk) Or
+maybe [send me a few bucks on Patreon!](https://www.patreon.com/petrakat)
+
+<!-- PUBLISH-END -->
 
 ## API
 
@@ -16,5 +25,5 @@ at Maven.)
 
 ---
 
-This project uses [NightConfig](https://github.com/TheElectronWill/Night-Config), included with the PAUCAL jar
+This project uses [Jankson](https://github.com/falkreon/Jankson), included with the PAUCAL jar
 using [black, shadow magic](https://github.com/johnrengelman/shadow).
