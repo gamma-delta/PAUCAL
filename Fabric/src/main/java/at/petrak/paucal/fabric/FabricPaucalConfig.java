@@ -24,22 +24,6 @@ public class FabricPaucalConfig implements ConfigData {
         boolean allowPats = true;
         boolean loadContributors = true;
 
-        /*
-        public ConfigTree configure(ConfigTreeBuilder bob) {
-            bob
-                .beginValue("allowPats", ConfigTypes.BOOLEAN, true)
-                .withComment("Whether to allow patting players with a shift-right-click.")
-                .finishValue(allowPats::mirror)
-
-                .beginValue("loadContributors", ConfigTypes.BOOLEAN, true)
-                .withComment("Whether to load contributor info from the internet.\n" +
-                    "If false, no one will appear as a contributor.")
-                .finishValue(loadContributors::mirror);
-
-            return bob.build();
-        }
-         */
-
         @Override
         public boolean allowPats() {
             return allowPats;

@@ -1,0 +1,45 @@
+{
+  "message.paucal.patron": "Hey, %s! Thanks for supporting me on §6Patreon§r and helping me make more great Minecraft mods. :] --petrak@",
+
+  "paucal.subtitles.pet": "Player gets headpat",
+
+  "command.paucal": {
+    contributor: {
+      "": "%s is a contributor! Patron level: %s. Is dev: %s. %s entries total.",
+      not_contributor: "%s is not a contributor"
+    },
+    reload: {
+      "": "Reloading contributors...",
+      "disabled": "Contributors are disabled in the config."
+    },
+    patSelf: {
+      disabled: "Headpats are disabled in the config.",
+      bad_count: "Should have matched exactly 1 player but instead got %s"
+    }
+  },
+
+  "stat.paucal": {
+    players_patted: "Headpats Given",
+    headpats_gotten: "Headpats Received"
+  },
+
+  "text.autoconfig.paucal": {
+    title: "PAUCAL",
+    option: {
+      commonInstance: {
+        "": "Common Config",
+        "allowPats": "Allow headpats",
+        "loadContributors": "Load contributors from Github"
+      }
+    }
+  },
+
+  // Test of the dedententation
+  dedented: ">>> \
+|    This is a multi ksjdflgh skjdlhgf \
+|    line test! wahoo. yippee. Letsa go. \
+|    Lorem ipsum dolor sic amet foobar foobar hunoz \
+|    Poison apples poison worms",
+
+  //
+}

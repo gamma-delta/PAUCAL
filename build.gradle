@@ -21,6 +21,9 @@ plugins {
     id 'fabric-loom' version '1.0-SNAPSHOT' apply false
 }
 
+
+import at.petrak.gradleutil.filters.FlatteningJson5Transmogrifier
+import at.petrak.gradleutil.filters.Json5Transmogrifier
 import com.diluv.schoomp.Webhook
 import com.diluv.schoomp.message.Message
 
@@ -132,6 +135,15 @@ subprojects {
 
     processResources {
         exclude '.cache'
+
+        filesMatching(["assets/**/*.flatten.json5", "data/**/*.flatten.json5"]) {
+            path = path.replaceFirst(~/\.flatten\.json5$/) { ".json" }
+            filter(FlatteningJson5Transmogrifier)
+        }
+        filesMatching(["assets/**/*.json5", "data/**/*.json5"]) {
+            path = path.replaceFirst(~/\.json5$/) { ".json" }
+            filter(Json5Transmogrifier)
+        }
     }
 }
 

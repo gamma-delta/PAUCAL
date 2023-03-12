@@ -1,0 +1,8 @@
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Different jankson than the shaded one, this is just for json5 -> json
+    implementation("blue.endless:jankson:1.2.1")
+}
