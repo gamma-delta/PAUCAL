@@ -6,10 +6,6 @@ buildscript {
     repositories {
         mavenCentral()
     }
-
-    dependencies {
-        classpath group: 'com.diluv.schoomp', name: 'Schoomp', version: '1.1.0'
-    }
 }
 
 plugins {
@@ -21,37 +17,10 @@ plugins {
     id 'fabric-loom' version '1.0-SNAPSHOT' apply false
 }
 
-
+import at.petrak.gradleutil.Misc
+import at.petrak.gradleutil.PublishAndNotify
 import at.petrak.gradleutil.filters.FlatteningJson5Transmogrifier
 import at.petrak.gradleutil.filters.Json5Transmogrifier
-import com.diluv.schoomp.Webhook
-import com.diluv.schoomp.message.Message
-
-def isRelease() {
-    try {
-        def stdout = new ByteArrayOutputStream()
-        def gitHash = System.getenv('GIT_COMMIT')
-        def gitPrevHash = System.getenv('GIT_PREVIOUS_COMMIT')
-        def travisRange = System.getenv('TRAVIS_COMMIT_RANGE')
-        if (gitHash && gitPrevHash) {
-            exec {
-                commandLine 'git', 'log', '--pretty=tformat:- %s', '' + gitPrevHash + '...' + gitHash
-                standardOutput = stdout
-            }
-            return stdout.toString().toLowerCase().contains("[release")
-        } else if (travisRange) {
-            exec {
-                commandLine 'git', 'log', '--pretty=tformat:- %s', '' + travisRange
-                standardOutput = stdout
-            }
-            return stdout.toString().toLowerCase().contains("[release")
-        } else {
-            return false
-        }
-    } catch (ignored) {
-        return false
-    }
-}
 
 String getArtifactID(String platform) {
     return "${modID}-${platform}-${minecraftVersion}"
@@ -108,13 +77,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-    version = "${modVersion}"
-    if (!isRelease() && System.getenv('BUILD_NUMBER') != null) {
-        version += "-pre-" + System.getenv('BUILD_NUMBER')
-    } else if (System.getenv('TAG_NAME') != null) {
-        version = System.getenv('TAG_NAME').substring(1)
-        println 'Version overridden to tag version ' + version
-    }
+    version = Misc.getVersion(this.project)
     // archivesBaseName set in each gradle
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -147,49 +110,4 @@ subprojects {
     }
 }
 
-def getGitChangelog = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        def gitHash = System.getenv('GIT_COMMIT')
-        def gitPrevHash = System.getenv('GIT_PREVIOUS_COMMIT')
-        def travisRange = System.getenv('TRAVIS_COMMIT_RANGE')
-        if (gitHash && gitPrevHash) {
-            exec {
-                commandLine 'git', 'log', '--pretty=tformat:> - %s', '' + gitPrevHash + '...' + gitHash
-                standardOutput = stdout
-            }
-            return stdout.toString().trim()
-        } else if (travisRange) {
-            exec {
-                commandLine 'git', 'log', '--pretty=tformat:> - %s', '' + travisRange
-                standardOutput = stdout
-            }
-            return stdout.toString().trim()
-        } else {
-            return ""
-        }
-    } catch (ignored) {
-        return ""
-    }
-}
-
-task sendWebhook {
-    doLast {
-        try {
-            if (System.getenv('discordWebhook') == null || System.getenv("BUILD_URL") == null) {
-                println "Cannot send the webhook without the webhook url or the build url"
-                return
-            }
-            def webhook = new Webhook(System.getenv('discordWebhook'), 'Petrak@ Patreon Gradle')
-
-            def message = new Message()
-            message.setUsername("Patreon Early Access")
-            message.setContent("New **$modName** prerelease -- build ${System.getenv("BUILD_NUMBER")} for $minecraftVersion! \n" +
-                    "Download it here: ${System.getenv("BUILD_URL")}\nChangelog:\n${getGitChangelog()}")
-
-            webhook.sendMessage(message)
-        } catch (ignored) {
-            project.logger.error("Failed to push Discord webhook.")
-        }
-    }
-}
+apply plugin: PublishAndNotify
