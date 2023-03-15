@@ -14,8 +14,9 @@ plugins {
     // This needs to be in the root
     // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
     // Also it looks like property lookups don't work this early
-    id 'fabric-loom' version '1.1-SNAPSHOT' apply false
+    id 'fabric-loom' version '1.0-SNAPSHOT' apply false
 }
+
 
 import at.petrak.gradleutil.Misc
 import at.petrak.gradleutil.PublishAndNotify
@@ -70,6 +71,14 @@ void setupJar(Object project) {
         }
     }
 }
+
+// Hopefully fixes weird ASM clash issues
+configurations.configureEach {
+    resolutionStrategy.capabilitiesResolution.withCapability('org.ow2.asm:asm') {
+        selectHighestVersion()
+    }
+}
+
 
 // The closure is run against each project
 subprojects {
