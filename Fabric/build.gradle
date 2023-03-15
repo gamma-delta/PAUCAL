@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'fabric-loom' version '1.1-SNAPSHOT'
 }
 apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -102,6 +102,4 @@ remapJar {
     dependsOn(shadowJar)
     inputFile.set(shadowJar.archiveFile)
     archiveClassifier = ''
-
-    from rootProject.file("LICENSE.md")
 }
