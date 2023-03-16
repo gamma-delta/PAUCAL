@@ -8,12 +8,16 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 public class PKPublishingPlugin implements Plugin<Project> {
+    private Project project = null;
+
     private boolean isRelease = false;
     private String changelog = "";
     private String version = "";
 
     @Override
     public void apply(Project project) {
+        this.project = project;
+
         this.changelog = MiscUtil.getGitChangelog(project);
         this.isRelease = MiscUtil.isRelease(this.changelog);
 
@@ -40,9 +44,9 @@ public class PKPublishingPlugin implements Plugin<Project> {
                 Changelog: ```
                 %s
                 ```"""
-                .formatted(task.property("modName"),
+                .formatted(this.project.property("modName"),
                     System.getenv("BUILD_NUMBER"),
-                    task.property("minecraftVersion"),
+                    this.project.property("minecraftVersion"),
                     buildUrl,
                     this.changelog));
 
