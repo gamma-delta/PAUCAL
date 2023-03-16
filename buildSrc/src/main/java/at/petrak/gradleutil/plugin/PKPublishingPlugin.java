@@ -47,8 +47,8 @@ public class PKPublishingPlugin implements Plugin<Project> {
                     this.changelog));
 
             webhook.sendMessage(message);
-        } catch (Exception ignored) {
-            task.getLogger().error("Failed to push Discord webhook.");
+        } catch (Exception exn) {
+            task.getLogger().error("Failed to push Discord webhook.", exn);
         }
 
     }
