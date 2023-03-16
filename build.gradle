@@ -18,10 +18,10 @@ plugins {
 }
 
 
-import at.petrak.gradleutil.Misc
-import at.petrak.gradleutil.PublishAndNotify
+import at.petrak.gradleutil.MiscUtil
 import at.petrak.gradleutil.filters.FlatteningJson5Transmogrifier
 import at.petrak.gradleutil.filters.Json5Transmogrifier
+import at.petrak.gradleutil.plugin.PKPublishingPlugin
 
 String getArtifactID(String platform) {
     return "${modID}-${platform}-${minecraftVersion}"
@@ -86,7 +86,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-    version = Misc.getVersion(this.project)
+    version = MiscUtil.getVersion(this.project)
     // archivesBaseName set in each gradle
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -119,4 +119,4 @@ subprojects {
     }
 }
 
-apply plugin: PublishAndNotify
+apply plugin: PKPublishingPlugin

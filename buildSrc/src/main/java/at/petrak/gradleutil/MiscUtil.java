@@ -4,7 +4,7 @@ import org.gradle.api.Project;
 
 import java.io.ByteArrayOutputStream;
 
-public class Misc {
+public class MiscUtil {
     public static String getVersion(Project project) {
         var changelog = getGitChangelog(project);
 

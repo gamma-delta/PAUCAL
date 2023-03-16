@@ -15,7 +15,7 @@ public class JsonUtil {
 
     public static StringReader processJson(Reader in, boolean flatten) throws IOException, SyntaxError {
         var jsonSrc = JsonUtil.jesusChristJustGetTheGodDamnReaderIntoAFuckingStream(in);
-        JsonObject asJson = JANKSON.load(jsonSrc);
+        JsonObject asJson = JANKSON.load(jsonSrc.replace("\r\n", "\n"));
 
         JsonObject out = flatten
             ? flattenObject(asJson)
