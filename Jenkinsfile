@@ -32,7 +32,7 @@ pipeline {
             }}
             steps {
                 echo 'Deploying to Maven'
-                sh './gradlew publish sendWebhook'
+                sh './gradlew publish publishToDiscord'
             }
         }
     }
