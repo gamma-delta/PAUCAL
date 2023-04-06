@@ -11,60 +11,22 @@ buildscript {
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+
+    id 'at.petra-k.PKPlugin' version '0.1.0-pre-21'
+    id 'at.petra-k.PKSubprojPlugin' version '0.1.0-pre-21' apply false
+
     // This needs to be in the root
     // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
     // Also it looks like property lookups don't work this early
     id 'fabric-loom' version '1.0-SNAPSHOT' apply false
 
-    id 'at.petrak.pkpcpbp' version '0.1.0-pre-3'
 }
 
-String getArtifactID(String platform) {
-    return "${modID}-${platform}-${minecraftVersion}"
-}
-
-void setupJar(Object project) {
-    project.jar {
-        manifest {
-            attributes([
-                    'Specification-Title'     : modID,
-                    'Specification-Vendor'    : "petra-kat",
-                    'Specification-Version'   : project.jar.archiveVersion,
-                    'Implementation-Title'    : project.name,
-                    'Implementation-Version'  : project.jar.archiveVersion,
-                    'Implementation-Vendor'   : "petra-kat",
-                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                    'Timestampe'              : System.currentTimeMillis(),
-                    'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-                    'Build-On-Minecraft'      : minecraftVersion
-            ])
-        }
-    }
-
-    project.publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                groupId project.group
-                artifactId project.archivesBaseName
-                version project.version
-                from project.components.java
-
-                pom.withXml {
-                    asNode().dependencies.dependency.each { dep ->
-                        println(dep)
-                        if (dep.groupId != "blue.endless.jankson") {
-                            assert dep.parent().remove(dep)
-                        }
-                    }
-                }
-            }
-        }
-
-        repositories {
-            maven {
-                url "file://" + System.getenv("local_maven")
-            }
-        }
+pkpcpbp {
+    modInfo {
+        modID modID
+        mcVersion minecraftVersion
+        modVersion modVersion
     }
 }
 
@@ -72,38 +34,4 @@ void setupJar(Object project) {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
-    apply plugin: 'at.petrak.pkpcpbp'
-
-    group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-    version = MiscUtil.getVersion(this.project)
-    // archivesBaseName set in each gradle
-
-    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-    java.withSourcesJar()
-    java.withJavadocJar()
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.encoding = 'UTF-8'
-        it.options.release = 17
-    }
-
-    // Disables Gradle's custom module metadata from being published to maven. The
-    // metadata includes mapped dependencies which are not reasonably consumable by
-    // other mod developers.
-    tasks.withType(GenerateModuleMetadata) {
-        enabled = false
-    }
-
-    processResources {
-        exclude '.cache'
-
-        filesMatching(["assets/**/*.flatten.json5", "data/**/*.flatten.json5"]) {
-            path = path.replaceFirst(~/\.flatten\.json5$/) { ".json" }
-            filter(FlatteningJson5Transmogrifier)
-        }
-        filesMatching(["assets/**/*.json5", "data/**/*.json5"]) {
-            path = path.replaceFirst(~/\.json5$/) { ".json" }
-            filter(Json5Transmogrifier)
-        }
-    }
 }

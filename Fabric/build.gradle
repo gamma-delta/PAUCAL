@@ -1,9 +1,17 @@
 plugins {
+    id 'com.github.johnrengelman.shadow'
+    id 'at.petra-k.PKSubprojPlugin'
     id 'fabric-loom' version '1.0-SNAPSHOT'
 }
-apply plugin: 'com.github.johnrengelman.shadow'
 
-archivesBaseName = getArtifactID("fabric")
+pkSubproj {
+    platform "fabric"
+    modInfo {
+        modID modID
+        mcVersion minecraftVersion
+        modVersion modVersion
+    }
+}
 
 // https://github.com/shedaniel/cloth-config/blob/v6/common/build.gradle
 configurations {
@@ -89,7 +97,6 @@ processResources {
     }
 }
 
-setupJar(this)
 jar.archiveClassifier = 'slim'
 
 shadowJar {

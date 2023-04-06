@@ -16,8 +16,16 @@ buildscript {
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'at.petra-k.PKSubprojPlugin'
 
-archivesBaseName = getArtifactID("forge")
+pkSubproj {
+    platform "common"
+    modInfo {
+        modID modID
+        mcVersion minecraftVersion
+        modVersion modVersion
+    }
+}
 
 configurations {
     shade
@@ -154,7 +162,6 @@ build {
     }
 }
 
-setupJar(this)
 jar.archiveClassifier = 'slim'
 
 shadowJar {
