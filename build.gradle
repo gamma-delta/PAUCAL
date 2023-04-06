@@ -15,13 +15,9 @@ plugins {
     // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
     // Also it looks like property lookups don't work this early
     id 'fabric-loom' version '1.0-SNAPSHOT' apply false
+
+    id 'at.petrak.pkpcpbp' version '0.1.0-pre-3'
 }
-
-
-import at.petrak.gradleutil.MiscUtil
-import at.petrak.gradleutil.filters.FlatteningJson5Transmogrifier
-import at.petrak.gradleutil.filters.Json5Transmogrifier
-import at.petrak.gradleutil.plugin.PKPublishingPlugin
 
 String getArtifactID(String platform) {
     return "${modID}-${platform}-${minecraftVersion}"
@@ -72,18 +68,11 @@ void setupJar(Object project) {
     }
 }
 
-// Hopefully fixes weird ASM clash issues
-configurations.configureEach {
-    resolutionStrategy.capabilitiesResolution.withCapability('org.ow2.asm:asm') {
-        selectHighestVersion()
-    }
-}
-
-
 // The closure is run against each project
 subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+    apply plugin: 'at.petrak.pkpcpbp'
 
     group = "at.petra-k.$modID" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     version = MiscUtil.getVersion(this.project)
@@ -118,5 +107,3 @@ subprojects {
         }
     }
 }
-
-apply plugin: PKPublishingPlugin
