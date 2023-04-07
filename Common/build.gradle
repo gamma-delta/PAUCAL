@@ -1,8 +1,9 @@
 plugins {
-    id 'java'
-    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
-    id 'maven-publish'
-    id 'at.petra-k.PKSubprojPlugin'
+    id "java"
+    id "maven-publish"
+
+    id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT"
+    id "at.petra-k.PKSubprojPlugin"
 }
 
 pkSubproj {
@@ -15,17 +16,17 @@ minecraft {
 
 repositories {
     maven {
-        name = 'Sponge / Mixin'
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
+        name = "Sponge / Mixin"
+        url = "https://repo.spongepowered.org/repository/maven-public/"
     }
 }
 
 dependencies {
-    implementation 'org.testng:testng:7.1.0'
+    implementation "org.testng:testng:7.1.0"
 
-    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    compileOnly group: "org.spongepowered", name: "mixin", version: "0.8.5"
 
     implementation "blue.endless:jankson:$janksonVersion"
 
-    implementation 'org.jetbrains:annotations:16.0.2'
+    implementation "org.jetbrains:annotations:16.0.2"
 }

@@ -1,22 +1,28 @@
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = "https://maven.minecraftforge.net" }
         maven {
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
+            url = "https://repo.spongepowered.org/repository/maven-public/"
             content { includeGroup "org.spongepowered" }
         }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
+        classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
     }
 }
 
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'at.petra-k.PKSubprojPlugin'
+plugins {
+    id "java"
+    id "maven-publish"
+
+    id "com.github.johnrengelman.shadow"
+    id "at.petra-k.PKSubprojPlugin"
+}
+// these plugins don't like being in the decl block
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "org.spongepowered.mixin"
 
 pkSubproj {
     platform "common"
@@ -28,14 +34,14 @@ configurations {
 }
 
 minecraft {
-    mappings channel: 'official', version: minecraftVersion
+    mappings channel: "official", version: minecraftVersion
 
     runs {
         client {
-            workingDirectory project.file('run')
+            workingDirectory project.file("run")
             ideaModule "${rootProject.name}.${project.name}.main"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property "mixin.env.remapRefMap", "true"
+            property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 create(modID) {
                     source sourceSets.main
@@ -45,10 +51,10 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('run')
+            workingDirectory project.file("run")
             ideaModule "${rootProject.name}.${project.name}.main"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property "mixin.env.remapRefMap", "true"
+            property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 create(modID) {
                     source sourceSets.main
@@ -63,12 +69,12 @@ minecraft {
         xplatDatagen {
             parent minecraft.runs.data
 
-            workingDirectory project.file('run')
+            workingDirectory project.file("run")
             ideaModule "${rootProject.name}.${project.name}.main"
-            args '--mod', modID, '--all', '--output', file('../Common/src/generated/resources/'), '--existing', file('../Common/src/main/resources/')
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            property 'paucal.xplat_datagen', 'true'
+            args "--mod", modID, "--all", "--output", file("../Common/src/generated/resources/"), "--existing", file("../Common/src/main/resources/")
+            property "mixin.env.remapRefMap", "true"
+            property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
+            property "paucal.xplat_datagen", "true"
             mods {
                 create(modID) {
                     source sourceSets.main
@@ -80,11 +86,11 @@ minecraft {
         forgeDatagen {
             parent minecraft.runs.data
 
-            workingDirectory project.file('run')
+            workingDirectory project.file("run")
             ideaModule "${rootProject.name}.${project.name}.main"
-            args '--mod', modID, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            args "--mod", modID, "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/")
+            property "mixin.env.remapRefMap", "true"
+            property "mixin.env.refMapRemappingFile", "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 create(modID) {
                     source sourceSets.main
@@ -99,24 +105,24 @@ repositories {
     mavenCentral()
 
     maven {
-        name = 'Sponge / Mixin'
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
+        name = "Sponge / Mixin"
+        url = "https://repo.spongepowered.org/repository/maven-public/"
     }
 }
 
 dependencies {
-    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
+    // Specify the version of Minecraft to use. If this is any group other than "net.minecraft", it is assumed
+    // that the dep is a ForgeGradle "patcher" dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
     compileOnly project(":Common")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 
     shade "blue.endless:jankson:$janksonVersion"
     minecraftLibrary "blue.endless:jankson:$janksonVersion" // make it work in the IDE
 
-    implementation 'org.jetbrains:annotations:16.0.2'
+    implementation "org.jetbrains:annotations:16.0.2"
 }
 
 mixin {
@@ -134,8 +140,8 @@ tasks.withType(JavaCompile) {
 }
 
 sourceSets.main.resources {
-    srcDir 'src/generated/resources'
-    srcDir '../Common/src/generated/resources'
+    srcDir "src/generated/resources"
+    srcDir "../Common/src/generated/resources"
 }
 
 processResources {
@@ -147,7 +153,7 @@ processResources {
     }
 
     // Exclude datagenerator .cache directory
-    exclude '.cache'
+    exclude ".cache"
 }
 
 build {
@@ -157,13 +163,13 @@ build {
     }
 }
 
-jar.archiveClassifier = 'slim'
+jar.archiveClassifier = "slim"
 
 shadowJar {
-    archiveClassifier = ''
+    archiveClassifier = ""
     configurations = [project.configurations.shade]
-    relocate 'blue.endless.jankson', "at.petrak.relocated.jankson"
-    finalizedBy 'reobfShadowJar'
+    relocate "blue.endless.jankson", "at.petrak.relocated.jankson"
+    finalizedBy "reobfShadowJar"
 }
 
 assemble.dependsOn shadowJar

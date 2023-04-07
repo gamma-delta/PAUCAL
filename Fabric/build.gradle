@@ -1,7 +1,10 @@
 plugins {
-    id 'com.github.johnrengelman.shadow'
-    id 'at.petra-k.PKSubprojPlugin'
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id "java"
+    id "maven-publish"
+
+    id "com.github.johnrengelman.shadow"
+    id "at.petra-k.PKSubprojPlugin"
+    id "fabric-loom" version "1.0-SNAPSHOT"
 }
 
 // https://github.com/shedaniel/cloth-config/blob/v6/common/build.gradle
@@ -37,8 +40,8 @@ repositories {
     mavenCentral()
 
     maven {
-        name = 'Sponge / Mixin'
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
+        name = "Sponge / Mixin"
+        url = "https://repo.spongepowered.org/repository/maven-public/"
     }
 
     // Cloth config
@@ -64,7 +67,7 @@ dependencies {
     modApi "me.shedaniel.cloth:cloth-config-fabric:${clothConfigVersion}"
     modApi "com.terraformersmc:modmenu:${modMenuVersion}"
 
-    implementation 'org.jetbrains:annotations:16.0.2'
+    implementation "org.jetbrains:annotations:16.0.2"
 
     shade "blue.endless:jankson:$janksonVersion"
     compileOnly "blue.endless:jankson:$janksonVersion" // equivalent of minecraftLibrary on forge?
@@ -75,8 +78,8 @@ tasks.withType(JavaCompile) {
 }
 
 sourceSets.main.resources {
-    srcDir 'src/generated/resources'
-    srcDir '../Common/src/generated/resources'
+    srcDir "src/generated/resources"
+    srcDir "../Common/src/generated/resources"
 }
 
 processResources {
@@ -89,19 +92,19 @@ processResources {
 }
 
 sourcesJar {
-    from project(":Common").sourceSets.main.allJava
+    // from project(":Common").sourceSets.main.allJava
 }
 
-jar.archiveClassifier = 'slim'
+jar.archiveClassifier = "slim"
 
 shadowJar {
-    archiveClassifier = 'shadow'
+    archiveClassifier = "shadow"
     configurations = [project.configurations.shade]
-    relocate 'blue.endless.jankson', "at.petrak.relocated.jankson"
+    relocate "blue.endless.jankson", "at.petrak.relocated.jankson"
 }
 
 remapJar {
     dependsOn(shadowJar)
     inputFile.set(shadowJar.archiveFile)
-    archiveClassifier = ''
+    archiveClassifier = ""
 }
