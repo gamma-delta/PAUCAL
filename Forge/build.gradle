@@ -20,11 +20,6 @@ apply plugin: 'at.petra-k.PKSubprojPlugin'
 
 pkSubproj {
     platform "common"
-    modInfo {
-        modID modID
-        mcVersion minecraftVersion
-        modVersion modVersion
-    }
 }
 
 configurations {
