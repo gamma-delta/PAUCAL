@@ -26,7 +26,7 @@ dependencies {
 
     compileOnly group: "org.spongepowered", name: "mixin", version: "0.8.5"
 
-    implementation "blue.endless:jankson:$janksonVersion"
+    implementation group: "blue.endless", name: "jankson", version: janksonVersion
 
     implementation "org.jetbrains:annotations:16.0.2"
 }
