@@ -26,8 +26,10 @@ pipeline {
             }
         }
         stage('Publish') {
-            when { anyOf {
-                branch 'main'
+            when {
+                anyOf {
+                    branch 'main'
+                }
             }
             stages {
                 stage('Deploy Previews') {
