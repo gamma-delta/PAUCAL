@@ -9,11 +9,11 @@ buildscript {
 }
 
 plugins {
-    "java"
+    id "java"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
-    id("at.petra-k.PKPlugin") version "0.1.0-pre-37"
-    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-37" apply false
+    id("at.petra-k.PKPlugin") version "0.1.0-pre-41"
+    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-41" apply false
 
     // This needs to be in the root
     // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
@@ -23,11 +23,17 @@ plugins {
 
 pkpcpbp {
     modInfo {
-        val modID: String by project
-        val minecraftVersion: String by project
-        val modVersion: String by project
-        modID(modID)
-        mcVersion(minecraftVersion)
-        modVersion(modVersion)
+        modID(project.modID)
+        mcVersion(project.minecraftVersion)
+        modVersion(project.modVersion)
+    }
+    curseforgeInfo {
+        id 597824
+        stability "alpha"
+        dependencies[]
+    }
+    modrinthInfo {
+        id "TZo2wHFe"
+        stability "alpha"
     }
 }

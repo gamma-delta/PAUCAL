@@ -28,11 +28,18 @@ pipeline {
         stage('Publish') {
             when { anyOf {
                 branch 'main'
-                branch '1.18'
-            }}
-            steps {
-                echo 'Deploying to Maven'
-                sh './gradlew publish publishToDiscord'
+            }
+            stages {
+                stage('Deploy Previews') {
+                    steps {
+                        echo 'Deploying previews to various places'
+                        sh './gradlew publishMaven publishToDiscord'
+                    }
+                }
+                stage('Deploy releases') {
+                    echo 'Maybe deploy releases'
+                    sh './gradlew publishToCurseforge'
+                }
             }
         }
     }
