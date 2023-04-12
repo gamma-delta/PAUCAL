@@ -39,8 +39,10 @@ pipeline {
                     }
                 }
                 stage('Deploy releases') {
-                    echo 'Maybe deploy releases'
-                    sh './gradlew publishToCurseforge'
+                    steps {
+                        echo 'Maybe deploy releases'
+                        sh './gradlew publishToCurseforge'
+                    }
                 }
             }
         }
