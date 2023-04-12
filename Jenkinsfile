@@ -33,7 +33,7 @@ pipeline {
                 stage('Deploy Previews') {
                     steps {
                         echo 'Deploying previews to various places'
-                        sh './gradlew publishMaven publishToDiscord'
+                        sh './gradlew publish publishToDiscord'
                     }
                 }
                 stage('Deploy releases') {
