@@ -10,6 +10,7 @@ pipeline {
     }
     environment {
         discordWebhook = credentials('discordWebhook')
+        curseforgeApiKey = credentials('curseforgeApiKey')
     }
     stages {
         stage('Clean') {
