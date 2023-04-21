@@ -24,10 +24,6 @@ plugins {
 apply plugin: "net.minecraftforge.gradle"
 apply plugin: "org.spongepowered.mixin"
 
-pkSubproj {
-    platform "forge"
-}
-
 configurations {
     shade
     implementation.extendsFrom shade
@@ -176,4 +172,14 @@ assemble.dependsOn shadowJar
 
 reobf {
     shadowJar {}
+}
+
+pkSubproj {
+    platform "forge"
+
+    curseforgeJar project.shadowJar.archiveFile.get()
+    curseforgeDependencies[]
+
+    modrinthJar project.shadowJar.archiveFile.get()
+    modrinthDependencies[]
 }

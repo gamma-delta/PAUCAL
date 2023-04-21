@@ -32,10 +32,6 @@ loom {
     }
 }
 
-pkSubproj {
-    platform "fabric"
-}
-
 repositories {
     mavenCentral()
 
@@ -107,4 +103,13 @@ remapJar {
     dependsOn(shadowJar)
     inputFile.set(shadowJar.archiveFile)
     archiveClassifier = ""
+}
+
+pkSubproj {
+    platform "fabric"
+    curseforgeJar remapJar
+    curseforgeDependencies([])
+
+    modrinthJar remapJar
+    modrinthDependencies([])
 }

@@ -12,8 +12,8 @@ plugins {
     id "java"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
-    id("at.petra-k.PKPlugin") version "0.1.0-pre-47"
-    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-47" apply false
+    id("at.petra-k.PKPlugin") version "0.1.0-pre-49"
+    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-49" apply false
 
     // This needs to be in the root
     // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
@@ -22,6 +22,8 @@ plugins {
 }
 
 pkpcpbp {
+    superDebugInfo true
+
     modInfo {
         modID(project.modID)
         mcVersion(project.minecraftVersion)
@@ -30,10 +32,11 @@ pkpcpbp {
     curseforgeInfo {
         id 597824
         stability "alpha"
-        dependencies[]
+        token(System.getenv("CURSEFORGE_TOKEN"))
     }
     modrinthInfo {
         id "TZo2wHFe"
         stability "alpha"
+        token(System.getenv("MODRINTH_TOKEN"))
     }
 }

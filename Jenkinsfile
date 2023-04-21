@@ -10,7 +10,8 @@ pipeline {
     }
     environment {
         discordWebhook = credentials('discordWebhook')
-        curseforgeApiKey = credentials('curseforgeApiKey')
+        CURSEFORGE_TOKEN = credentials('curseforgeApiKey')
+        MODRINTH_TOKEN = credentials('modrinthApiKey')
     }
     stages {
         stage('Clean') {
