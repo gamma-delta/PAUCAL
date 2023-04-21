@@ -12,8 +12,8 @@ plugins {
     id "java"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
-    id("at.petra-k.PKPlugin") version "0.1.0-pre-57"
-    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-57" apply false
+    id("at.petra-k.PKPlugin") version "0.1.0-pre-59"
+    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-59" apply false
 
     // This needs to be in the root
     // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
