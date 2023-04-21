@@ -107,9 +107,10 @@ remapJar {
 
 pkSubproj {
     platform "fabric"
-    curseforgeJar remapJar
+
+    curseforgeJar remapJar.archiveFile.get()
     curseforgeDependencies([])
 
-    modrinthJar remapJar
+    modrinthJar remapJar.archiveFile.get()
     modrinthDependencies([])
 }

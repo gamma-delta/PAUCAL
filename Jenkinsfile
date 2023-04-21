@@ -43,7 +43,7 @@ pipeline {
                 stage('Deploy releases') {
                     steps {
                         echo 'Maybe deploy releases'
-                        sh './gradlew publishCurseforge publishModrinth'
+                        sh './gradlew --stacktrace publishCurseforge publishModrinth'
                     }
                 }
             }
