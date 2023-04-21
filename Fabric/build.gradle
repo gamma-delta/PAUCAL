@@ -90,10 +90,10 @@ processResources {
 pkSubproj {
     platform "fabric"
 
-    curseforgeJar jar.archiveFile
+    curseforgeJar remapJar.archiveFile
     curseforgeDependencies([])
 
-    modrinthJar jar.archiveFile
+    modrinthJar remapJar.archiveFile
     modrinthDependencies([])
 }
 jar.archiveClassifier = "slim"
