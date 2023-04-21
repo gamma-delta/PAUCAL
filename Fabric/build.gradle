@@ -94,7 +94,9 @@ pkSubproj {
     curseforgeDependencies([])
 
     modrinthJar remapJar.archiveFile
-    modrinthDependencies([])
+    modrinthDependencies([
+            "cloth-config:${clothConfigVersion}+fabric"
+    ])
 }
 jar.archiveClassifier = "slim"
 
