@@ -87,10 +87,15 @@ processResources {
     }
 }
 
-sourcesJar {
-    // from project(":Common").sourceSets.main.allJava
-}
+pkSubproj {
+    platform "fabric"
 
+    curseforgeJar jar.archiveFile
+    curseforgeDependencies([])
+
+    modrinthJar jar.archiveFile
+    modrinthDependencies([])
+}
 jar.archiveClassifier = "slim"
 
 shadowJar {
@@ -103,14 +108,4 @@ remapJar {
     dependsOn(shadowJar)
     inputFile.set(shadowJar.archiveFile)
     archiveClassifier = ""
-}
-
-pkSubproj {
-    platform "fabric"
-
-    curseforgeJar remapJar.archiveFile.get()
-    curseforgeDependencies([])
-
-    modrinthJar remapJar.archiveFile.get()
-    modrinthDependencies([])
 }
