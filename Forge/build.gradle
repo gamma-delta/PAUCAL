@@ -177,9 +177,9 @@ reobf {
 pkSubproj {
     platform "forge"
 
-    curseforgeJar shadowJar.archiveFile
+    curseforgeJar jar.archiveFile
     curseforgeDependencies[]
 
-    modrinthJar shadowJar.archiveFile
+    modrinthJar jar.archiveFile
     modrinthDependencies[]
 }
