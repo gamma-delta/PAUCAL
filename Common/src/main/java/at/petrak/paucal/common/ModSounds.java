@@ -16,7 +16,7 @@ public class ModSounds {
     public static SoundEvent DUMMY = sound(HeadpatSoundInstance.DUMMY_LOCATION);
 
     private static SoundEvent sound(String name) {
-        var sound = new SoundEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
+        var sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
         SOUNDS.add(sound);
         return sound;
     }

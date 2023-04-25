@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -32,7 +33,7 @@ public class FabricPaucalInit implements ModInitializer {
 
         ModAdvancementTriggers.registerTriggers();
 
-        ModSounds.init(bind(Registry.SOUND_EVENT));
+        ModSounds.init(bind(BuiltInRegistries.SOUND_EVENT));
 
         UseEntityCallback.EVENT.register(PatPat::onPat);
         CommandRegistrationCallback.EVENT.register((dp, _registry, _env) -> ModCommands.register(dp));
