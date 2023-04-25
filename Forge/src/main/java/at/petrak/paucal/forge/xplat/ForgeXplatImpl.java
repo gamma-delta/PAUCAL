@@ -32,12 +32,6 @@ public class ForgeXplatImpl implements IXplatAbstractions {
     }
 
     @Override
-    public void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path) {
-        // this is dumb
-        ((ForgeAccessorRecipeProvider) new RecipeProvider(generator)).paucal$saveRecipeAdvancement(cache, json, path);
-    }
-
-    @Override
     public void sendPacketNearS2C(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet) {
         ForgePacketHandler.getNetwork().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(
             pos.x, pos.y, pos.z, radius * radius, dimension.dimension()

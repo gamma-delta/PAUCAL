@@ -5,7 +5,6 @@
     "package": "at.petrak.paucal.api.mixin",
     "mixins": [
         "AccessorCriteriaTriggers",
-        "AccessorRecipeProvider",
         "AccessorTagsProvider"
     ],
     "refmap": "paucal.mixins.refmap.json"

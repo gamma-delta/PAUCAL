@@ -2,6 +2,7 @@ package at.petrak.paucal.common;
 
 import at.petrak.paucal.api.PaucalAPI;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
@@ -17,7 +18,7 @@ public class ModStats {
 
     private static ResourceLocation makeCustomStat(String pKey, StatFormatter pFormatter) {
         ResourceLocation resourcelocation = new ResourceLocation(PaucalAPI.MOD_ID, pKey);
-        Registry.register(Registry.CUSTOM_STAT, pKey, resourcelocation);
+        Registry.register(BuiltInRegistries.CUSTOM_STAT, pKey, resourcelocation);
         Stats.CUSTOM.get(resourcelocation, pFormatter);
         return resourcelocation;
     }

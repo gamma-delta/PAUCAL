@@ -21,8 +21,6 @@ public interface IXplatAbstractions {
 
     @Nullable SoundEvent getSoundByID(ResourceLocation id);
 
-    void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path);
-
     void sendPacketToPlayerS2C(ServerPlayer target, PaucalMessage packet);
 
     void sendPacketNearS2C(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet);
