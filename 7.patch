@@ -1,0 +1,1224 @@
+From c87f09934235c3028b47bd855eac56159274fa39 Mon Sep 17 00:00:00 2001
+From: Cypher121 <8020624+Cypher121@users.noreply.github.com>
+Date: Tue, 25 Apr 2023 16:57:27 +0200
+Subject: [PATCH 1/2] Partial 1.19.4 port
+
+---
+ .../api/datagen/PaucalBlockTagProvider.java   |  11 +-
+ .../api/datagen/PaucalItemTagProvider.java    |   8 +-
+ .../api/datagen/PaucalRecipeProvider.java     | 172 +++++++-----------
+ .../api/mixin/AccessorRecipeProvider.java     |  16 --
+ .../at/petrak/paucal/common/ModSounds.java    |   2 +-
+ .../at/petrak/paucal/common/ModStats.java     |   3 +-
+ .../paucal/xplat/IXplatAbstractions.java      |   2 -
+ Fabric/gradle.properties                      |   8 +-
+ .../at/petrak/paucal/FabricPaucalInit.java    |   3 +-
+ .../paucal/fabric/xplat/FabricXplatImpl.java  |  15 +-
+ Forge/gradle.properties                       |   2 +-
+ .../PaucalBlockStateAndModelProvider.java     |   7 +-
+ .../datagen/PaucalItemModelProvider.java      |  14 +-
+ .../paucal/forge/xplat/ForgeXplatImpl.java    |   6 -
+ gradle.properties                             |   2 +-
+ 15 files changed, 107 insertions(+), 164 deletions(-)
+ delete mode 100644 Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java
+
+diff --git a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java
+index 7ae1871..64ece3c 100644
+--- a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java
++++ b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java
+@@ -1,15 +1,18 @@
+ package at.petrak.paucal.api.datagen;
+ 
+-import net.minecraft.core.Registry;
+-import net.minecraft.data.DataGenerator;
++import net.minecraft.core.HolderLookup;
++import net.minecraft.core.registries.Registries;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.data.tags.TagsProvider;
+ import net.minecraft.world.level.block.Block;
+ 
++import java.util.concurrent.CompletableFuture;
++
+ /**
+  * {@code PaucalBlocklTagProvider}
+  */
+ abstract public class PaucalBlockTagProvider extends TagsProvider<Block> {
+-    protected PaucalBlockTagProvider(DataGenerator gen) {
+-        super(gen, Registry.BLOCK);
++    protected PaucalBlockTagProvider(PackOutput out, CompletableFuture<HolderLookup.Provider> provider) {
++        super(out, Registries.BLOCK, provider);
+     }
+ }
+diff --git a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java
+index b7f2cb5..2906823 100644
+--- a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java
++++ b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java
+@@ -1,8 +1,11 @@
+ package at.petrak.paucal.api.datagen;
+ 
+ import at.petrak.paucal.api.mixin.AccessorTagsProvider;
++import net.minecraft.core.HolderLookup;
+ import net.minecraft.core.Registry;
++import net.minecraft.core.registries.Registries;
+ import net.minecraft.data.DataGenerator;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.data.tags.TagsProvider;
+ import net.minecraft.tags.TagBuilder;
+ import net.minecraft.tags.TagEntry;
+@@ -10,14 +13,15 @@
+ import net.minecraft.world.item.Item;
+ import net.minecraft.world.level.block.Block;
+ 
++import java.util.concurrent.CompletableFuture;
+ import java.util.function.Function;
+ 
+ // ForgeCopy, mostly
+ abstract public class PaucalItemTagProvider extends TagsProvider<Item> {
+     protected final Function<TagKey<Block>, TagBuilder> getBuilder;
+ 
+-    protected PaucalItemTagProvider(DataGenerator gen, TagsProvider<Block> getBuilder) {
+-        super(gen, Registry.ITEM);
++    protected PaucalItemTagProvider(PackOutput out, CompletableFuture<HolderLookup.Provider> provider, TagsProvider<Block> getBuilder) {
++        super(out, Registries.ITEM, provider);
+         this.getBuilder = ((AccessorTagsProvider<Block>) getBuilder)::paucal$getOrCreateRawBuilder;
+     }
+ 
+diff --git a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java
+index 88a6b39..9044a67 100644
+--- a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java
++++ b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java
+@@ -1,19 +1,11 @@
+ package at.petrak.paucal.api.datagen;
+ 
+-import at.petrak.paucal.api.mixin.AccessorRecipeProvider;
+-import at.petrak.paucal.xplat.IXplatAbstractions;
+-import com.google.common.collect.Sets;
+-import com.google.gson.JsonObject;
+ import net.minecraft.advancements.critereon.EntityPredicate;
+ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+ import net.minecraft.advancements.critereon.ItemPredicate;
+ import net.minecraft.advancements.critereon.MinMaxBounds;
+-import net.minecraft.data.CachedOutput;
+-import net.minecraft.data.DataGenerator;
+-import net.minecraft.data.recipes.FinishedRecipe;
+-import net.minecraft.data.recipes.RecipeProvider;
+-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
++import net.minecraft.data.PackOutput;
++import net.minecraft.data.recipes.*;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.tags.TagKey;
+ import net.minecraft.world.item.Item;
+@@ -21,91 +13,67 @@
+ import net.minecraft.world.level.ItemLike;
+ import org.jetbrains.annotations.Nullable;
+ 
+-import java.nio.file.Path;
+-import java.util.Set;
+ import java.util.function.Consumer;
+ 
+ abstract public class PaucalRecipeProvider extends RecipeProvider {
+-    public final DataGenerator generator;
++    public final PackOutput packOutput;
+     protected final String modid;
+ 
+ 
+-    public PaucalRecipeProvider(DataGenerator gen, String modid) {
+-        super(gen);
+-        this.generator = gen;
++    public PaucalRecipeProvider(PackOutput packOutput, String modid) {
++        super(packOutput);
++        this.packOutput = packOutput;
+         this.modid = modid;
+     }
+ 
+-    /**
+-     * [VanillaCopy] RecipeProvider, but changed to use our custom protected method and not the
+-     * stupid private static one.
+-     */
+-    @Override
+-    public void run(CachedOutput cache) {
+-        Path path = this.generator.getOutputFolder();
+-        Set<ResourceLocation> set = Sets.newHashSet();
+-        makeRecipes((recipeJsonProvider) -> {
+-            if (!set.add(recipeJsonProvider.getId())) {
+-                throw new IllegalStateException("Duplicate recipe " + recipeJsonProvider.getId());
+-            } else {
+-                AccessorRecipeProvider.paucal$SaveRecipe(cache, recipeJsonProvider.serializeRecipe(), path.resolve(
+-                    "data/" + recipeJsonProvider.getId().getNamespace() + "/recipes/" + recipeJsonProvider.getId()
+-                        .getPath() + ".json"));
+-                JsonObject jsonObject = recipeJsonProvider.serializeAdvancement();
+-                if (jsonObject != null) {
+-                    IXplatAbstractions.INSTANCE.saveRecipeAdvancement(this.generator, cache, jsonObject, path.resolve(
+-                        "data/"
+-                            + recipeJsonProvider.getId().getNamespace()
+-                            + "/advancements/" +
+-                            recipeJsonProvider.getAdvancementId().getPath()
+-                            + ".json"));
+-                }
+-            }
+-        });
+-    }
+-
+-    protected abstract void makeRecipes(Consumer<FinishedRecipe> recipes);
+-
+-    protected ShapedRecipeBuilder ring(ItemLike out, int count, Ingredient outer, @Nullable Ingredient inner) {
+-        return ringCornered(out, count, outer, outer, inner);
++    protected ShapedRecipeBuilder ring(RecipeCategory category, ItemLike out, int count, Ingredient outer,
++                                       @Nullable Ingredient inner) {
++        return ringCornered(category, out, count, outer, outer, inner);
+     }
+ 
+-    protected ShapedRecipeBuilder ring(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
+-        return ring(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ring(RecipeCategory category, ItemLike out, int count, ItemLike outer,
++                                       @Nullable ItemLike inner) {
++        return ring(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ring(ItemLike out, int count, TagKey<Item> outer, @Nullable TagKey<Item> inner) {
+-        return ring(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ring(RecipeCategory category, ItemLike out, int count, TagKey<Item> outer,
++                                       @Nullable TagKey<Item> inner) {
++        return ring(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, Ingredient outer,
+-        @Nullable Ingredient inner) {
+-        return ringCornered(out, count, outer, null, inner);
++    protected ShapedRecipeBuilder ringCornerless(RecipeCategory category, ItemLike out, int count, Ingredient outer,
++                                                 @Nullable Ingredient inner) {
++        return ringCornered(category, out, count, outer, null, inner);
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
+-        return ringCornerless(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornerless(RecipeCategory category, ItemLike out, int count, ItemLike outer,
++                                                 @Nullable ItemLike inner) {
++        return ringCornerless(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, TagKey<Item> outer,
+-        @Nullable TagKey<Item> inner) {
+-        return ringCornerless(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornerless(RecipeCategory category, ItemLike out, int count, TagKey<Item> outer,
++                                                 @Nullable TagKey<Item> inner) {
++        return ringCornerless(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, Ingredient outer, @Nullable Ingredient inner) {
+-        return ringCornered(out, count, outer, outer, inner);
++    protected ShapedRecipeBuilder ringAll(RecipeCategory category, ItemLike out, int count, Ingredient outer,
++                                          @Nullable Ingredient inner) {
++        return ringCornered(category, out, count, outer, outer, inner);
+     }
+ 
+-    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
+-        return ringAll(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringAll(RecipeCategory category, ItemLike out, int count, ItemLike outer,
++                                          @Nullable ItemLike inner) {
++        return ringAll(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, TagKey<Item> outer, @Nullable TagKey<Item> inner) {
+-        return ringAll(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringAll(RecipeCategory category, ItemLike out, int count, TagKey<Item> outer,
++                                          @Nullable TagKey<Item> inner) {
++        return ringAll(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable Ingredient cardinal,
+-        @Nullable Ingredient diagonal, @Nullable Ingredient inner) {
++    protected ShapedRecipeBuilder ringCornered(RecipeCategory category, ItemLike out, int count,
++                                               @Nullable Ingredient cardinal, @Nullable Ingredient diagonal,
++                                               @Nullable Ingredient inner) {
+         if (cardinal == null && diagonal == null && inner == null) {
+             throw new IllegalArgumentException("at least one ingredient must be non-null");
+         }
+@@ -113,7 +81,7 @@ protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable In
+             throw new IllegalArgumentException("if inner is non-null, either cardinal or diagonal must not be");
+         }
+ 
+-        var builder = ShapedRecipeBuilder.shaped(out, count);
++        var builder = ShapedRecipeBuilder.shaped(category, out, count);
+         var C = ' ';
+         if (cardinal != null) {
+             builder.define('C', cardinal);
+@@ -131,59 +99,59 @@ protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable In
+         }
+ 
+         builder
+-            .pattern(String.format("%c%c%c", D, C, D))
+-            .pattern(String.format("%c%c%c", C, I, C))
+-            .pattern(String.format("%c%c%c", D, C, D));
++                .pattern(String.format("%c%c%c", D, C, D))
++                .pattern(String.format("%c%c%c", C, I, C))
++                .pattern(String.format("%c%c%c", D, C, D));
+ 
+         return builder;
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable ItemLike cardinal,
+-        @Nullable ItemLike diagonal, @Nullable ItemLike inner) {
+-        return ringCornered(out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornered(RecipeCategory category, ItemLike out, int count, @Nullable ItemLike cardinal,
++                                               @Nullable ItemLike diagonal, @Nullable ItemLike inner) {
++        return ringCornered(category, out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable TagKey<Item> cardinal,
+-        @Nullable TagKey<Item> diagonal, @Nullable TagKey<Item> inner) {
+-        return ringCornered(out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornered(RecipeCategory category, ItemLike out, int count, @Nullable TagKey<Item> cardinal,
++                                               @Nullable TagKey<Item> diagonal, @Nullable TagKey<Item> inner) {
++        return ringCornered(category, out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder stack(ItemLike out, int count, Ingredient top, Ingredient bottom) {
+-        return ShapedRecipeBuilder.shaped(out, count)
+-            .define('T', top)
+-            .define('B', bottom)
+-            .pattern("T")
+-            .pattern("B");
++    protected ShapedRecipeBuilder stack(RecipeCategory category, ItemLike out, int count, Ingredient top, Ingredient bottom) {
++        return ShapedRecipeBuilder.shaped(category, out, count)
++                .define('T', top)
++                .define('B', bottom)
++                .pattern("T")
++                .pattern("B");
+     }
+ 
+-    protected ShapedRecipeBuilder stack(ItemLike out, int count, ItemLike top, ItemLike bottom) {
+-        return stack(out, count, Ingredient.of(top), Ingredient.of(bottom));
++    protected ShapedRecipeBuilder stack(RecipeCategory category, ItemLike out, int count, ItemLike top, ItemLike bottom) {
++        return stack(category, out, count, Ingredient.of(top), Ingredient.of(bottom));
+     }
+ 
+-    protected ShapedRecipeBuilder stack(ItemLike out, int count, TagKey<Item> top, TagKey<Item> bottom) {
+-        return stack(out, count, Ingredient.of(top), Ingredient.of(bottom));
++    protected ShapedRecipeBuilder stack(RecipeCategory category, ItemLike out, int count, TagKey<Item> top, TagKey<Item> bottom) {
++        return stack(category, out, count, Ingredient.of(top), Ingredient.of(bottom));
+     }
+ 
+ 
+-    protected ShapedRecipeBuilder stick(ItemLike out, int count, Ingredient input) {
+-        return stack(out, count, input, input);
++    protected ShapedRecipeBuilder stick(RecipeCategory category, ItemLike out, int count, Ingredient input) {
++        return stack(category, out, count, input, input);
+     }
+ 
+-    protected ShapedRecipeBuilder stick(ItemLike out, int count, ItemLike input) {
+-        return stick(out, count, Ingredient.of(input));
++    protected ShapedRecipeBuilder stick(RecipeCategory category, ItemLike out, int count, ItemLike input) {
++        return stick(category, out, count, Ingredient.of(input));
+     }
+ 
+-    protected ShapedRecipeBuilder stick(ItemLike out, int count, TagKey<Item> input) {
+-        return stick(out, count, Ingredient.of(input));
++    protected ShapedRecipeBuilder stick(RecipeCategory category, ItemLike out, int count, TagKey<Item> input) {
++        return stick(category, out, count, Ingredient.of(input));
+     }
+ 
+     /**
+      * @param largeSize True for a 3x3, false for a 2x2
+      */
+-    protected void packing(ItemLike free, ItemLike compressed, String freeName, boolean largeSize,
+-        Consumer<FinishedRecipe> recipes) {
+-        var pack = ShapedRecipeBuilder.shaped(compressed)
+-            .define('X', free);
++    protected void packing(RecipeCategory category, ItemLike free, ItemLike compressed, String freeName, boolean largeSize,
++                           Consumer<FinishedRecipe> recipes) {
++        var pack = ShapedRecipeBuilder.shaped(category, compressed)
++                .define('X', free);
+         if (largeSize) {
+             pack.pattern("XXX").pattern("XXX").pattern("XXX");
+         } else {
+@@ -191,9 +159,9 @@ protected void packing(ItemLike free, ItemLike compressed, String freeName, bool
+         }
+         pack.unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_packing"));
+ 
+-        ShapelessRecipeBuilder.shapeless(free, largeSize ? 9 : 4)
+-            .requires(compressed)
+-            .unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_unpacking"));
++        ShapelessRecipeBuilder.shapeless(category, free, largeSize ? 9 : 4)
++                .requires(compressed)
++                .unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_unpacking"));
+     }
+ 
+     protected ResourceLocation modLoc(String path) {
+@@ -228,6 +196,6 @@ protected static InventoryChangeTrigger.TriggerInstance hasItem(TagKey<Item> p_2
+      */
+     protected static InventoryChangeTrigger.TriggerInstance paucalInventoryTrigger(ItemPredicate... $$0) {
+         return new InventoryChangeTrigger.TriggerInstance(EntityPredicate.Composite.ANY, MinMaxBounds.Ints.ANY,
+-            MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, $$0);
++                MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, $$0);
+     }
+ }
+diff --git a/Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java b/Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java
+deleted file mode 100644
+index f2db70a..0000000
+--- a/Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java
++++ /dev/null
+@@ -1,16 +0,0 @@
+-package at.petrak.paucal.api.mixin;
+-
+-import com.google.gson.JsonObject;
+-import net.minecraft.data.CachedOutput;
+-import net.minecraft.data.recipes.RecipeProvider;
+-import org.spongepowered.asm.mixin.Mixin;
+-import org.spongepowered.asm.mixin.gen.Invoker;
+-
+-import java.nio.file.Path;
+-
+-@Mixin(RecipeProvider.class)
+-public interface AccessorRecipeProvider {
+-    @Invoker("saveRecipe")
+-    static void paucal$SaveRecipe(CachedOutput $$0, JsonObject $$1, Path $$2) {
+-    }
+-}
+diff --git a/Common/src/main/java/at/petrak/paucal/common/ModSounds.java b/Common/src/main/java/at/petrak/paucal/common/ModSounds.java
+index 26adfc3..f220662 100644
+--- a/Common/src/main/java/at/petrak/paucal/common/ModSounds.java
++++ b/Common/src/main/java/at/petrak/paucal/common/ModSounds.java
+@@ -16,7 +16,7 @@ public class ModSounds {
+     public static SoundEvent DUMMY = sound(HeadpatSoundInstance.DUMMY_LOCATION);
+ 
+     private static SoundEvent sound(String name) {
+-        var sound = new SoundEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
++        var sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
+         SOUNDS.add(sound);
+         return sound;
+     }
+diff --git a/Common/src/main/java/at/petrak/paucal/common/ModStats.java b/Common/src/main/java/at/petrak/paucal/common/ModStats.java
+index 8f236a9..e2a1a0c 100644
+--- a/Common/src/main/java/at/petrak/paucal/common/ModStats.java
++++ b/Common/src/main/java/at/petrak/paucal/common/ModStats.java
+@@ -2,6 +2,7 @@
+ 
+ import at.petrak.paucal.api.PaucalAPI;
+ import net.minecraft.core.Registry;
++import net.minecraft.core.registries.BuiltInRegistries;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.stats.StatFormatter;
+ import net.minecraft.stats.Stats;
+@@ -17,7 +18,7 @@ public static void register() {
+ 
+     private static ResourceLocation makeCustomStat(String pKey, StatFormatter pFormatter) {
+         ResourceLocation resourcelocation = new ResourceLocation(PaucalAPI.MOD_ID, pKey);
+-        Registry.register(Registry.CUSTOM_STAT, pKey, resourcelocation);
++        Registry.register(BuiltInRegistries.CUSTOM_STAT, pKey, resourcelocation);
+         Stats.CUSTOM.get(resourcelocation, pFormatter);
+         return resourcelocation;
+     }
+diff --git a/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java b/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java
+index a0fa06e..46d19fe 100644
+--- a/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java
++++ b/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java
+@@ -21,8 +21,6 @@ public interface IXplatAbstractions {
+ 
+     @Nullable SoundEvent getSoundByID(ResourceLocation id);
+ 
+-    void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path);
+-
+     void sendPacketToPlayerS2C(ServerPlayer target, PaucalMessage packet);
+ 
+     void sendPacketNearS2C(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet);
+diff --git a/Fabric/gradle.properties b/Fabric/gradle.properties
+index 8b41501..4560df2 100644
+--- a/Fabric/gradle.properties
++++ b/Fabric/gradle.properties
+@@ -1,5 +1,5 @@
+-fabricVersion=0.64.0+1.19.2
+-fabricLoaderVersion=0.14.10
++fabricVersion=0.79.0+1.19.4
++fabricLoaderVersion=0.14.19
+ 
+-clothConfigVersion=8.2.88
+-modMenuVersion=4.2.0-beta.2
+\ No newline at end of file
++clothConfigVersion=10.0.96
++modMenuVersion=6.2.1
+\ No newline at end of file
+diff --git a/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java b/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java
+index 4197bec..5fcf5d6 100644
+--- a/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java
++++ b/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java
+@@ -15,6 +15,7 @@
+ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+ import net.minecraft.core.Registry;
++import net.minecraft.core.registries.BuiltInRegistries;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.world.entity.player.Player;
+ 
+@@ -32,7 +33,7 @@ public void onInitialize() {
+ 
+         ModAdvancementTriggers.registerTriggers();
+ 
+-        ModSounds.init(bind(Registry.SOUND_EVENT));
++        ModSounds.init(bind(BuiltInRegistries.SOUND_EVENT));
+ 
+         UseEntityCallback.EVENT.register(PatPat::onPat);
+         CommandRegistrationCallback.EVENT.register((dp, _registry, _env) -> ModCommands.register(dp));
+diff --git a/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java b/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java
+index 9112486..85401c9 100644
+--- a/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java
++++ b/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java
+@@ -3,13 +3,9 @@
+ import at.petrak.paucal.api.msg.PaucalMessage;
+ import at.petrak.paucal.xplat.IXplatAbstractions;
+ import at.petrak.paucal.xplat.Platform;
+-import com.google.gson.JsonObject;
+ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+-import net.minecraft.core.Registry;
+-import net.minecraft.data.CachedOutput;
+-import net.minecraft.data.DataGenerator;
+-import net.minecraft.data.recipes.RecipeProvider;
++import net.minecraft.core.registries.BuiltInRegistries;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.server.level.ServerPlayer;
+@@ -17,8 +13,6 @@
+ import net.minecraft.world.phys.Vec3;
+ import org.jetbrains.annotations.Nullable;
+ 
+-import java.nio.file.Path;
+-
+ public class FabricXplatImpl implements IXplatAbstractions {
+     @Override
+     public Platform platform() {
+@@ -27,12 +21,7 @@ public Platform platform() {
+ 
+     @Override
+     public @Nullable SoundEvent getSoundByID(ResourceLocation id) {
+-        return Registry.SOUND_EVENT.get(id);
+-    }
+-
+-    @Override
+-    public void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path) {
+-        RecipeProvider.saveAdvancement(cache, json, path);
++        return BuiltInRegistries.SOUND_EVENT.get(id);
+     }
+ 
+     @Override
+diff --git a/Forge/gradle.properties b/Forge/gradle.properties
+index af9a7bf..34d5a46 100644
+--- a/Forge/gradle.properties
++++ b/Forge/gradle.properties
+@@ -1 +1 @@
+-forgeVersion=43.1.47
++forgeVersion=45.0.49
+diff --git a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java
+index 58b673d..5bc57a6 100644
+--- a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java
++++ b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java
+@@ -1,15 +1,16 @@
+ package at.petrak.paucal.api.forge.datagen;
+ 
+ import net.minecraft.data.DataGenerator;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.world.level.block.Block;
+ import net.minecraftforge.client.model.generators.BlockModelBuilder;
+ import net.minecraftforge.client.model.generators.BlockStateProvider;
+ import net.minecraftforge.common.data.ExistingFileHelper;
+ 
+ public abstract class PaucalBlockStateAndModelProvider extends BlockStateProvider {
+-    public PaucalBlockStateAndModelProvider(DataGenerator gen, String modid,
+-        ExistingFileHelper exFileHelper) {
+-        super(gen, modid, exFileHelper);
++    public PaucalBlockStateAndModelProvider(PackOutput out, String modid,
++                                            ExistingFileHelper exFileHelper) {
++        super(out, modid, exFileHelper);
+     }
+ 
+     protected void blockAndItem(Block block, BlockModelBuilder model) {
+diff --git a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java
+index 35da594..8d0916c 100644
+--- a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java
++++ b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java
+@@ -1,20 +1,20 @@
+ package at.petrak.paucal.api.forge.datagen;
+ 
+-import net.minecraft.core.Registry;
+-import net.minecraft.data.DataGenerator;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.world.item.Item;
+ import net.minecraftforge.client.model.generators.ItemModelProvider;
+ import net.minecraftforge.common.data.ExistingFileHelper;
++import net.minecraftforge.registries.ForgeRegistries;
+ 
+ public abstract class PaucalItemModelProvider extends ItemModelProvider {
+-    public PaucalItemModelProvider(DataGenerator generator, String modid,
+-        ExistingFileHelper existingFileHelper) {
+-        super(generator, modid, existingFileHelper);
++    public PaucalItemModelProvider(PackOutput out, String modid,
++                                   ExistingFileHelper existingFileHelper) {
++        super(out, modid, existingFileHelper);
+     }
+ 
+     protected void simpleItem(Item item) {
+-        simpleItem(Registry.ITEM.getKey(item));
++        simpleItem(ForgeRegistries.ITEMS.getKey(item));
+     }
+ 
+     protected void simpleItem(ResourceLocation path) {
+@@ -23,7 +23,7 @@ protected void simpleItem(ResourceLocation path) {
+     }
+ 
+     protected void brandishedItem(Item item) {
+-        brandishedItem(Registry.ITEM.getKey(item));
++        brandishedItem(ForgeRegistries.ITEMS.getKey(item));
+     }
+ 
+     protected void brandishedItem(ResourceLocation path) {
+diff --git a/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java b/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java
+index bfb931e..c353934 100644
+--- a/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java
++++ b/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java
+@@ -31,12 +31,6 @@ public Platform platform() {
+         return ForgeRegistries.SOUND_EVENTS.getValue(id);
+     }
+ 
+-    @Override
+-    public void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path) {
+-        // this is dumb
+-        ((ForgeAccessorRecipeProvider) new RecipeProvider(generator)).paucal$saveRecipeAdvancement(cache, json, path);
+-    }
+-
+     @Override
+     public void sendPacketNearS2C(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet) {
+         ForgePacketHandler.getNetwork().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(
+diff --git a/gradle.properties b/gradle.properties
+index 23b9dd4..9569a5f 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -6,7 +6,7 @@ org.gradle.daemon=false
+ modID=paucal
+ modName=PAUCAL
+ 
+-minecraftVersion=1.19.2
++minecraftVersion=1.19.4
+ modVersion=0.6.0
+ 
+ loomVersion=1.0-SNAPSHOT
+
+From c08174a4c61e932e847003b9165bd9d6757d67df Mon Sep 17 00:00:00 2001
+From: Cypher121 <8020624+Cypher121@users.noreply.github.com>
+Date: Tue, 25 Apr 2023 16:57:27 +0200
+Subject: [PATCH 2/2] Partial 1.19.4 port
+
+---
+ .../api/datagen/PaucalBlockTagProvider.java   |  11 +-
+ .../api/datagen/PaucalItemTagProvider.java    |   8 +-
+ .../api/datagen/PaucalRecipeProvider.java     | 172 +++++++-----------
+ .../api/mixin/AccessorRecipeProvider.java     |  16 --
+ .../at/petrak/paucal/common/ModSounds.java    |   2 +-
+ .../at/petrak/paucal/common/ModStats.java     |   3 +-
+ .../paucal/xplat/IXplatAbstractions.java      |   2 -
+ .../main/resources/paucal_xplat.mixins.json   |   1 -
+ Fabric/gradle.properties                      |   8 +-
+ .../at/petrak/paucal/FabricPaucalInit.java    |   3 +-
+ .../paucal/fabric/xplat/FabricXplatImpl.java  |  15 +-
+ Forge/gradle.properties                       |   2 +-
+ .../PaucalBlockStateAndModelProvider.java     |   7 +-
+ .../datagen/PaucalItemModelProvider.java      |  14 +-
+ .../paucal/forge/xplat/ForgeXplatImpl.java    |   6 -
+ gradle.properties                             |   2 +-
+ 16 files changed, 107 insertions(+), 165 deletions(-)
+ delete mode 100644 Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java
+
+diff --git a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java
+index 7ae1871..64ece3c 100644
+--- a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java
++++ b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalBlockTagProvider.java
+@@ -1,15 +1,18 @@
+ package at.petrak.paucal.api.datagen;
+ 
+-import net.minecraft.core.Registry;
+-import net.minecraft.data.DataGenerator;
++import net.minecraft.core.HolderLookup;
++import net.minecraft.core.registries.Registries;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.data.tags.TagsProvider;
+ import net.minecraft.world.level.block.Block;
+ 
++import java.util.concurrent.CompletableFuture;
++
+ /**
+  * {@code PaucalBlocklTagProvider}
+  */
+ abstract public class PaucalBlockTagProvider extends TagsProvider<Block> {
+-    protected PaucalBlockTagProvider(DataGenerator gen) {
+-        super(gen, Registry.BLOCK);
++    protected PaucalBlockTagProvider(PackOutput out, CompletableFuture<HolderLookup.Provider> provider) {
++        super(out, Registries.BLOCK, provider);
+     }
+ }
+diff --git a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java
+index b7f2cb5..2906823 100644
+--- a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java
++++ b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalItemTagProvider.java
+@@ -1,8 +1,11 @@
+ package at.petrak.paucal.api.datagen;
+ 
+ import at.petrak.paucal.api.mixin.AccessorTagsProvider;
++import net.minecraft.core.HolderLookup;
+ import net.minecraft.core.Registry;
++import net.minecraft.core.registries.Registries;
+ import net.minecraft.data.DataGenerator;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.data.tags.TagsProvider;
+ import net.minecraft.tags.TagBuilder;
+ import net.minecraft.tags.TagEntry;
+@@ -10,14 +13,15 @@
+ import net.minecraft.world.item.Item;
+ import net.minecraft.world.level.block.Block;
+ 
++import java.util.concurrent.CompletableFuture;
+ import java.util.function.Function;
+ 
+ // ForgeCopy, mostly
+ abstract public class PaucalItemTagProvider extends TagsProvider<Item> {
+     protected final Function<TagKey<Block>, TagBuilder> getBuilder;
+ 
+-    protected PaucalItemTagProvider(DataGenerator gen, TagsProvider<Block> getBuilder) {
+-        super(gen, Registry.ITEM);
++    protected PaucalItemTagProvider(PackOutput out, CompletableFuture<HolderLookup.Provider> provider, TagsProvider<Block> getBuilder) {
++        super(out, Registries.ITEM, provider);
+         this.getBuilder = ((AccessorTagsProvider<Block>) getBuilder)::paucal$getOrCreateRawBuilder;
+     }
+ 
+diff --git a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java
+index 88a6b39..9044a67 100644
+--- a/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java
++++ b/Common/src/main/java/at/petrak/paucal/api/datagen/PaucalRecipeProvider.java
+@@ -1,19 +1,11 @@
+ package at.petrak.paucal.api.datagen;
+ 
+-import at.petrak.paucal.api.mixin.AccessorRecipeProvider;
+-import at.petrak.paucal.xplat.IXplatAbstractions;
+-import com.google.common.collect.Sets;
+-import com.google.gson.JsonObject;
+ import net.minecraft.advancements.critereon.EntityPredicate;
+ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+ import net.minecraft.advancements.critereon.ItemPredicate;
+ import net.minecraft.advancements.critereon.MinMaxBounds;
+-import net.minecraft.data.CachedOutput;
+-import net.minecraft.data.DataGenerator;
+-import net.minecraft.data.recipes.FinishedRecipe;
+-import net.minecraft.data.recipes.RecipeProvider;
+-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
++import net.minecraft.data.PackOutput;
++import net.minecraft.data.recipes.*;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.tags.TagKey;
+ import net.minecraft.world.item.Item;
+@@ -21,91 +13,67 @@
+ import net.minecraft.world.level.ItemLike;
+ import org.jetbrains.annotations.Nullable;
+ 
+-import java.nio.file.Path;
+-import java.util.Set;
+ import java.util.function.Consumer;
+ 
+ abstract public class PaucalRecipeProvider extends RecipeProvider {
+-    public final DataGenerator generator;
++    public final PackOutput packOutput;
+     protected final String modid;
+ 
+ 
+-    public PaucalRecipeProvider(DataGenerator gen, String modid) {
+-        super(gen);
+-        this.generator = gen;
++    public PaucalRecipeProvider(PackOutput packOutput, String modid) {
++        super(packOutput);
++        this.packOutput = packOutput;
+         this.modid = modid;
+     }
+ 
+-    /**
+-     * [VanillaCopy] RecipeProvider, but changed to use our custom protected method and not the
+-     * stupid private static one.
+-     */
+-    @Override
+-    public void run(CachedOutput cache) {
+-        Path path = this.generator.getOutputFolder();
+-        Set<ResourceLocation> set = Sets.newHashSet();
+-        makeRecipes((recipeJsonProvider) -> {
+-            if (!set.add(recipeJsonProvider.getId())) {
+-                throw new IllegalStateException("Duplicate recipe " + recipeJsonProvider.getId());
+-            } else {
+-                AccessorRecipeProvider.paucal$SaveRecipe(cache, recipeJsonProvider.serializeRecipe(), path.resolve(
+-                    "data/" + recipeJsonProvider.getId().getNamespace() + "/recipes/" + recipeJsonProvider.getId()
+-                        .getPath() + ".json"));
+-                JsonObject jsonObject = recipeJsonProvider.serializeAdvancement();
+-                if (jsonObject != null) {
+-                    IXplatAbstractions.INSTANCE.saveRecipeAdvancement(this.generator, cache, jsonObject, path.resolve(
+-                        "data/"
+-                            + recipeJsonProvider.getId().getNamespace()
+-                            + "/advancements/" +
+-                            recipeJsonProvider.getAdvancementId().getPath()
+-                            + ".json"));
+-                }
+-            }
+-        });
+-    }
+-
+-    protected abstract void makeRecipes(Consumer<FinishedRecipe> recipes);
+-
+-    protected ShapedRecipeBuilder ring(ItemLike out, int count, Ingredient outer, @Nullable Ingredient inner) {
+-        return ringCornered(out, count, outer, outer, inner);
++    protected ShapedRecipeBuilder ring(RecipeCategory category, ItemLike out, int count, Ingredient outer,
++                                       @Nullable Ingredient inner) {
++        return ringCornered(category, out, count, outer, outer, inner);
+     }
+ 
+-    protected ShapedRecipeBuilder ring(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
+-        return ring(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ring(RecipeCategory category, ItemLike out, int count, ItemLike outer,
++                                       @Nullable ItemLike inner) {
++        return ring(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ring(ItemLike out, int count, TagKey<Item> outer, @Nullable TagKey<Item> inner) {
+-        return ring(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ring(RecipeCategory category, ItemLike out, int count, TagKey<Item> outer,
++                                       @Nullable TagKey<Item> inner) {
++        return ring(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, Ingredient outer,
+-        @Nullable Ingredient inner) {
+-        return ringCornered(out, count, outer, null, inner);
++    protected ShapedRecipeBuilder ringCornerless(RecipeCategory category, ItemLike out, int count, Ingredient outer,
++                                                 @Nullable Ingredient inner) {
++        return ringCornered(category, out, count, outer, null, inner);
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
+-        return ringCornerless(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornerless(RecipeCategory category, ItemLike out, int count, ItemLike outer,
++                                                 @Nullable ItemLike inner) {
++        return ringCornerless(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornerless(ItemLike out, int count, TagKey<Item> outer,
+-        @Nullable TagKey<Item> inner) {
+-        return ringCornerless(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornerless(RecipeCategory category, ItemLike out, int count, TagKey<Item> outer,
++                                                 @Nullable TagKey<Item> inner) {
++        return ringCornerless(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, Ingredient outer, @Nullable Ingredient inner) {
+-        return ringCornered(out, count, outer, outer, inner);
++    protected ShapedRecipeBuilder ringAll(RecipeCategory category, ItemLike out, int count, Ingredient outer,
++                                          @Nullable Ingredient inner) {
++        return ringCornered(category, out, count, outer, outer, inner);
+     }
+ 
+-    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, ItemLike outer, @Nullable ItemLike inner) {
+-        return ringAll(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringAll(RecipeCategory category, ItemLike out, int count, ItemLike outer,
++                                          @Nullable ItemLike inner) {
++        return ringAll(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringAll(ItemLike out, int count, TagKey<Item> outer, @Nullable TagKey<Item> inner) {
+-        return ringAll(out, count, Ingredient.of(outer), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringAll(RecipeCategory category, ItemLike out, int count, TagKey<Item> outer,
++                                          @Nullable TagKey<Item> inner) {
++        return ringAll(category, out, count, Ingredient.of(outer), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable Ingredient cardinal,
+-        @Nullable Ingredient diagonal, @Nullable Ingredient inner) {
++    protected ShapedRecipeBuilder ringCornered(RecipeCategory category, ItemLike out, int count,
++                                               @Nullable Ingredient cardinal, @Nullable Ingredient diagonal,
++                                               @Nullable Ingredient inner) {
+         if (cardinal == null && diagonal == null && inner == null) {
+             throw new IllegalArgumentException("at least one ingredient must be non-null");
+         }
+@@ -113,7 +81,7 @@ protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable In
+             throw new IllegalArgumentException("if inner is non-null, either cardinal or diagonal must not be");
+         }
+ 
+-        var builder = ShapedRecipeBuilder.shaped(out, count);
++        var builder = ShapedRecipeBuilder.shaped(category, out, count);
+         var C = ' ';
+         if (cardinal != null) {
+             builder.define('C', cardinal);
+@@ -131,59 +99,59 @@ protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable In
+         }
+ 
+         builder
+-            .pattern(String.format("%c%c%c", D, C, D))
+-            .pattern(String.format("%c%c%c", C, I, C))
+-            .pattern(String.format("%c%c%c", D, C, D));
++                .pattern(String.format("%c%c%c", D, C, D))
++                .pattern(String.format("%c%c%c", C, I, C))
++                .pattern(String.format("%c%c%c", D, C, D));
+ 
+         return builder;
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable ItemLike cardinal,
+-        @Nullable ItemLike diagonal, @Nullable ItemLike inner) {
+-        return ringCornered(out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornered(RecipeCategory category, ItemLike out, int count, @Nullable ItemLike cardinal,
++                                               @Nullable ItemLike diagonal, @Nullable ItemLike inner) {
++        return ringCornered(category, out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder ringCornered(ItemLike out, int count, @Nullable TagKey<Item> cardinal,
+-        @Nullable TagKey<Item> diagonal, @Nullable TagKey<Item> inner) {
+-        return ringCornered(out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
++    protected ShapedRecipeBuilder ringCornered(RecipeCategory category, ItemLike out, int count, @Nullable TagKey<Item> cardinal,
++                                               @Nullable TagKey<Item> diagonal, @Nullable TagKey<Item> inner) {
++        return ringCornered(category, out, count, ingredientOf(cardinal), ingredientOf(diagonal), ingredientOf(inner));
+     }
+ 
+-    protected ShapedRecipeBuilder stack(ItemLike out, int count, Ingredient top, Ingredient bottom) {
+-        return ShapedRecipeBuilder.shaped(out, count)
+-            .define('T', top)
+-            .define('B', bottom)
+-            .pattern("T")
+-            .pattern("B");
++    protected ShapedRecipeBuilder stack(RecipeCategory category, ItemLike out, int count, Ingredient top, Ingredient bottom) {
++        return ShapedRecipeBuilder.shaped(category, out, count)
++                .define('T', top)
++                .define('B', bottom)
++                .pattern("T")
++                .pattern("B");
+     }
+ 
+-    protected ShapedRecipeBuilder stack(ItemLike out, int count, ItemLike top, ItemLike bottom) {
+-        return stack(out, count, Ingredient.of(top), Ingredient.of(bottom));
++    protected ShapedRecipeBuilder stack(RecipeCategory category, ItemLike out, int count, ItemLike top, ItemLike bottom) {
++        return stack(category, out, count, Ingredient.of(top), Ingredient.of(bottom));
+     }
+ 
+-    protected ShapedRecipeBuilder stack(ItemLike out, int count, TagKey<Item> top, TagKey<Item> bottom) {
+-        return stack(out, count, Ingredient.of(top), Ingredient.of(bottom));
++    protected ShapedRecipeBuilder stack(RecipeCategory category, ItemLike out, int count, TagKey<Item> top, TagKey<Item> bottom) {
++        return stack(category, out, count, Ingredient.of(top), Ingredient.of(bottom));
+     }
+ 
+ 
+-    protected ShapedRecipeBuilder stick(ItemLike out, int count, Ingredient input) {
+-        return stack(out, count, input, input);
++    protected ShapedRecipeBuilder stick(RecipeCategory category, ItemLike out, int count, Ingredient input) {
++        return stack(category, out, count, input, input);
+     }
+ 
+-    protected ShapedRecipeBuilder stick(ItemLike out, int count, ItemLike input) {
+-        return stick(out, count, Ingredient.of(input));
++    protected ShapedRecipeBuilder stick(RecipeCategory category, ItemLike out, int count, ItemLike input) {
++        return stick(category, out, count, Ingredient.of(input));
+     }
+ 
+-    protected ShapedRecipeBuilder stick(ItemLike out, int count, TagKey<Item> input) {
+-        return stick(out, count, Ingredient.of(input));
++    protected ShapedRecipeBuilder stick(RecipeCategory category, ItemLike out, int count, TagKey<Item> input) {
++        return stick(category, out, count, Ingredient.of(input));
+     }
+ 
+     /**
+      * @param largeSize True for a 3x3, false for a 2x2
+      */
+-    protected void packing(ItemLike free, ItemLike compressed, String freeName, boolean largeSize,
+-        Consumer<FinishedRecipe> recipes) {
+-        var pack = ShapedRecipeBuilder.shaped(compressed)
+-            .define('X', free);
++    protected void packing(RecipeCategory category, ItemLike free, ItemLike compressed, String freeName, boolean largeSize,
++                           Consumer<FinishedRecipe> recipes) {
++        var pack = ShapedRecipeBuilder.shaped(category, compressed)
++                .define('X', free);
+         if (largeSize) {
+             pack.pattern("XXX").pattern("XXX").pattern("XXX");
+         } else {
+@@ -191,9 +159,9 @@ protected void packing(ItemLike free, ItemLike compressed, String freeName, bool
+         }
+         pack.unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_packing"));
+ 
+-        ShapelessRecipeBuilder.shapeless(free, largeSize ? 9 : 4)
+-            .requires(compressed)
+-            .unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_unpacking"));
++        ShapelessRecipeBuilder.shapeless(category, free, largeSize ? 9 : 4)
++                .requires(compressed)
++                .unlockedBy("has_item", hasItem(free)).save(recipes, modLoc(freeName + "_unpacking"));
+     }
+ 
+     protected ResourceLocation modLoc(String path) {
+@@ -228,6 +196,6 @@ protected static InventoryChangeTrigger.TriggerInstance hasItem(TagKey<Item> p_2
+      */
+     protected static InventoryChangeTrigger.TriggerInstance paucalInventoryTrigger(ItemPredicate... $$0) {
+         return new InventoryChangeTrigger.TriggerInstance(EntityPredicate.Composite.ANY, MinMaxBounds.Ints.ANY,
+-            MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, $$0);
++                MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, $$0);
+     }
+ }
+diff --git a/Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java b/Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java
+deleted file mode 100644
+index f2db70a..0000000
+--- a/Common/src/main/java/at/petrak/paucal/api/mixin/AccessorRecipeProvider.java
++++ /dev/null
+@@ -1,16 +0,0 @@
+-package at.petrak.paucal.api.mixin;
+-
+-import com.google.gson.JsonObject;
+-import net.minecraft.data.CachedOutput;
+-import net.minecraft.data.recipes.RecipeProvider;
+-import org.spongepowered.asm.mixin.Mixin;
+-import org.spongepowered.asm.mixin.gen.Invoker;
+-
+-import java.nio.file.Path;
+-
+-@Mixin(RecipeProvider.class)
+-public interface AccessorRecipeProvider {
+-    @Invoker("saveRecipe")
+-    static void paucal$SaveRecipe(CachedOutput $$0, JsonObject $$1, Path $$2) {
+-    }
+-}
+diff --git a/Common/src/main/java/at/petrak/paucal/common/ModSounds.java b/Common/src/main/java/at/petrak/paucal/common/ModSounds.java
+index 26adfc3..f220662 100644
+--- a/Common/src/main/java/at/petrak/paucal/common/ModSounds.java
++++ b/Common/src/main/java/at/petrak/paucal/common/ModSounds.java
+@@ -16,7 +16,7 @@ public class ModSounds {
+     public static SoundEvent DUMMY = sound(HeadpatSoundInstance.DUMMY_LOCATION);
+ 
+     private static SoundEvent sound(String name) {
+-        var sound = new SoundEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
++        var sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
+         SOUNDS.add(sound);
+         return sound;
+     }
+diff --git a/Common/src/main/java/at/petrak/paucal/common/ModStats.java b/Common/src/main/java/at/petrak/paucal/common/ModStats.java
+index 8f236a9..e2a1a0c 100644
+--- a/Common/src/main/java/at/petrak/paucal/common/ModStats.java
++++ b/Common/src/main/java/at/petrak/paucal/common/ModStats.java
+@@ -2,6 +2,7 @@
+ 
+ import at.petrak.paucal.api.PaucalAPI;
+ import net.minecraft.core.Registry;
++import net.minecraft.core.registries.BuiltInRegistries;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.stats.StatFormatter;
+ import net.minecraft.stats.Stats;
+@@ -17,7 +18,7 @@ public static void register() {
+ 
+     private static ResourceLocation makeCustomStat(String pKey, StatFormatter pFormatter) {
+         ResourceLocation resourcelocation = new ResourceLocation(PaucalAPI.MOD_ID, pKey);
+-        Registry.register(Registry.CUSTOM_STAT, pKey, resourcelocation);
++        Registry.register(BuiltInRegistries.CUSTOM_STAT, pKey, resourcelocation);
+         Stats.CUSTOM.get(resourcelocation, pFormatter);
+         return resourcelocation;
+     }
+diff --git a/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java b/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java
+index a0fa06e..46d19fe 100644
+--- a/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java
++++ b/Common/src/main/java/at/petrak/paucal/xplat/IXplatAbstractions.java
+@@ -21,8 +21,6 @@ public interface IXplatAbstractions {
+ 
+     @Nullable SoundEvent getSoundByID(ResourceLocation id);
+ 
+-    void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path);
+-
+     void sendPacketToPlayerS2C(ServerPlayer target, PaucalMessage packet);
+ 
+     void sendPacketNearS2C(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet);
+diff --git a/Common/src/main/resources/paucal_xplat.mixins.json b/Common/src/main/resources/paucal_xplat.mixins.json
+index 8b04a93..afb6dfe 100644
+--- a/Common/src/main/resources/paucal_xplat.mixins.json
++++ b/Common/src/main/resources/paucal_xplat.mixins.json
+@@ -5,7 +5,6 @@
+     "package": "at.petrak.paucal.api.mixin",
+     "mixins": [
+         "AccessorCriteriaTriggers",
+-        "AccessorRecipeProvider",
+         "AccessorTagsProvider"
+     ],
+     "refmap": "paucal.mixins.refmap.json"
+diff --git a/Fabric/gradle.properties b/Fabric/gradle.properties
+index 8b41501..4560df2 100644
+--- a/Fabric/gradle.properties
++++ b/Fabric/gradle.properties
+@@ -1,5 +1,5 @@
+-fabricVersion=0.64.0+1.19.2
+-fabricLoaderVersion=0.14.10
++fabricVersion=0.79.0+1.19.4
++fabricLoaderVersion=0.14.19
+ 
+-clothConfigVersion=8.2.88
+-modMenuVersion=4.2.0-beta.2
+\ No newline at end of file
++clothConfigVersion=10.0.96
++modMenuVersion=6.2.1
+\ No newline at end of file
+diff --git a/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java b/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java
+index 4197bec..5fcf5d6 100644
+--- a/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java
++++ b/Fabric/src/main/java/at/petrak/paucal/FabricPaucalInit.java
+@@ -15,6 +15,7 @@
+ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+ import net.minecraft.core.Registry;
++import net.minecraft.core.registries.BuiltInRegistries;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.world.entity.player.Player;
+ 
+@@ -32,7 +33,7 @@ public void onInitialize() {
+ 
+         ModAdvancementTriggers.registerTriggers();
+ 
+-        ModSounds.init(bind(Registry.SOUND_EVENT));
++        ModSounds.init(bind(BuiltInRegistries.SOUND_EVENT));
+ 
+         UseEntityCallback.EVENT.register(PatPat::onPat);
+         CommandRegistrationCallback.EVENT.register((dp, _registry, _env) -> ModCommands.register(dp));
+diff --git a/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java b/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java
+index 9112486..85401c9 100644
+--- a/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java
++++ b/Fabric/src/main/java/at/petrak/paucal/fabric/xplat/FabricXplatImpl.java
+@@ -3,13 +3,9 @@
+ import at.petrak.paucal.api.msg.PaucalMessage;
+ import at.petrak.paucal.xplat.IXplatAbstractions;
+ import at.petrak.paucal.xplat.Platform;
+-import com.google.gson.JsonObject;
+ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+-import net.minecraft.core.Registry;
+-import net.minecraft.data.CachedOutput;
+-import net.minecraft.data.DataGenerator;
+-import net.minecraft.data.recipes.RecipeProvider;
++import net.minecraft.core.registries.BuiltInRegistries;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.server.level.ServerPlayer;
+@@ -17,8 +13,6 @@
+ import net.minecraft.world.phys.Vec3;
+ import org.jetbrains.annotations.Nullable;
+ 
+-import java.nio.file.Path;
+-
+ public class FabricXplatImpl implements IXplatAbstractions {
+     @Override
+     public Platform platform() {
+@@ -27,12 +21,7 @@ public Platform platform() {
+ 
+     @Override
+     public @Nullable SoundEvent getSoundByID(ResourceLocation id) {
+-        return Registry.SOUND_EVENT.get(id);
+-    }
+-
+-    @Override
+-    public void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path) {
+-        RecipeProvider.saveAdvancement(cache, json, path);
++        return BuiltInRegistries.SOUND_EVENT.get(id);
+     }
+ 
+     @Override
+diff --git a/Forge/gradle.properties b/Forge/gradle.properties
+index af9a7bf..34d5a46 100644
+--- a/Forge/gradle.properties
++++ b/Forge/gradle.properties
+@@ -1 +1 @@
+-forgeVersion=43.1.47
++forgeVersion=45.0.49
+diff --git a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java
+index 58b673d..5bc57a6 100644
+--- a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java
++++ b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalBlockStateAndModelProvider.java
+@@ -1,15 +1,16 @@
+ package at.petrak.paucal.api.forge.datagen;
+ 
+ import net.minecraft.data.DataGenerator;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.world.level.block.Block;
+ import net.minecraftforge.client.model.generators.BlockModelBuilder;
+ import net.minecraftforge.client.model.generators.BlockStateProvider;
+ import net.minecraftforge.common.data.ExistingFileHelper;
+ 
+ public abstract class PaucalBlockStateAndModelProvider extends BlockStateProvider {
+-    public PaucalBlockStateAndModelProvider(DataGenerator gen, String modid,
+-        ExistingFileHelper exFileHelper) {
+-        super(gen, modid, exFileHelper);
++    public PaucalBlockStateAndModelProvider(PackOutput out, String modid,
++                                            ExistingFileHelper exFileHelper) {
++        super(out, modid, exFileHelper);
+     }
+ 
+     protected void blockAndItem(Block block, BlockModelBuilder model) {
+diff --git a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java
+index 35da594..8d0916c 100644
+--- a/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java
++++ b/Forge/src/main/java/at/petrak/paucal/api/forge/datagen/PaucalItemModelProvider.java
+@@ -1,20 +1,20 @@
+ package at.petrak.paucal.api.forge.datagen;
+ 
+-import net.minecraft.core.Registry;
+-import net.minecraft.data.DataGenerator;
++import net.minecraft.data.PackOutput;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.world.item.Item;
+ import net.minecraftforge.client.model.generators.ItemModelProvider;
+ import net.minecraftforge.common.data.ExistingFileHelper;
++import net.minecraftforge.registries.ForgeRegistries;
+ 
+ public abstract class PaucalItemModelProvider extends ItemModelProvider {
+-    public PaucalItemModelProvider(DataGenerator generator, String modid,
+-        ExistingFileHelper existingFileHelper) {
+-        super(generator, modid, existingFileHelper);
++    public PaucalItemModelProvider(PackOutput out, String modid,
++                                   ExistingFileHelper existingFileHelper) {
++        super(out, modid, existingFileHelper);
+     }
+ 
+     protected void simpleItem(Item item) {
+-        simpleItem(Registry.ITEM.getKey(item));
++        simpleItem(ForgeRegistries.ITEMS.getKey(item));
+     }
+ 
+     protected void simpleItem(ResourceLocation path) {
+@@ -23,7 +23,7 @@ protected void simpleItem(ResourceLocation path) {
+     }
+ 
+     protected void brandishedItem(Item item) {
+-        brandishedItem(Registry.ITEM.getKey(item));
++        brandishedItem(ForgeRegistries.ITEMS.getKey(item));
+     }
+ 
+     protected void brandishedItem(ResourceLocation path) {
+diff --git a/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java b/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java
+index bfb931e..c353934 100644
+--- a/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java
++++ b/Forge/src/main/java/at/petrak/paucal/forge/xplat/ForgeXplatImpl.java
+@@ -31,12 +31,6 @@ public Platform platform() {
+         return ForgeRegistries.SOUND_EVENTS.getValue(id);
+     }
+ 
+-    @Override
+-    public void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path) {
+-        // this is dumb
+-        ((ForgeAccessorRecipeProvider) new RecipeProvider(generator)).paucal$saveRecipeAdvancement(cache, json, path);
+-    }
+-
+     @Override
+     public void sendPacketNearS2C(Vec3 pos, double radius, ServerLevel dimension, PaucalMessage packet) {
+         ForgePacketHandler.getNetwork().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(
+diff --git a/gradle.properties b/gradle.properties
+index 23b9dd4..9569a5f 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -6,7 +6,7 @@ org.gradle.daemon=false
+ modID=paucal
+ modName=PAUCAL
+ 
+-minecraftVersion=1.19.2
++minecraftVersion=1.19.4
+ modVersion=0.6.0
+ 
+ loomVersion=1.0-SNAPSHOT
