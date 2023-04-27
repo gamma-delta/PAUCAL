@@ -13,6 +13,7 @@ configurations {
     implementation.extendsFrom shade
 }
 
+
 loom {
     mixin.defaultRefmapName = "paucal.mixins.refmap.json"
 
