@@ -2,9 +2,6 @@ package at.petrak.paucal.xplat;
 
 import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.api.msg.PaucalMessage;
-import com.google.gson.JsonObject;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,7 +9,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Path;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
@@ -20,8 +16,6 @@ public interface IXplatAbstractions {
     Platform platform();
 
     @Nullable SoundEvent getSoundByID(ResourceLocation id);
-
-    void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path);
 
     void sendPacketToPlayerS2C(ServerPlayer target, PaucalMessage packet);
 

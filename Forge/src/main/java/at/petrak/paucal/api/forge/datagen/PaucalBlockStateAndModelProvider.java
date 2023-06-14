@@ -1,15 +1,15 @@
 package at.petrak.paucal.api.forge.datagen;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public abstract class PaucalBlockStateAndModelProvider extends BlockStateProvider {
-    public PaucalBlockStateAndModelProvider(DataGenerator gen, String modid,
-        ExistingFileHelper exFileHelper) {
-        super(gen, modid, exFileHelper);
+    public PaucalBlockStateAndModelProvider(PackOutput output, String modid,
+                                            ExistingFileHelper exFileHelper) {
+        super(output, modid, exFileHelper);
     }
 
     protected void blockAndItem(Block block, BlockModelBuilder model) {

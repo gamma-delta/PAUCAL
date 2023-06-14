@@ -2,13 +2,8 @@ package at.petrak.paucal.forge.xplat;
 
 import at.petrak.paucal.api.msg.PaucalMessage;
 import at.petrak.paucal.common.msg.ForgePacketHandler;
-import at.petrak.paucal.forge.mixin.ForgeAccessorRecipeProvider;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import at.petrak.paucal.xplat.Platform;
-import com.google.gson.JsonObject;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,8 +12,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-
-import java.nio.file.Path;
 
 public class ForgeXplatImpl implements IXplatAbstractions {
     @Override
@@ -29,12 +22,6 @@ public class ForgeXplatImpl implements IXplatAbstractions {
     @Override
     public @Nullable SoundEvent getSoundByID(ResourceLocation id) {
         return ForgeRegistries.SOUND_EVENTS.getValue(id);
-    }
-
-    @Override
-    public void saveRecipeAdvancement(DataGenerator generator, CachedOutput cache, JsonObject json, Path path) {
-        // this is dumb
-        ((ForgeAccessorRecipeProvider) new RecipeProvider(generator)).paucal$saveRecipeAdvancement(cache, json, path);
     }
 
     @Override

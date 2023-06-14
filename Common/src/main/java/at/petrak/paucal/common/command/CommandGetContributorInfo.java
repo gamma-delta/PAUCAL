@@ -43,7 +43,7 @@ public class CommandGetContributorInfo {
                     String.valueOf(contrib.otherVals().get(key))).withStyle(ChatFormatting.LIGHT_PURPLE));
             }
         }
-        ctx.getSource().sendSuccess(out, true);
+        ctx.getSource().sendSuccess(() -> out, true);
         return keySet.size();
     }
 }

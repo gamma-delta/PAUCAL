@@ -5,8 +5,5 @@
     "refmap": "paucal.mixins.refmap.json",
     "package": "at.petrak.paucal.forge.mixin",
     "mixins": [
-        "ForgeAccessorAdvancementProvider",
-        "ForgeAccessorRecipeProvider",
-        "ForgeAccessorTagsProvider"
     ]
 }

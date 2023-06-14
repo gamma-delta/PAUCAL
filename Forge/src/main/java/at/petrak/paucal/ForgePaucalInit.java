@@ -12,6 +12,7 @@ import at.petrak.paucal.common.msg.ForgePacketHandler;
 import at.petrak.paucal.forge.ForgePaucalConfig;
 import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
@@ -42,7 +43,7 @@ public class ForgePaucalInit {
 
         ModAdvancementTriggers.registerTriggers();
 
-        bind(Registry.SOUND_EVENT_REGISTRY, ModSounds::init);
+        bind(Registries.SOUND_EVENT, ModSounds::init);
 
         var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         var evBus = MinecraftForge.EVENT_BUS;
@@ -54,7 +55,7 @@ public class ForgePaucalInit {
 
         // We have to do these at some point when the registries are still open
         modBus.addListener((RegisterEvent event) -> {
-            if (event.getRegistryKey().equals(Registry.ITEM_REGISTRY)) {
+            if (event.getRegistryKey().equals(Registries.ITEM)) {
                 ModStats.register();
             }
         });

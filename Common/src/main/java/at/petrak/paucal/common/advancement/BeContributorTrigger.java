@@ -16,7 +16,7 @@ public class BeContributorTrigger extends SimpleCriterionTrigger<BeContributorTr
         TAG_IS_DEV = "is_dev";
 
     @Override
-    protected Instance createInstance(JsonObject json, EntityPredicate.Composite predicate,
+    protected Instance createInstance(JsonObject json, ContextAwarePredicate predicate,
         DeserializationContext ctx) {
         var isDev = json.has(TAG_IS_DEV) ? GsonHelper.getAsBoolean(json, TAG_IS_DEV) : null;
         return new Instance(predicate, MinMaxBounds.Ints.fromJson(json.get(TAG_PATRON_LEVEL)), isDev);
@@ -45,7 +45,7 @@ public class BeContributorTrigger extends SimpleCriterionTrigger<BeContributorTr
         @Nullable
         protected final Boolean isDev;
 
-        public Instance(EntityPredicate.Composite predicate, MinMaxBounds.Ints patronLevel, @Nullable Boolean isDev) {
+        public Instance(ContextAwarePredicate predicate, MinMaxBounds.Ints patronLevel, @Nullable Boolean isDev) {
             super(ID, predicate);
             this.patronLevel = patronLevel;
             this.isDev = isDev;

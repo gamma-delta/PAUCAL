@@ -29,7 +29,7 @@ public class PatPat {
         if (player.getItemInHand(hand).isEmpty()
             && player.isDiscrete() && hand == InteractionHand.MAIN_HAND
             && entity instanceof Player target) {
-            if (player.getLevel() instanceof ServerLevel sworld) {
+            if (player.level() instanceof ServerLevel sworld) {
                 var pos = target.getEyePosition();
                 sworld.sendParticles(ParticleTypes.HEART, pos.x, pos.y + 0.5, pos.z, 1, 0, 0, 0, 0.1);
             } else {
@@ -43,11 +43,11 @@ public class PatPat {
 
             if (target.isOnFire()) {
                 target.clearFire();
-                if (player.getLevel() instanceof ServerLevel sworld) {
+                if (player.level() instanceof ServerLevel sworld) {
                     var pos = target.getEyePosition();
                     sworld.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y + 0.5, pos.z, 10, 0, 0, 0, 0.1);
                 }
-                player.getLevel().playSound(player, target.getX(), target.getY(), target.getZ(),
+                player.level().playSound(player, target.getX(), target.getY(), target.getZ(),
                     SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1f, 1f);
             }
 
