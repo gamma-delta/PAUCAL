@@ -1,15 +1,10 @@
 package at.petrak.paucal.api.datagen;
 
-import at.petrak.paucal.api.mixin.AccessorRecipeProvider;
-import at.petrak.paucal.xplat.IXplatAbstractions;
-import com.google.common.collect.Sets;
-import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -21,50 +16,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Path;
-import java.util.Set;
 import java.util.function.Consumer;
 
 abstract public class PaucalRecipeProvider extends RecipeProvider {
-    public final DataGenerator generator;
     protected final String modid;
 
-
-    public PaucalRecipeProvider(DataGenerator gen, String modid) {
-        super(gen);
-        this.generator = gen;
+    protected PaucalRecipeProvider(PackOutput out, String modid) {
+        super(out);
         this.modid = modid;
     }
-
-    /**
-     * [VanillaCopy] RecipeProvider, but changed to use our custom protected method and not the
-     * stupid private static one.
-     */
-    @Override
-    public void run(CachedOutput cache) {
-        Path path = this.generator.getOutputFolder();
-        Set<ResourceLocation> set = Sets.newHashSet();
-        makeRecipes((recipeJsonProvider) -> {
-            if (!set.add(recipeJsonProvider.getId())) {
-                throw new IllegalStateException("Duplicate recipe " + recipeJsonProvider.getId());
-            } else {
-                AccessorRecipeProvider.paucal$SaveRecipe(cache, recipeJsonProvider.serializeRecipe(), path.resolve(
-                    "data/" + recipeJsonProvider.getId().getNamespace() + "/recipes/" + recipeJsonProvider.getId()
-                        .getPath() + ".json"));
-                JsonObject jsonObject = recipeJsonProvider.serializeAdvancement();
-                if (jsonObject != null) {
-                    IXplatAbstractions.INSTANCE.saveRecipeAdvancement(this.generator, cache, jsonObject, path.resolve(
-                        "data/"
-                            + recipeJsonProvider.getId().getNamespace()
-                            + "/advancements/" +
-                            recipeJsonProvider.getAdvancementId().getPath()
-                            + ".json"));
-                }
-            }
-        });
-    }
-
-    protected abstract void makeRecipes(Consumer<FinishedRecipe> recipes);
 
     protected ShapedRecipeBuilder ring(ItemLike out, int count, Ingredient outer, @Nullable Ingredient inner) {
         return ringCornered(out, count, outer, outer, inner);

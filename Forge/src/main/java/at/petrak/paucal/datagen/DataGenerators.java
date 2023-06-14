@@ -1,7 +1,7 @@
 package at.petrak.paucal.datagen;
 
 import at.petrak.paucal.api.PaucalAPI;
-import at.petrak.paucal.api.forge.datagen.PaucalForgeDatagenWrappers;
+import at.petrak.paucal.api.datagen.PaucalDatagenHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -11,11 +11,11 @@ public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent evt) {
         var gen = evt.getGenerator();
-        var efh = evt.getExistingFileHelper();
+        var lookup = evt.getLookupProvider();
 
         if (System.getProperty("paucal.xplat_datagen") != null) {
-            gen.addProvider(evt.includeServer(),
-                PaucalForgeDatagenWrappers.addEFHToAdvancements(new ModAdvancementProvider(gen), efh));
+            gen.addProvider(evt.includeServer(), PaucalDatagenHelper.wrapAdvancementSubProviders(lookup,
+                new ModAdvancementSubProvider()));
         }
     }
 }

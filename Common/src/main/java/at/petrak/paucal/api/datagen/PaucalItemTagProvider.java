@@ -1,8 +1,9 @@
 package at.petrak.paucal.api.datagen;
 
 import at.petrak.paucal.api.mixin.AccessorTagsProvider;
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagEntry;
@@ -10,14 +11,16 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 // ForgeCopy, mostly
 abstract public class PaucalItemTagProvider extends TagsProvider<Item> {
     protected final Function<TagKey<Block>, TagBuilder> getBuilder;
 
-    protected PaucalItemTagProvider(DataGenerator gen, TagsProvider<Block> getBuilder) {
-        super(gen, Registry.ITEM);
+    protected PaucalItemTagProvider(PackOutput pack, CompletableFuture<HolderLookup.Provider> lookup, String modid,
+        TagsProvider<Block> getBuilder) {
+        super(pack, Registries.ITEM, lookup);
         this.getBuilder = ((AccessorTagsProvider<Block>) getBuilder)::paucal$getOrCreateRawBuilder;
     }
 
