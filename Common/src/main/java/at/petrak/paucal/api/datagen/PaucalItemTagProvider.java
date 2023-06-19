@@ -2,6 +2,7 @@ package at.petrak.paucal.api.datagen;
 
 import at.petrak.paucal.api.mixin.AccessorTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
@@ -30,6 +31,12 @@ abstract public class PaucalItemTagProvider extends TagsProvider<Item> {
         // `.build` does not actually mutate anything
         for (TagEntry blockTag : blockTagBuilder.build()) {
             itemTagBuilder.add(blockTag);
+        }
+    }
+
+    void add(TagAppender<Item> appender, Item... items) {
+        for (Item item : items) {
+            appender.add(BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow());
         }
     }
 }
