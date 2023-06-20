@@ -25,7 +25,7 @@ public class CommandReloadContributors {
                     IXplatAbstractions.INSTANCE.sendPacketToPlayerS2C(player, new MsgReloadContributorsS2C());
                 }
 
-                ctx.getSource().sendSuccess(Component.translatable("command.paucal.reload"), true);
+                ctx.getSource().sendSuccess(() -> Component.translatable("command.paucal.reload"), true);
                 return 1;
             }));
     }

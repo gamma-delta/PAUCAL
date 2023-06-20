@@ -16,5 +16,6 @@
   ],
   "rewards": {
     "function": "paucal:welcome"
-  }
+  },
+  "sends_telemetry_event": true
 }

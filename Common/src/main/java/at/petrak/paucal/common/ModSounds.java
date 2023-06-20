@@ -1,6 +1,5 @@
 package at.petrak.paucal.common;
 
-import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.common.sounds.HeadpatSoundInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -9,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import static at.petrak.paucal.api.PaucalAPI.modLoc;
+
 public class ModSounds {
     private static final List<SoundEvent> SOUNDS = new ArrayList<>();
 
@@ -16,7 +17,7 @@ public class ModSounds {
     public static SoundEvent DUMMY = sound(HeadpatSoundInstance.DUMMY_LOCATION);
 
     private static SoundEvent sound(String name) {
-        var sound = new SoundEvent(new ResourceLocation(PaucalAPI.MOD_ID, name));
+        var sound = SoundEvent.createVariableRangeEvent(modLoc(name));
         SOUNDS.add(sound);
         return sound;
     }
