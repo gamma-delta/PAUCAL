@@ -1,17 +1,16 @@
 pluginManagement {
     repositories {
+        maven { url "https://maven.fabricmc.net/" }
+        maven { url "https://maven.architectury.dev/" }
+        maven { url "https://files.minecraftforge.net/maven/" }
         gradlePluginPortal()
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        maven {
-            name = 'Sponge Snapshots'
-            url = 'https://repo.spongepowered.org/repository/maven-public/'
-        }
-        maven { url = 'https://maven.blamejared.com/' }
     }
 }
 
-rootProject.name = 'PAUCAL'
-include("Common", "Fabric", "Forge")
+rootProject.name = 'paucal'
+
+include 'Common'
+include 'Fabric'
+include 'Neoforge'
+// Quilt isn't out yet
+// include 'Quilt'

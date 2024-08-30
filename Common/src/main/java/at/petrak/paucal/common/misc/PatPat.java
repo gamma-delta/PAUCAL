@@ -19,53 +19,53 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class PatPat {
-    public static InteractionResult onPat(Player player, Level world, InteractionHand hand, Entity entity,
-        @Nullable EntityHitResult hitResult) {
-        if (!PaucalConfig.common().allowPats()) {
-            // you philistine
-            return InteractionResult.PASS;
-        }
-
-        if (player.getItemInHand(hand).isEmpty()
-            && player.isDiscrete() && hand == InteractionHand.MAIN_HAND
-            && entity instanceof Player target) {
-            if (player.getLevel() instanceof ServerLevel sworld) {
-                var pos = target.getEyePosition();
-                sworld.sendParticles(ParticleTypes.HEART, pos.x, pos.y + 0.5, pos.z, 1, 0, 0, 0, 0.1);
-            } else {
-                player.swing(hand);
-            }
-
-            tryPlayPatSound(target.getUUID(), target.getEyePosition(), player, world);
-
-            player.awardStat(ModStats.PLAYERS_PATTED);
-            target.awardStat(ModStats.HEADPATS_GOTTEN);
-
-            if (target.isOnFire()) {
-                target.clearFire();
-                if (player.getLevel() instanceof ServerLevel sworld) {
-                    var pos = target.getEyePosition();
-                    sworld.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y + 0.5, pos.z, 10, 0, 0, 0, 0.1);
-                }
-                player.getLevel().playSound(player, target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1f, 1f);
-            }
-
-            return InteractionResult.SUCCESS;
-        }
-
-        return InteractionResult.PASS;
+  public static InteractionResult onPat(Player player, Level world, InteractionHand hand, Entity entity,
+      @Nullable EntityHitResult hitResult) {
+    if (!PaucalConfig.common().allowPats()) {
+      // you philistine
+      return InteractionResult.PASS;
     }
 
-    /**
-     * @return True if the pat happened successfully, false otherwise
-     */
-    public static boolean tryPlayPatSound(UUID pattee, Vec3 patteePos, @Nullable Player patter, Level world) {
-        var contributor = ContributorsManifest.getContributor(pattee);
-        if (contributor != null) {
-            return contributor.doHeadpatSound(patteePos, patter, world);
-        }
+    if (player.getItemInHand(hand).isEmpty()
+        && player.isDiscrete() && hand == InteractionHand.MAIN_HAND
+        && entity instanceof Player target) {
+      if (player.level() instanceof ServerLevel sworld) {
+        var pos = target.getEyePosition();
+        sworld.sendParticles(ParticleTypes.HEART, pos.x, pos.y + 0.5, pos.z, 1, 0, 0, 0, 0.1);
+      } else {
+        player.swing(hand);
+      }
 
-        return false;
+      tryPlayPatSound(target.getUUID(), target.getEyePosition(), player, world);
+
+      player.awardStat(ModStats.PLAYERS_PATTED);
+      target.awardStat(ModStats.HEADPATS_GOTTEN);
+
+      if (target.isOnFire()) {
+        target.clearFire();
+        if (player.level() instanceof ServerLevel sworld) {
+          var pos = target.getEyePosition();
+          sworld.sendParticles(ParticleTypes.SMOKE, pos.x, pos.y + 0.5, pos.z, 10, 0, 0, 0, 0.1);
+        }
+        player.level().playSound(player, target.getX(), target.getY(), target.getZ(),
+            SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1f, 1f);
+      }
+
+      return InteractionResult.SUCCESS;
     }
+
+    return InteractionResult.PASS;
+  }
+
+  /**
+   * @return True if the pat happened successfully, false otherwise
+   */
+  public static boolean tryPlayPatSound(UUID pattee, Vec3 patteePos, @Nullable Player patter, Level world) {
+    var contributor = ContributorsManifest.getContributor(pattee);
+    if (contributor != null) {
+      return contributor.doHeadpatSound(patteePos, patter, world);
+    }
+
+    return false;
+  }
 }

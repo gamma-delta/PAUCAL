@@ -1,66 +1,52 @@
 package at.petrak.paucal.common.msg;
 
-import at.petrak.paucal.api.msg.PaucalMessage;
+import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.common.sounds.HeadpatSoundInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static at.petrak.paucal.api.PaucalAPI.modLoc;
 
-public record MsgHeadpatSoundS2C(String soundName, boolean isGithub, double x, double y, double z,
-                                 float pitch, @Nullable UUID patter) implements PaucalMessage {
-    public static final ResourceLocation ID = modLoc("pat");
+public record MsgHeadpatSoundS2C(String soundName, boolean isGithub, Vec3 pos,
+                                 float pitch, Optional<UUID> patter) implements CustomPacketPayload {
+  public static final Type<MsgHeadpatSoundS2C> TYPE = new Type<>(modLoc("pat"));
 
-    @Override
-    public ResourceLocation getFabricId() {
-        return ID;
-    }
+  public static final StreamCodec<RegistryFriendlyByteBuf, MsgHeadpatSoundS2C> CODEC = StreamCodec.composite(
+      ByteBufCodecs.STRING_UTF8, MsgHeadpatSoundS2C::soundName,
+      ByteBufCodecs.BOOL, MsgHeadpatSoundS2C::isGithub,
+      PaucalAPI.Codices.VEC3, MsgHeadpatSoundS2C::pos,
+      ByteBufCodecs.FLOAT, MsgHeadpatSoundS2C::pitch,
+      ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), MsgHeadpatSoundS2C::patter,
+      MsgHeadpatSoundS2C::new
+  );
 
-    @Override
-    public void serialize(FriendlyByteBuf buf) {
-        buf.writeUtf(this.soundName);
-        buf.writeBoolean(this.isGithub);
-        buf.writeDouble(this.x);
-        buf.writeDouble(this.y);
-        buf.writeDouble(this.z);
-        buf.writeFloat(this.pitch);
-        buf.writeBoolean(this.patter != null);
-        if (this.patter != null)
-            buf.writeUUID(this.patter);
-    }
+  @Override
+  public Type<? extends CustomPacketPayload> type() {
+    return TYPE;
+  }
 
-    public static MsgHeadpatSoundS2C deserialize(FriendlyByteBuf buf) {
-        var sound = buf.readUtf();
-        var isNetwork = buf.readBoolean();
-        var x = buf.readDouble();
-        var y = buf.readDouble();
-        var z = buf.readDouble();
-        var pitch = buf.readFloat();
-        var hasUUID = buf.readBoolean();
-        var patter = hasUUID
-            ? buf.readUUID()
-            : null;
-        return new MsgHeadpatSoundS2C(sound, isNetwork, x, y, z, pitch, patter);
-    }
+  public static void handle(MsgHeadpatSoundS2C self) {
+    Minecraft.getInstance().execute(new Runnable() {
+      @Override
+      public void run() {
+        var sound = new HeadpatSoundInstance(self.soundName, self.isGithub, self.pos,
+            self.pitch, SoundInstance.createUnseededRandom());
 
-    public static void handle(MsgHeadpatSoundS2C self) {
-        Minecraft.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                var sound = new HeadpatSoundInstance(self.soundName, self.isGithub, self.x, self.y, self.z,
-                    self.pitch, SoundInstance.createUnseededRandom());
-
-                var minecraft = Minecraft.getInstance();
-                var player = minecraft.player;
-                if (player != null && !player.getUUID().equals(self.patter)) {
-                    minecraft.getSoundManager().play(sound);
-                }
-            }
-        });
-    }
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+        if (player != null && !player.getUUID().equals(self.patter.orElse(null))) {
+          minecraft.getSoundManager().play(sound);
+        }
+      }
+    });
+  }
 }

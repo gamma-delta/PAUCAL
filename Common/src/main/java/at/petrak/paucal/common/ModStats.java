@@ -17,7 +17,7 @@ public class ModStats {
     }
 
     private static ResourceLocation makeCustomStat(String pKey, StatFormatter pFormatter) {
-        ResourceLocation resourcelocation = new ResourceLocation(PaucalAPI.MOD_ID, pKey);
+        ResourceLocation resourcelocation = PaucalAPI.modLoc(pKey);
         Registry.register(BuiltInRegistries.CUSTOM_STAT, pKey, resourcelocation);
         Stats.CUSTOM.get(resourcelocation, pFormatter);
         return resourcelocation;
