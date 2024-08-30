@@ -1,7 +1,7 @@
 package at.petrak.paucal.fabric;
 
-import at.petrak.paucal.common.msg.MsgHeadpatSoundS2C;
-import at.petrak.paucal.common.msg.MsgReloadContributorsS2C;
+import at.petrak.paucal.xplat.common.msg.MsgHeadpatSoundS2C;
+import at.petrak.paucal.xplat.common.msg.MsgReloadContributorsS2C;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 

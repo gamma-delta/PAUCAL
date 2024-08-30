@@ -10,7 +10,7 @@ import java.util.List;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class PaucalDatagen {
   @SubscribeEvent
-  public void onInitializeDataGenerator(GatherDataEvent evt) {
+  public static void onInitializeDataGenerator(GatherDataEvent evt) {
     var gen = evt.getGenerator();
     if (System.getProperty("paucal.xplat_datagen") != null) {
       gen.addProvider(evt.includeServer(),
