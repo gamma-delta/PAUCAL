@@ -1,4 +1,4 @@
-package at.petrak.paucal.api.forge.datagen;
+package at.petrak.paucal.forge.api.datagen;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;

@@ -1,4 +1,4 @@
-package at.petrak.paucal.api.forge.datagen;
+package at.petrak.paucal.forge.api.datagen;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -9,7 +9,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public abstract class PaucalItemModelProvider extends ItemModelProvider {
   public PaucalItemModelProvider(PackOutput output, String modid,
-                                 ExistingFileHelper existingFileHelper) {
+      ExistingFileHelper existingFileHelper) {
     super(output, modid, existingFileHelper);
   }
 
