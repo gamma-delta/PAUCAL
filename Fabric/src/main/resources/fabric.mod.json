@@ -11,16 +11,18 @@
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/paucal",
     "sources": "https://github.com/gamma-delta/PAUCAL"
   },
-
   "license": "MIT",
-  "icon": "logo.png", "environment": "*",
-
+  "icon": "logo.png",
+  "environment": "*",
   "entrypoints": {
     "main": [
       "at.petrak.paucal.fabric.FabricPaucalInit"
     ],
     "client": [
       "at.petrak.paucal.fabric.FabricPaucalClientInit"
+    ],
+    "fabric-datagen": [
+      "at.petrak.paucal.fabric.datagen.PaucalDatagen"
     ],
     "modmenu": [
       "at.petrak.paucal.fabric.interop.ModMenuInterop"

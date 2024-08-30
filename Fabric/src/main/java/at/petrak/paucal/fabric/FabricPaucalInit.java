@@ -7,7 +7,6 @@ import at.petrak.paucal.common.advancement.ModAdvancementTriggers;
 import at.petrak.paucal.common.command.ModCommands;
 import at.petrak.paucal.common.misc.NewWorldMessage;
 import at.petrak.paucal.common.misc.PatPat;
-import at.petrak.paucal.xplat.IXplatAbstractions;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -24,8 +23,6 @@ import java.util.function.BiConsumer;
 public class FabricPaucalInit implements ModInitializer {
   @Override
   public void onInitialize() {
-    IXplatAbstractions.INSTANCE.init();
-
     FabricNetworkHandler.init();
     FabricPaucalConfig.setup();
 

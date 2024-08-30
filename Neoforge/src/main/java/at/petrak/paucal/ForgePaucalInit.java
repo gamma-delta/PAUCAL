@@ -34,8 +34,6 @@ import java.util.function.Consumer;
 @Mod(PaucalAPI.MOD_ID)
 public class ForgePaucalInit {
     public ForgePaucalInit() {
-        IXplatAbstractions.INSTANCE.init();
-
         var specPair = new ForgeConfigSpec.Builder().configure(ForgePaucalConfig::new);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, specPair.getRight());
         PaucalConfig.setCommon(specPair.getLeft());
