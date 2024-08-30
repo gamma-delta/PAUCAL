@@ -22,7 +22,7 @@
       "at.petrak.paucal.fabric.FabricPaucalClientInit"
     ],
     "fabric-datagen": [
-      "at.petrak.paucal.fabric.datagen.PaucalDatagen"
+      "at.petrak.paucal.forge.datagen.PaucalDatagen"
     ],
     "modmenu": [
       "at.petrak.paucal.fabric.interop.ModMenuInterop"

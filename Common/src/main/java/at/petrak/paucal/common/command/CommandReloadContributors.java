@@ -1,6 +1,5 @@
 package at.petrak.paucal.common.command;
 
-import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.common.ContributorsManifest;
 import at.petrak.paucal.common.msg.MsgReloadContributorsS2C;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -13,12 +12,6 @@ public class CommandReloadContributors {
   public static void add(LiteralArgumentBuilder<CommandSourceStack> builder) {
     builder.then(Commands.literal("reload").requires(css -> css.hasPermission(Commands.LEVEL_MODERATORS))
         .executes(ctx -> {
-          var enabled = PaucalConfig.common().loadContributors();
-          if (!enabled) {
-            ctx.getSource().sendFailure(Component.translatable("command.paucal.reload.disabled"));
-            return 0;
-          }
-
           ContributorsManifest.loadContributors();
 
           NetworkManager.sendToPlayers(ctx.getSource().getLevel().players(), new MsgReloadContributorsS2C());

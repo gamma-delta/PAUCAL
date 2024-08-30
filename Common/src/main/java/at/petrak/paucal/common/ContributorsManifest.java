@@ -1,6 +1,5 @@
 package at.petrak.paucal.common;
 
-import at.petrak.paucal.PaucalConfig;
 import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.api.contrib.Contributor;
 import blue.endless.jankson.Jankson;
@@ -39,11 +38,6 @@ public class ContributorsManifest {
       PaucalAPI.LOGGER.warn("Tried to reload the contributors in the middle of reloading the contributors");
     } else {
       startedLoading = true;
-
-      if (!PaucalConfig.common().loadContributors()) {
-        PaucalAPI.LOGGER.info("Contributors disabled in the config!");
-        return;
-      }
 
       var thread = new Thread(ContributorsManifest::fetchAndPopulate);
       thread.setName("PAUCAL Contributors Loading Thread");

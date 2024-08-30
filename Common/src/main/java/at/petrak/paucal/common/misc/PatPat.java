@@ -1,6 +1,6 @@
 package at.petrak.paucal.common.misc;
 
-import at.petrak.paucal.PaucalConfig;
+import at.petrak.paucal.PaucalGamerules;
 import at.petrak.paucal.common.ContributorsManifest;
 import at.petrak.paucal.common.ModStats;
 import net.minecraft.core.particles.ParticleTypes;
@@ -21,7 +21,7 @@ import java.util.UUID;
 public class PatPat {
   public static InteractionResult onPat(Player player, Level world, InteractionHand hand, Entity entity,
       @Nullable EntityHitResult hitResult) {
-    if (!PaucalConfig.common().allowPats()) {
+    if (!world.getGameRules().getBoolean(PaucalGamerules.ALLOW_HEADPATS)) {
       // you philistine
       return InteractionResult.PASS;
     }

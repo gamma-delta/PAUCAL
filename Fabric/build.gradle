@@ -29,27 +29,6 @@ configurations {
     }
 }
 
-loom {
-    runs {
-        create("fabricDatagen") {
-            name "Fabric Xplat Datagen"
-            server()
-            vmArg("-Dpaucal.xplat_datagen")
-
-            var outDir = file("../Common/src/generate/data")
-            vmArg("-Dfabric-api.datagen.modid=${archives_name}")
-            vmArg("-Dfabric-api.datagen.output-dir=${outDir}")
-            runDir = "run"
-            source(sourceSets["main"])
-
-            configureEach {
-                runDir = "Fabric/run"
-                ideConfigGenerated(true)
-            }
-        }
-    }
-}
-
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 

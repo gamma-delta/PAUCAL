@@ -1,12 +1,14 @@
 package at.petrak.paucal.api.forge.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public abstract class PaucalBlockStateAndModelProvider extends FabricModelProvider {
-  public PaucalBlockStateAndModelProvider(FabricDataOutput out) {
-    super(out);
+public abstract class PaucalBlockStateAndModelProvider extends BlockStateProvider {
+  public PaucalBlockStateAndModelProvider(PackOutput out, String modId, ExistingFileHelper efh) {
+    super(out, modId, efh);
   }
 
   protected void blockAndItem(Block block, BlockModelBuilder model) {

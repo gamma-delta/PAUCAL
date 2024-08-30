@@ -38,7 +38,25 @@ dependencies {
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
     common(project(path: ':Common', configuration: 'namedElements')) { transitive false }
-    shadowBundle project(path: ':Common', configuration: 'transformProductionNeoForge')
+    shadowBundle(project(path: ':Common', configuration: 'transformProductionNeoForge')) { transitive false }
+
+    forgeRuntimeLibrary "blue.endless:jankson:$rootProject.jankson_version"
+}
+
+def generatedResources = file("source/generated")
+
+loom {
+    runs {
+        create("forgeXplatDatagen") {
+            data()
+            name "Forge Xplat Datagen"
+
+            vmArg("-Dpaucal.xplat_datagen")
+
+            programArgs "--all", "--mod", project.archives_name
+            programArgs "--output", generatedResources.absolutePath
+        }
+    }
 }
 
 processResources {

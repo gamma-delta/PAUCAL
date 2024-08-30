@@ -38,6 +38,10 @@ subprojects {
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
         mappings loom.officialMojangMappings()
+
+        // Make this implementation accessible from all projects
+        implementation "blue.endless:jankson:$rootProject.jankson_version"
+        include "blue.endless:jankson:$rootProject.jankson_version"
     }
 
     java {

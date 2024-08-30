@@ -1,6 +1,7 @@
 package at.petrak.paucal.common.advancement;
 
 import at.petrak.paucal.common.ContributorsManifest;
+import at.petrak.paucal.common.ModRegistries;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Criterion;
@@ -47,7 +48,7 @@ public class BeContributorTrigger extends SimpleCriterionTrigger<BeContributorTr
                          Optional<Boolean> isDev)
       implements SimpleCriterionTrigger.SimpleInstance {
     public Criterion<Instance> criterion() {
-      return ModAdvancementTriggers.BE_CONTRIBUTOR_TRIGGER.get().createCriterion(this);
+      return ModRegistries.BE_CONTRIBUTOR_TRIGGER.get().createCriterion(this);
     }
   }
 }
