@@ -1,6 +1,6 @@
 package at.petrak.paucal.xplat.common;
 
-import at.petrak.paucal.xplat.api.PaucalAPI;
+import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.xplat.common.advancement.BeContributorTrigger;
 import at.petrak.paucal.xplat.common.sounds.HeadpatSoundInstance;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 
-import static at.petrak.paucal.xplat.api.PaucalAPI.modLoc;
+import static at.petrak.paucal.api.PaucalAPI.modLoc;
 
 public class ModRegistries {
   public static final DeferredRegister<CriterionTrigger<?>> TRIGGER_TYPES =

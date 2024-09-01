@@ -1,7 +1,7 @@
 package at.petrak.paucal.forge;
 
 import at.petrak.paucal.xplat.PaucalMod;
-import at.petrak.paucal.xplat.api.PaucalAPI;
+import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.xplat.common.command.ModCommands;
 import at.petrak.paucal.xplat.common.misc.NewWorldMessage;
 import at.petrak.paucal.xplat.common.misc.PatPat;

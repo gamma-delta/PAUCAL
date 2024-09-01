@@ -1,4 +1,4 @@
-package at.petrak.paucal.xplat.api.contrib;
+package at.petrak.paucal.api.contrib;
 
 import at.petrak.paucal.xplat.common.msg.MsgHeadpatSoundS2C;
 import com.google.gson.JsonArray;
@@ -50,9 +50,11 @@ public class HeadpatSpec {
   }
 
   public MsgHeadpatSoundS2C makePacket(Vec3 pos, float pitch, @Nullable Player patter) {
+    var optUuid = Optional.ofNullable(patter).map(Player::getUUID);
     return new MsgHeadpatSoundS2C(this.location, this.type == Type.GITHUB,
         pos, pitch,
-        patter == null ? null : Optional.of(patter.getUUID()));
+        optUuid
+    );
   }
 
   public enum Type {

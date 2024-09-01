@@ -6,7 +6,7 @@
           "min": 1
         }
       },
-      "trigger": "paucal:login_as_patron"
+      "trigger": "paucal:be_contributor"
     }
   },
   "requirements": [

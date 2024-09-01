@@ -1,4 +1,4 @@
-package at.petrak.paucal.xplat.api.datagen;
+package at.petrak.paucal.api.datagen;
 
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;

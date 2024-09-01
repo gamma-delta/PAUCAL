@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-import static at.petrak.paucal.xplat.api.PaucalAPI.modLoc;
+import static at.petrak.paucal.api.PaucalAPI.modLoc;
 
 public class HeadpatSoundInstance implements SoundInstance {
 

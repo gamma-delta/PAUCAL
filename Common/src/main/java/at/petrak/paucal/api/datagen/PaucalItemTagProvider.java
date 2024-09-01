@@ -1,6 +1,6 @@
-package at.petrak.paucal.xplat.api.datagen;
+package at.petrak.paucal.api.datagen;
 
-import at.petrak.paucal.xplat.api.mixin.AccessorTagsProvider;
+import at.petrak.paucal.api.mixin.AccessorTagsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

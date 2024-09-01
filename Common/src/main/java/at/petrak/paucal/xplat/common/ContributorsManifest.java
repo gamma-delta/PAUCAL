@@ -1,7 +1,8 @@
 package at.petrak.paucal.xplat.common;
 
-import at.petrak.paucal.xplat.api.PaucalAPI;
-import at.petrak.paucal.xplat.api.contrib.Contributor;
+import at.petrak.paucal.api.PaucalAPI;
+import at.petrak.paucal.api.contrib.Contributor;
+import at.petrak.paucal.xplat.PaucalMod;
 import blue.endless.jankson.Jankson;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -35,14 +36,14 @@ public class ContributorsManifest {
 
   public static void loadContributors() {
     if (startedLoading) {
-      PaucalAPI.LOGGER.warn("Tried to reload the contributors in the middle of reloading the contributors");
+      PaucalMod.LOGGER.warn("Tried to reload the contributors in the middle of reloading the contributors");
     } else {
       startedLoading = true;
 
       var thread = new Thread(ContributorsManifest::fetchAndPopulate);
       thread.setName("PAUCAL Contributors Loading Thread");
       thread.setDaemon(true);
-      thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalAPI.LOGGER));
+      thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(PaucalMod.LOGGER));
       thread.start();
     }
   }
@@ -62,9 +63,9 @@ public class ContributorsManifest {
       String unJanksoned = JANKSON.load(url.openStream()).toJson(false, false);
       config = GSON.fromJson(unJanksoned, JsonObject.class);
     } catch (Exception exn) {
-      PaucalAPI.LOGGER.warn("Couldn't load contributors from Github, oh well :(", exn);
+      PaucalMod.LOGGER.warn("Couldn't load contributors from Github, oh well :(", exn);
       if (exn instanceof blue.endless.jankson.api.SyntaxError syn) {
-        PaucalAPI.LOGGER.warn(syn.getCompleteMessage());
+        PaucalMod.LOGGER.warn(syn.getCompleteMessage());
       }
       return Pair.of(Object2ObjectMaps.emptyMap(), Object2ObjectMaps.emptyMap());
     }
@@ -81,7 +82,7 @@ public class ContributorsManifest {
 
         ghSoundLocs.addAll(contributor.neededGithubSounds());
       } catch (Exception exn) {
-        PaucalAPI.LOGGER.warn("Exception when loading contributor '{}': {}", entry.getKey(), exn.getMessage());
+        PaucalMod.LOGGER.warn("Exception when loading contributor '{}': {}", entry.getKey(), exn.getMessage());
         // and try again with the next one
       }
     }
@@ -96,11 +97,11 @@ public class ContributorsManifest {
         var oggBytes = is.readAllBytes();
         sounds.put(s, ByteBuffer.wrap(oggBytes));
       } catch (Exception exn) {
-        PaucalAPI.LOGGER.warn("Error when loading github sound '{}'", s, exn);
+        PaucalMod.LOGGER.warn("Error when loading github sound '{}'", s, exn);
       }
     }
 
-    PaucalAPI.LOGGER.info("Loaded {} contributors and {} headpat sounds from Github", contributors.size(),
+    PaucalMod.LOGGER.info("Loaded {} contributors and {} headpat sounds from Github", contributors.size(),
         sounds.size());
     return Pair.of(contributors, sounds);
   }
@@ -109,7 +110,7 @@ public class ContributorsManifest {
   public static JOrbisAudioStream getSound(String name) {
     var oggBytes = GITHUB_SOUNDS.getOrDefault(name, null);
     if (oggBytes == null) {
-      PaucalAPI.LOGGER.warn("Tried to load a github sound {} that wasn't found", name);
+      PaucalMod.LOGGER.warn("Tried to load a github sound {} that wasn't found", name);
       return null;
     }
 
@@ -117,7 +118,7 @@ public class ContributorsManifest {
     try {
       return new JOrbisAudioStream(new ByteArrayInputStream(oggBytes.array()));
     } catch (IOException e) {
-      PaucalAPI.LOGGER.error("The github sound {} is an INVALID OGG FILE. This is Really Bad, what are you " +
+      PaucalMod.LOGGER.error("The github sound {} is an INVALID OGG FILE. This is Really Bad, what are you " +
           "doing.", name, e);
       return null;
     }

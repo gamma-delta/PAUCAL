@@ -1,4 +1,4 @@
-package at.petrak.paucal.xplat.api.block;
+package at.petrak.paucal.api.block;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;

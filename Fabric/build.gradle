@@ -7,6 +7,18 @@ architectury {
     fabric()
 }
 
+pkSubproj {
+    platform "fabric"
+    publish false
+
+    curseforgeJar shadowJar.archiveFile
+    curseforgeDependencies[]
+
+    modrinthJar shadowJar.archiveFile
+    modrinthDependencies[]
+}
+
+
 repositories {
     // Mod menu
     maven { url = "https://maven.terraformersmc.com/" }

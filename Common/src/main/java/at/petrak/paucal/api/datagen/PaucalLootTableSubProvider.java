@@ -1,4 +1,4 @@
-package at.petrak.paucal.xplat.api.datagen;
+package at.petrak.paucal.api.datagen;
 
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;

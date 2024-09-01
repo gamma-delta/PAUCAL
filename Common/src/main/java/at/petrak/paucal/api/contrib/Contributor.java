@@ -1,4 +1,4 @@
-package at.petrak.paucal.xplat.api.contrib;
+package at.petrak.paucal.api.contrib;
 
 import com.google.gson.JsonObject;
 import dev.architectury.networking.NetworkManager;

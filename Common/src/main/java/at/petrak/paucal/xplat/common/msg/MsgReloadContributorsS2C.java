@@ -1,13 +1,13 @@
 package at.petrak.paucal.xplat.common.msg;
 
-import at.petrak.paucal.xplat.api.PaucalAPI;
+import at.petrak.paucal.xplat.PaucalMod;
 import at.petrak.paucal.xplat.common.ContributorsManifest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-import static at.petrak.paucal.xplat.api.PaucalAPI.modLoc;
+import static at.petrak.paucal.api.PaucalAPI.modLoc;
 
 // The command is only run on the server of course so we need to the clients to know too
 public record MsgReloadContributorsS2C() implements CustomPacketPayload {
@@ -25,7 +25,7 @@ public record MsgReloadContributorsS2C() implements CustomPacketPayload {
     Minecraft.getInstance().execute(new Runnable() {
       @Override
       public void run() {
-        PaucalAPI.LOGGER.info("Ordered by server to reload contributors");
+        PaucalMod.LOGGER.info("Ordered by server to reload contributors");
         ContributorsManifest.loadContributors();
       }
     });

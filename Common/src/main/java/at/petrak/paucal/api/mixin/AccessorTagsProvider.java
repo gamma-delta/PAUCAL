@@ -1,4 +1,4 @@
-package at.petrak.paucal.xplat.api.mixin;
+package at.petrak.paucal.api.mixin;
 
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagBuilder;

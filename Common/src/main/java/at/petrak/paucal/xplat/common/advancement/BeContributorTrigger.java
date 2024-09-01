@@ -1,6 +1,5 @@
 package at.petrak.paucal.xplat.common.advancement;
 
-import at.petrak.paucal.xplat.api.PaucalAPI;
 import at.petrak.paucal.xplat.common.ContributorsManifest;
 import at.petrak.paucal.xplat.common.ModRegistries;
 import com.mojang.serialization.Codec;
@@ -10,14 +9,11 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Optional;
 
 public class BeContributorTrigger extends SimpleCriterionTrigger<BeContributorTrigger.Instance> {
-  private static final ResourceLocation ID = PaucalAPI.modLoc("login_as_patron");
-
   public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
       EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
       MinMaxBounds.Ints.CODEC.fieldOf("patron_level").forGetter(Instance::patronLevel),

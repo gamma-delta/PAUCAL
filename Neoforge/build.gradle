@@ -7,6 +7,17 @@ architectury {
     neoForge()
 }
 
+pkSubproj {
+    platform "neoforge"
+    publish false
+
+    curseforgeJar shadowJar.archiveFile
+    curseforgeDependencies[]
+
+    modrinthJar shadowJar.archiveFile
+    modrinthDependencies[]
+}
+
 configurations {
     common {
         canBeResolved = true
@@ -43,7 +54,7 @@ dependencies {
     forgeRuntimeLibrary "blue.endless:jankson:$rootProject.jankson_version"
 }
 
-def generatedResources = file("source/generated")
+def generatedResources = project(":Common").file("src/generated/resources")
 
 loom {
     runs {
@@ -53,8 +64,10 @@ loom {
 
             vmArg("-Dpaucal.xplat_datagen")
 
-            programArgs "--all", "--mod", project.archives_name
+            programArgs "--all", "--mod", project.mod_id
             programArgs "--output", generatedResources.absolutePath
+            programArgs "--existing", file("src/main/resources").absolutePath
+            programArgs "--existing", generatedResources.absolutePath
         }
     }
 }

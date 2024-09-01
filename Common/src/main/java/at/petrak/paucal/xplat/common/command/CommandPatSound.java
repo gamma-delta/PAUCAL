@@ -11,9 +11,9 @@ import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
-public class CommandPatSelf {
+public class CommandPatSound {
   public static void add(LiteralArgumentBuilder<CommandSourceStack> builder) {
-    builder.then(Commands.literal("pat")
+    builder.then(Commands.literal("patsound")
         .then(Commands.argument("pattee", GameProfileArgument.gameProfile()).executes(ctx -> {
           var pattees = GameProfileArgument.getGameProfiles(ctx, "pattee");
           if (pattees.size() != 1) {
@@ -33,7 +33,15 @@ public class CommandPatSelf {
       return 0;
     }
 
-    PatPat.tryPlayPatSound(target, ctx.getSource().getPosition(), null, ctx.getSource().getLevel());
-    return 1;
+    var player = ctx.getSource().getPlayer();
+    var pos = player != null ? player.getEyePosition() : ctx.getSource().getPosition();
+    var ok = PatPat.tryPlayPatSound(target, pos, null, ctx.getSource().getLevel());
+    if (ok) {
+      ctx.getSource().sendSuccess(() -> Component.translatable("command.paucal.patSelf.ok", target), false);
+      return 1;
+    } else {
+      ctx.getSource().sendFailure(Component.translatable("command.paucal.patSelf.err"));
+      return 0;
+    }
   }
 }

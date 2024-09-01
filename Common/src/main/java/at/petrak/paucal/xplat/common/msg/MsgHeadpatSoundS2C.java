@@ -1,6 +1,6 @@
 package at.petrak.paucal.xplat.common.msg;
 
-import at.petrak.paucal.xplat.api.PaucalAPI;
+import at.petrak.paucal.api.PaucalAPI;
 import at.petrak.paucal.xplat.common.sounds.HeadpatSoundInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 import java.util.UUID;
 
-import static at.petrak.paucal.xplat.api.PaucalAPI.modLoc;
+import static at.petrak.paucal.api.PaucalAPI.modLoc;
 
 public record MsgHeadpatSoundS2C(String soundName, boolean isGithub, Vec3 pos,
                                  float pitch, Optional<UUID> patter) implements CustomPacketPayload {
