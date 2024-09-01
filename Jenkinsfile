@@ -30,7 +30,7 @@ pipeline {
         stage('Publish') {
             when {
                 anyOf {
-                    branch 'main'
+                    branch '1.21'
                 }
             }
             stages {
@@ -51,9 +51,9 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts 'Common/build/libs/**.jar'
-            archiveArtifacts 'Forge/build/libs/**.jar'
-            archiveArtifacts 'Fabric/build/libs/**.jar'
+            archiveArtifacts 'Common/build/devlibs/**.jar'
+            archiveArtifacts 'Forge/build/devlibs/**.jar'
+            archiveArtifacts 'Fabric/build/devlibs/**.jar'
         }
     }
 }
