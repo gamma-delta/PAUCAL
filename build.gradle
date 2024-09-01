@@ -24,7 +24,6 @@ pkpcpbp {
         mcVersion(project.minecraft_version)
         modVersion(project.mod_version)
     }
-    /*
     curseforgeInfo {
         id 597824
         stability "alpha"
@@ -35,7 +34,6 @@ pkpcpbp {
         stability "alpha"
         token(System.getenv("MODRINTH_TOKEN"))
     }
-     */
 }
 
 subprojects {

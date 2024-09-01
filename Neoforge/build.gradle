@@ -9,12 +9,12 @@ architectury {
 
 pkSubproj {
     platform "neoforge"
-    publish false
+    publish
 
-    curseforgeJar shadowJar.archiveFile
+    curseforgeJar tasks.remapJar.archiveFile
     curseforgeDependencies[]
 
-    modrinthJar shadowJar.archiveFile
+    modrinthJar tasks.remapJar.archiveFile
     modrinthDependencies[]
 }
 
