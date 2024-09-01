@@ -51,15 +51,9 @@ pipeline {
     }
     post {
         always {
-            archiveArtifacts 'Common/build/libs/*+common-*.jar'
-            archiveArtifacts 'Common/build/libs/*+common-*-javadoc.jar'
-            archiveArtifacts 'Common/build/libs/*+common-*-sources.jar'
-            archiveArtifacts 'Neoforge/build/libs/*+neoforge-*.jar'
-            archiveArtifacts 'Neoforge/build/libs/*+neoforge-*-javadoc.jar'
-            archiveArtifacts 'Neoforge/build/libs/*+neoforge-*-sources.jar'
-            archiveArtifacts 'Fabric/build/libs/*+fabric-*.jar'
-            archiveArtifacts 'Fabric/build/libs/*+fabric-*-javadoc.jar'
-            archiveArtifacts 'Fabric/build/libs/*+fabric-*-sources.jar'
+            archiveArtifacts 'Common/build/libs/*+common-1.21.1.jar'
+            archiveArtifacts 'Neoforge/build/libs/*+neoforge-1.21.1*.jar'
+            archiveArtifacts 'Fabric/build/libs/*+fabric-1.21.1*.jar'
         }
     }
 }
