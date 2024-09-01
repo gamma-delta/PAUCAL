@@ -3,13 +3,17 @@ plugins {
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 
-    id "at.petra-k.pkpcpbp.PKPlugin" version "0.2.0-pre-92"
-    id "at.petra-k.pkpcpbp.PKSubprojPlugin" version "0.2.0-pre-92" apply false
-    id "at.petra-k.pkpcpbp.PKJson5Plugin" version "0.2.0-pre-92" apply false
+    id "at.petra-k.pkpcpbp.PKPlugin" version "0.2.0-pre-95"
+    id "at.petra-k.pkpcpbp.PKSubprojPlugin" version "0.2.0-pre-95" apply false
+    id "at.petra-k.pkpcpbp.PKJson5Plugin" version "0.2.0-pre-95" apply false
+}
+
+architectury {
+    minecraft = project.minecraft_version
 }
 
 pkpcpbp {
-//    superDebugInfo true
+    superDebugInfo true
 
     doProjectMetadata true
     setupJarMetadata true
@@ -32,10 +36,6 @@ pkpcpbp {
         token(System.getenv("MODRINTH_TOKEN"))
     }
      */
-}
-
-architectury {
-    minecraft = project.minecraft_version
 }
 
 subprojects {
