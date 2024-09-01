@@ -9,7 +9,7 @@ plugins {
 }
 
 pkpcpbp {
-    superDebugInfo true
+//    superDebugInfo true
 
     doProjectMetadata true
     setupJarMetadata true
