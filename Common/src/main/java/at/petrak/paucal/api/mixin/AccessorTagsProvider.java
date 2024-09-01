@@ -8,6 +8,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(TagsProvider.class)
 public interface AccessorTagsProvider<T> {
-    @Invoker("getOrCreateRawBuilder")
-    TagBuilder paucal$getOrCreateRawBuilder(TagKey<T> tag);
+  @Invoker("getOrCreateRawBuilder")
+  TagBuilder paucal$getOrCreateRawBuilder(TagKey<T> tag);
 }

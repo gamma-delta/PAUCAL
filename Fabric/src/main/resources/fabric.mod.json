@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "paucal",
   "version": "${version}",
-
   "name": "PAUCAL",
   "description": "Petrak@'s Assorted, Useful Collection of Assistance Library.",
   "authors": [
@@ -12,30 +11,31 @@
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/paucal",
     "sources": "https://github.com/gamma-delta/PAUCAL"
   },
-
   "license": "MIT",
   "icon": "logo.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
-      "at.petrak.paucal.FabricPaucalInit"
+      "at.petrak.paucal.fabric.FabricPaucalInit"
     ],
     "client": [
-      "at.petrak.paucal.FabricPaucalClientInit"
+      "at.petrak.paucal.fabric.FabricPaucalClientInit"
+    ],
+    "fabric-datagen": [
+      "at.petrak.paucal.forge.datagen.PaucalDatagen"
     ],
     "modmenu": [
-      "at.petrak.paucal.client.ModMenuInterop"
+      "at.petrak.paucal.fabric.interop.ModMenuInterop"
     ]
   },
   "mixins": [
-    "paucal_xplat.mixins.json"
+    "paucal.mixins.json"
   ],
-
   "depends": {
-    "fabricloader": ">=0.14",
-    "fabric": "*",
-    "minecraft": "1.20.1",
-    "java": ">=17"
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "architectury": ">=${architectury_version}"
   }
 }

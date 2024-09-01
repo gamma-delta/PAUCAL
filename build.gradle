@@ -1,34 +1,26 @@
-// Forward all shade questions to:
-// - https://gist.github.com/SizableShrimp/949e7c219bfc94487a45226b64ac7749
-// - https://gist.github.com/SizableShrimp/66b22f1b24c255e1491c8d98d3f11f83
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
-
 plugins {
-    id "java"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 
-    id("at.petra-k.PKPlugin") version "0.1.0-pre-80"
-    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-80" apply false
-
-    // This needs to be in the root
-    // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
-    // Also it looks like property lookups don"t work this early
-    id("fabric-loom") version "1.0-SNAPSHOT" apply false
+    id "at.petra-k.pkpcpbp.PKPlugin" version "0.2.0-pre-92"
+    id "at.petra-k.pkpcpbp.PKSubprojPlugin" version "0.2.0-pre-92" apply false
+    id "at.petra-k.pkpcpbp.PKJson5Plugin" version "0.2.0-pre-92" apply false
 }
 
 pkpcpbp {
     superDebugInfo true
 
+    doProjectMetadata true
+    setupJarMetadata true
+    setupMavenMetadata true
+
     modInfo {
-        modID(project.modID)
-        mcVersion(project.minecraftVersion)
-        modVersion(project.modVersion)
+        modID(project.mod_id)
+        mcVersion(project.minecraft_version)
+        modVersion(project.mod_version)
     }
+    /*
     curseforgeInfo {
         id 597824
         stability "alpha"
@@ -38,5 +30,59 @@ pkpcpbp {
         id "TZo2wHFe"
         stability "alpha"
         token(System.getenv("MODRINTH_TOKEN"))
+    }
+     */
+}
+
+architectury {
+    minecraft = project.minecraft_version
+}
+
+allprojects {
+    group = rootProject.mod_id
+    version = rootProject.mod_version
+}
+
+subprojects {
+    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'architectury-plugin'
+    apply plugin: 'maven-publish'
+    apply plugin: "at.petra-k.pkpcpbp.PKSubprojPlugin"
+    apply plugin: "at.petra-k.pkpcpbp.PKJson5Plugin"
+
+    repositories {
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+    }
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    dependencies {
+        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+        mappings loom.officialMojangMappings()
+
+        // Make this implementation accessible from all projects
+        implementation "blue.endless:jankson:$rootProject.jankson_version"
+        include "blue.endless:jankson:$rootProject.jankson_version"
+    }
+
+    pkJson5 {
+        autoProcessJson5 = true
+        autoProcessJson5Flattening = true
+    }
+
+    java {
+        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+        // if it is present.
+        // If you remove this line, sources will not be generated.
+        withSourcesJar()
+
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }

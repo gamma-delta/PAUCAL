@@ -1,32 +1,19 @@
-plugins {
-    id "java"
-    id "maven-publish"
-
-    id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT"
-    id "at.petra-k.PKSubprojPlugin"
+architectury {
+    common rootProject.enabled_platforms.split(',')
 }
 
 pkSubproj {
     platform "common"
+    publish false
 }
 
-minecraft {
-    version(minecraftVersion)
-}
-
-repositories {
-    maven {
-        name = "Sponge / Mixin"
-        url = "https://repo.spongepowered.org/repository/maven-public/"
-    }
-}
 
 dependencies {
-    implementation "org.testng:testng:7.1.0"
+    // We depend on Fabric Loader here to use the Fabric @Environment annotations,
+    // which get remapped to the correct annotations on each platform.
+    // Do NOT use other classes from Fabric Loader.
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
-    compileOnly group: "org.spongepowered", name: "mixin", version: "0.8.5"
-
-    implementation group: "blue.endless", name: "jankson", version: janksonVersion
-
-    implementation "org.jetbrains:annotations:16.0.2"
+    // Architectury API. This is optional, and you can comment it out if you don't need it.
+    modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
 }
