@@ -21,7 +21,7 @@ public class CommandGetContributorInfo {
   }
 
   private static int info(CommandContext<CommandSourceStack> ctx, ServerPlayer target,
-      boolean allKVs) {
+                          boolean allKVs) {
     var contrib = ContributorsManifest.getContributor(target.getUUID());
     if (contrib == null) {
       ctx.getSource()
@@ -32,7 +32,7 @@ public class CommandGetContributorInfo {
     var keySet = contrib.allKeys();
 
     var out = Component.translatable("command.paucal.contributor",
-        target.getDisplayName(), contrib.getLevel(), contrib.getLevel(), keySet.size());
+        target.getDisplayName(), contrib.getLevel(), contrib.isDev(), keySet.size());
     if (allKVs) {
       var keys = keySet.stream().sorted().toList();
       for (var key : keys) {

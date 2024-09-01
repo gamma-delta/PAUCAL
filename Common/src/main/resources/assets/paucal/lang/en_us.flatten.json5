@@ -21,6 +21,7 @@
     players_patted: "Headpats Given",
     headpats_gotten: "Headpats Received"
   },
+  "gamerule.paucal:allowHeadpats": "[PAUCAL] Allow headpatting",
   // Test of the dedententation
   dedented: ">>> \
 |    This is a multi ksjdflgh skjdlhgf \

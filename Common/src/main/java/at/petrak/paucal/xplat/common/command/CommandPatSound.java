@@ -37,10 +37,10 @@ public class CommandPatSound {
     var pos = player != null ? player.getEyePosition() : ctx.getSource().getPosition();
     var ok = PatPat.tryPlayPatSound(target, pos, null, ctx.getSource().getLevel());
     if (ok) {
-      ctx.getSource().sendSuccess(() -> Component.translatable("command.paucal.patSelf.ok", target), false);
+      ctx.getSource().sendSuccess(() -> Component.translatable("command.paucal.patSelf.ok", target.toString()), false);
       return 1;
     } else {
-      ctx.getSource().sendFailure(Component.translatable("command.paucal.patSelf.err"));
+      ctx.getSource().sendFailure(Component.translatable("command.paucal.patSelf.err", target.toString()));
       return 0;
     }
   }
