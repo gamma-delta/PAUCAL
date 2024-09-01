@@ -40,20 +40,14 @@ pipeline {
                         sh './gradlew publish publishToDiscord'
                     }
                 }
-                stage('Deploy releases') {
-                    steps {
-                        echo 'Maybe deploy releases'
-                        sh './gradlew --stacktrace publishCurseforge publishModrinth'
-                    }
-                }
             }
         }
     }
     post {
         always {
             archiveArtifacts 'Common/build/libs/*+common-1.21.1.jar'
-            archiveArtifacts 'Neoforge/build/libs/*+neoforge-1.21.1*.jar'
-            archiveArtifacts 'Fabric/build/libs/*+fabric-1.21.1*.jar'
+            archiveArtifacts 'Neoforge/build/libs/*+neoforge-1.21.1.jar'
+            archiveArtifacts 'Fabric/build/libs/*+fabric-1.21.1.jar'
         }
     }
 }

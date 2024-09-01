@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "paucal",
   "version": "${version}",
-  "name": "PAUCAL",
+  "name": "P.A.U.C.A.L.",
   "description": "Petrak@'s Assorted, Useful Collection of Assistance Library.",
   "authors": [
     "petrak@ (aka gamma-delta)"
@@ -20,9 +20,6 @@
     ],
     "client": [
       "at.petrak.paucal.fabric.FabricPaucalClientInit"
-    ],
-    "fabric-datagen": [
-      "at.petrak.paucal.forge.datagen.PaucalDatagen"
     ],
     "modmenu": [
       "at.petrak.paucal.fabric.interop.ModMenuInterop"

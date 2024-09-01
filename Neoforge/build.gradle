@@ -9,13 +9,13 @@ architectury {
 
 pkSubproj {
     platform = "neoforge"
-    publish = true
+    pkPublish = true
 
     curseforgeJar = tasks.remapJar.archiveFile
-    curseforgeDependencies[]
+    curseforgeDependencies["architectury"]
 
     modrinthJar = tasks.remapJar.archiveFile
-    modrinthDependencies[]
+    modrinthDependencies["architectury"]
 }
 
 configurations {
