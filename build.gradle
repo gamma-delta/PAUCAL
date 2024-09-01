@@ -3,9 +3,9 @@ plugins {
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 
-    id "at.petra-k.pkpcpbp.PKPlugin" version "0.2.0-pre-95"
-    id "at.petra-k.pkpcpbp.PKSubprojPlugin" version "0.2.0-pre-95" apply false
-    id "at.petra-k.pkpcpbp.PKJson5Plugin" version "0.2.0-pre-95" apply false
+    id "at.petra-k.pkpcpbp.PKPlugin" version "0.2.0-pre-96"
+    id "at.petra-k.pkpcpbp.PKSubprojPlugin" version "0.2.0-pre-96" apply false
+    id "at.petra-k.pkpcpbp.PKJson5Plugin" version "0.2.0-pre-96" apply false
 }
 
 architectury {
