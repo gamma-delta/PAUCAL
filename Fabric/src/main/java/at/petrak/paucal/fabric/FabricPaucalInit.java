@@ -15,8 +15,6 @@ public class FabricPaucalInit implements ModInitializer {
   public void onInitialize() {
     PaucalMod.initialize();
 
-    FabricNetworkHandler.init();
-
     UseEntityCallback.EVENT.register(PatPat::onPat);
     CommandRegistrationCallback.EVENT.register((dp, _registry, _env) -> ModCommands.register(dp));
     ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
