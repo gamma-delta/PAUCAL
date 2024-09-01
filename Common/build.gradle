@@ -3,8 +3,8 @@ architectury {
 }
 
 pkSubproj {
-    platform "common"
-    publish false
+    platform = "common"
+    publish = false
 }
 
 

@@ -8,13 +8,13 @@ architectury {
 }
 
 pkSubproj {
-    platform "neoforge"
-    publish
+    platform = "neoforge"
+    publish = true
 
-    curseforgeJar tasks.remapJar.archiveFile
+    curseforgeJar = tasks.remapJar.archiveFile
     curseforgeDependencies[]
 
-    modrinthJar tasks.remapJar.archiveFile
+    modrinthJar = tasks.remapJar.archiveFile
     modrinthDependencies[]
 }
 

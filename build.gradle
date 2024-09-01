@@ -3,9 +3,9 @@ plugins {
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 
-    id "at.petra-k.pkpcpbp.PKPlugin" version "0.2.0-pre-96"
-    id "at.petra-k.pkpcpbp.PKSubprojPlugin" version "0.2.0-pre-96" apply false
-    id "at.petra-k.pkpcpbp.PKJson5Plugin" version "0.2.0-pre-96" apply false
+    id "at.petra-k.pkpcpbp.PKPlugin" version "0.2.0-pre-98"
+    id "at.petra-k.pkpcpbp.PKSubprojPlugin" version "0.2.0-pre-98" apply false
+    id "at.petra-k.pkpcpbp.PKJson5Plugin" version "0.2.0-pre-98" apply false
 }
 
 architectury {
@@ -13,26 +13,27 @@ architectury {
 }
 
 pkpcpbp {
-    superDebugInfo true
+    superDebugInfo = false
 
-    doProjectMetadata true
-    setupJarMetadata true
-    setupMavenMetadata true
+    doProjectMetadata = true
+    setupJarMetadata = true
+    setupMavenMetadata = true
+    javaVersion = 21
 
     modInfo {
-        modID(project.mod_id)
-        mcVersion(project.minecraft_version)
-        modVersion(project.mod_version)
+        modID = project.mod_id
+        mcVersion = project.minecraft_version
+        modVersion = project.mod_version
     }
     curseforgeInfo {
-        id 597824
-        stability "alpha"
-        token(System.getenv("CURSEFORGE_TOKEN"))
+        id = 597824
+        stability = "alpha"
+        token = System.getenv("CURSEFORGE_TOKEN")
     }
     modrinthInfo {
-        id "TZo2wHFe"
-        stability "alpha"
-        token(System.getenv("MODRINTH_TOKEN"))
+        id = "TZo2wHFe"
+        stability = "alpha"
+        token = System.getenv("MODRINTH_TOKEN")
     }
 }
 
