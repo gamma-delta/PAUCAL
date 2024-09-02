@@ -12,10 +12,10 @@ pkSubproj {
     pkPublish = true
 
     curseforgeJar = tasks.remapJar.archiveFile
-    curseforgeDependencies["architectury"]
+    curseforgeDependencies["architectury-api"]
 
     modrinthJar = tasks.remapJar.archiveFile
-    modrinthDependencies["architectury"]
+    modrinthDependencies["architectury-api:13.0.6+fabric"]
 }
 
 
@@ -52,8 +52,6 @@ dependencies {
 
     modImplementation "me.shedaniel.cloth:cloth-config:$project.cloth_cfg_version"
     modImplementation "com.terraformersmc:modmenu:$project.mod_menu_version"
-
-    include "blue.endless:jankson:$rootProject.jankson_version"
 
     common(project(path: ':Common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':Common', configuration: 'transformProductionFabric')

@@ -12,10 +12,10 @@ pkSubproj {
     pkPublish = true
 
     curseforgeJar = tasks.remapJar.archiveFile
-    curseforgeDependencies["architectury"]
+    curseforgeDependencies["architectury-ap     i"]
 
     modrinthJar = tasks.remapJar.archiveFile
-    modrinthDependencies["architectury"]
+    modrinthDependencies["architectury-api:13.0.6+neoforge"]
 }
 
 configurations {
@@ -51,7 +51,7 @@ dependencies {
     common(project(path: ':Common', configuration: 'namedElements')) { transitive false }
     shadowBundle(project(path: ':Common', configuration: 'transformProductionNeoForge')) { transitive false }
 
-    include "blue.endless:jankson:$rootProject.jankson_version"
+    // this is necessary for some reason
     forgeRuntimeLibrary "blue.endless:jankson:$rootProject.jankson_version"
 }
 

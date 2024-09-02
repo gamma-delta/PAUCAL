@@ -62,6 +62,8 @@ subprojects {
 
         // Make this implementation accessible from all projects
         implementation "blue.endless:jankson:$rootProject.jankson_version"
+        // include it everywhere too, including common!
+        include "blue.endless:jankson:$rootProject.jankson_version"
     }
 
     pkJson5 {
