@@ -51,7 +51,7 @@ dependencies {
     common(project(path: ':Common', configuration: 'namedElements')) { transitive false }
     shadowBundle(project(path: ':Common', configuration: 'transformProductionNeoForge')) { transitive false }
 
-    // this is necessary for some reason
+    include "blue.endless:jankson:$rootProject.jankson_version"
     forgeRuntimeLibrary "blue.endless:jankson:$rootProject.jankson_version"
 }
 
