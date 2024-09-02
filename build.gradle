@@ -12,31 +12,39 @@ plugins {
     id "java"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
-    id("at.petra-k.PKPlugin") version "0.1.0-pre-80"
-    id("at.petra-k.PKSubprojPlugin") version "0.1.0-pre-80" apply false
+    id("at.petra-k.pkpcpbp.PKPlugin") version "0.2.0-pre-103"
+    id("at.petra-k.pkpcpbp.PKSubprojPlugin") version "0.2.0-pre-103" apply false
+    id("at.petra-k.pkpcpbp.PKJson5Plugin") version "0.2.0-pre-103" apply false
 
     // This needs to be in the root
     // https://github.com/FabricMC/fabric-loom/issues/612#issuecomment-1198444120
     // Also it looks like property lookups don"t work this early
-    id("fabric-loom") version "1.0-SNAPSHOT" apply false
+    id("fabric-loom") version "1.6-SNAPSHOT" apply false
 }
 
 pkpcpbp {
-    superDebugInfo true
+    superDebugInfo = true
+    doProjectMetadata = true
+    setupJarMetadata = true
+    setupMavenMetadata = true
+    javaVersion = 17
 
     modInfo {
-        modID(project.modID)
-        mcVersion(project.minecraftVersion)
-        modVersion(project.modVersion)
+        modID = project.modID
+        mcVersion = project.minecraftVersion
+        modVersion = project.modVersion
     }
     curseforgeInfo {
-        id 597824
-        stability "alpha"
-        token(System.getenv("CURSEFORGE_TOKEN"))
+        id = 597824
+        stability = "alpha"
+        token = System.getenv("CURSEFORGE_TOKEN")
     }
     modrinthInfo {
-        id "TZo2wHFe"
-        stability "alpha"
-        token(System.getenv("MODRINTH_TOKEN"))
+        id = "TZo2wHFe"
+        stability = "alpha"
+        token = System.getenv("MODRINTH_TOKEN")
     }
+}
+
+subprojects {
 }

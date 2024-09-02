@@ -6,7 +6,7 @@ pipeline {
     }
     agent any
     tools {
-        jdk "jdk-17.0.1"
+        jdk "jdk-21"
     }
     environment {
         discordWebhook = credentials('discordWebhook')
@@ -30,7 +30,7 @@ pipeline {
         stage('Publish') {
             when {
                 anyOf {
-                    branch 'main'
+                    branch '1.20'
                 }
             }
             stages {
@@ -40,20 +40,14 @@ pipeline {
                         sh './gradlew publish publishToDiscord'
                     }
                 }
-                stage('Deploy releases') {
-                    steps {
-                        echo 'Maybe deploy releases'
-                        sh './gradlew --stacktrace publishCurseforge publishModrinth'
-                    }
-                }
             }
         }
     }
     post {
         always {
-            archiveArtifacts 'Common/build/libs/**.jar'
-            archiveArtifacts 'Forge/build/libs/**.jar'
-            archiveArtifacts 'Fabric/build/libs/**.jar'
+            archiveArtifacts 'Common/build/libs/*-common.jar'
+            archiveArtifacts 'Forge/build/libs/*-forge.jar'
+            archiveArtifacts 'Fabric/build/libs/*-fabric.jar'
         }
     }
 }

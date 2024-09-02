@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "5.1.+", changing: true
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "6.0.+", changing: true
         classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
     }
 }
@@ -18,7 +18,7 @@ plugins {
     id "maven-publish"
 
     id "com.github.johnrengelman.shadow"
-    id "at.petra-k.PKSubprojPlugin"
+    id "at.petra-k.pkpcpbp.PKSubprojPlugin"
 }
 // these plugins don't like being in the decl block
 apply plugin: "net.minecraftforge.gradle"
@@ -127,9 +127,11 @@ mixin {
     config "paucal_forge.mixins.json"
 }
 
+/*
 sourcesJar {
     from project(":Common").sourceSets.main.allJava
 }
+*/
 
 tasks.withType(JavaCompile) {
     source(project(":Common").sourceSets.main.allSource)
@@ -175,11 +177,12 @@ reobf {
 }
 
 pkSubproj {
-    platform "forge"
+    platform = "forge"
+    pkPublish = true
 
-    curseforgeJar shadowJar.archiveFile
+    curseforgeJar = shadowJar.archiveFile
     curseforgeDependencies[]
 
-    modrinthJar shadowJar.archiveFile
+    modrinthJar = shadowJar.archiveFile
     modrinthDependencies[]
 }
