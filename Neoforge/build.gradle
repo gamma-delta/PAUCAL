@@ -12,7 +12,7 @@ pkSubproj {
     pkPublish = true
 
     curseforgeJar = tasks.remapJar.archiveFile
-    curseforgeDependencies["architectury-ap     i"]
+    curseforgeDependencies["architectury-api"]
 
     modrinthJar = tasks.remapJar.archiveFile
     modrinthDependencies["architectury-api:13.0.6+neoforge"]
