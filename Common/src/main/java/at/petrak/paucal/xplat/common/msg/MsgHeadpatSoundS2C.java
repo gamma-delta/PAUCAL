@@ -1,6 +1,6 @@
 package at.petrak.paucal.xplat.common.msg;
 
-import at.petrak.paucal.api.PaucalAPI;
+import at.petrak.paucal.api.PaucalCodecs;
 import at.petrak.paucal.xplat.common.sounds.HeadpatSoundInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -23,7 +23,7 @@ public record MsgHeadpatSoundS2C(String soundName, boolean isGithub, Vec3 pos,
   public static final StreamCodec<RegistryFriendlyByteBuf, MsgHeadpatSoundS2C> CODEC = StreamCodec.composite(
       ByteBufCodecs.STRING_UTF8, MsgHeadpatSoundS2C::soundName,
       ByteBufCodecs.BOOL, MsgHeadpatSoundS2C::isGithub,
-      PaucalAPI.Codices.VEC3, MsgHeadpatSoundS2C::pos,
+      PaucalCodecs.VEC3, MsgHeadpatSoundS2C::pos,
       ByteBufCodecs.FLOAT, MsgHeadpatSoundS2C::pitch,
       ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), MsgHeadpatSoundS2C::patter,
       MsgHeadpatSoundS2C::new

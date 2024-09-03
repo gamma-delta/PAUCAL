@@ -1,9 +1,6 @@
 package at.petrak.paucal.api;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 
 public final class PaucalAPI {
   public static final String MOD_ID = "paucal";
@@ -14,16 +11,5 @@ public final class PaucalAPI {
 
   public static ResourceLocation modLoc(String s) {
     return ResourceLocation.tryBuild(MOD_ID, s);
-  }
-
-  public static class Codices {
-    public static StreamCodec<ByteBuf, Vec3> VEC3 = StreamCodec.of(
-        (stream, v) -> {
-          stream.writeDouble(v.x);
-          stream.writeDouble(v.y);
-          stream.writeDouble(v.x);
-        },
-        (stream) -> new Vec3(stream.readDouble(), stream.readDouble(), stream.readDouble())
-    );
   }
 }
