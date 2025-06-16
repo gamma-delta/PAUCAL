@@ -10,7 +10,7 @@ public final class PaucalCodecs {
       (stream, v) -> {
         stream.writeDouble(v.x);
         stream.writeDouble(v.y);
-        stream.writeDouble(v.x);
+        stream.writeDouble(v.z);
       },
       (stream) -> new Vec3(stream.readDouble(), stream.readDouble(), stream.readDouble())
   );
