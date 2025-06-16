@@ -12,7 +12,7 @@ public abstract class PaucalBlockStateAndModelProvider extends BlockStateProvide
   }
 
   protected void blockAndItem(Block block, BlockModelBuilder model) {
-    simpleBlock(block);
+    simpleBlock(block, model);
     simpleBlockItem(block, model);
   }
 
