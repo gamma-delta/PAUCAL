@@ -23,7 +23,6 @@ configurations {
         canBeResolved = true
         canBeConsumed = false
     }
-    shadowCommon
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentNeoForge.extendsFrom common

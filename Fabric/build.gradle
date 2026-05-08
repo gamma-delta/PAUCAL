@@ -29,7 +29,6 @@ configurations {
         canBeResolved = true
         canBeConsumed = false
     }
-    shadowCommon
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
