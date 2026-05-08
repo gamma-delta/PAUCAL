@@ -53,7 +53,8 @@ dependencies {
     modImplementation "me.shedaniel.cloth:cloth-config:$project.cloth_cfg_version"
     modImplementation "com.terraformersmc:modmenu:$project.mod_menu_version"
 
-    include "blue.endless:jankson:$rootProject.jankson_version"
+    implementation "blue.endless:jankson:$rootProject.jankson_version"
+    shadowBundle "blue.endless:jankson:$rootProject.jankson_version"
 
     common(project(path: ':Common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':Common', configuration: 'transformProductionFabric')
@@ -73,10 +74,13 @@ processResources {
 }
 
 shadowJar {
+    relocate "blue.endless.jankson", "${rootProject.maven_group}.paucal.shadowed.blue.endless.jankson"
+
     configurations = [project.configurations.shadowBundle]
     archiveClassifier = 'dev-shadow'
 }
 
 remapJar {
     input.set shadowJar.archiveFile
+    dependsOn(shadowJar)
 }
